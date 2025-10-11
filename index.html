@@ -1,76 +1,329 @@
-<!-- index.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Suman Karmakar | Portfolio</title>
-  <link rel="stylesheet" href="style.css" />
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suman Karmakar | Full-Stack Developer Portfolio</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    
 </head>
-<body>
-  <header class="header">
-    <div class="container header-container">
-      <h1 class="logo">Suman Karmakar</h1>
-      <nav class="navbar">
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </div>
-  </header>
+<body class="futuristic-grid">
 
-  <main class="container">
-    <section id="about" class="section">
-      <h2><u>About Me</u></h2>
-      <p>I am a final-year B.Tech student at GKCEM specializing in Computer Science & Engineering. Passionate about web development and eager to apply my skills in real-world projects and gain industry experience.</p>
-    </section>
+    <!-- Header & Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm shadow-lg header-glow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
+            <a href="#hero" class="text-2xl font-extrabold tracking-widest uppercase neon-text hover:opacity-80 transition duration-300">
+                SK<span class="text-gray-400 font-light"> | DEV</span>
+            </a>
+            
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex space-x-8 font-medium">
+                <a href="#about" class="text-gray-300 hover:text-white hover:neon-text transition duration-300">About</a>
+                <a href="#skills" class="text-gray-300 hover:text-white hover:neon-text transition duration-300">Skills</a>
+                <a href="#projects" class="text-gray-300 hover:text-white hover:neon-text transition duration-300">Projects</a>
+                <a href="#contact" class="text-gray-300 hover:text-white hover:neon-text transition duration-300">Contact</a>
+            </nav>
 
-    <section id="projects" class="section">
-      <h2>Projects</h2>
-      <div class="projects">
-        <div class="card">
-          <h3>Portfolio Website</h3>
-          <p>A modern portfolio built with HTML, CSS, and JavaScript featuring responsive design and smooth navigation.</p>
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden text-gray-300 hover:text-white p-2 rounded-md transition duration-300">
+                <i data-lucide="menu"></i>
+            </button>
         </div>
-        <div class="card">
-          <h3>Amazon Clone</h3>
-          <p>Responsive Amazon homepage clone created using HTML and CSS, mimicking navigation, layout, and UI components.</p>
-        </div>
-        <div class="card">
-          <h3>Calculator</h3>
-          <p>Fullstack Calculator – A web-based calculator built with HTML, CSS, JavaScript, Node.js, and Express.
-             Supports basic arithmetic operations with a clean UI and Light/Dark theme toggle.
-             Frontend hosted on GitHub Pages, backend powered by Node.js API.</p>
-        </div>
-        <div class="card">
-          <h3>Tic-Tac-Toe Game</h3>
-          <p>Tic Tac Toe Game – A classic two-player game built with HTML, CSS, and JavaScript.
-             Features interactive gameplay, win detection, and a responsive design for smooth user experience.</p>
-        </div>
-        <div class="card">
-          <h3>VerifyAI</h3>
-            <p>VerifyAI : is an AI-powered tool that detects fake news and deepfake content, helping users verify the authenticity of headlines, articles, and media instantly.</p>
-        </div>
-      </div>
-    </section>
 
-    <section id="contact" class="section contact">
-      <h2>Contact Me</h2>
-      <p><strong>Phone:</strong> 9933465792</p>
-      <p><strong>Email:</strong> <a href="mailto:karmakarsuman12138@gmail.com></a></p>
-      <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/suman-karmakar-8826312ba" target="_blank">Suman Karmakar</a></p>
-      <p><strong>GitHub:</strong> <a href="https://github.com/0Sumankarmakar" target="_blank">SumanKarmakar467</a></p>
-    </section>
-  </main>
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-black/90 pb-4">
+            <nav class="flex flex-col space-y-2 px-4 font-medium">
+                <a href="#about" class="mobile-nav-link block px-3 py-2 text-base text-gray-300 hover:neon-text transition duration-300 rounded-md">About</a>
+                <a href="#skills" class="mobile-nav-link block px-3 py-2 text-base text-gray-300 hover:neon-text transition duration-300 rounded-md">Skills</a>
+                <a href="#projects" class="mobile-nav-link block px-3 py-2 text-base text-gray-300 hover:neon-text transition duration-300 rounded-md">Projects</a>
+                <a href="#contact" class="mobile-nav-link block px-3 py-2 text-base text-gray-300 hover:neon-text transition duration-300 rounded-md">Contact</a>
+            </nav>
+        </div>
+    </header>
 
-  <footer class="footer">
-    <p>&copy; 2025 Suman Karmakar. All rights reserved.</p>
-  </footer>
-  <script defer src="script.js"></script>
+    <main class="max-w-7xl mx-auto pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+
+        <!-- 1. Hero Section -->
+        <section id="hero" class="min-h-[calc(100vh-6rem)] flex items-center justify-center">
+            <div class="text-center md:flex md:text-left md:items-center md:space-x-12">
+                
+                <!-- Profile Picture (Placeholder) -->
+                <div class="relative mb-8 md:mb-0 w-48 h-48 mx-auto md:mx-0 flex-shrink-0">
+                    <img src="https://github.com/SumanKarmakar467.png" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/192x192/00bcd4/ffffff?text=SK+PFP';" 
+                         alt="Suman Karmakar Profile Picture" 
+                         class="w-full h-full object-cover rounded-full border-4 border-cyan-400 shadow-2xl shadow-cyan-500/50 transition duration-500 hover:scale-105"
+                    >
+                    <span class="absolute bottom-2 right-2 w-5 h-5 bg-green-500 rounded-full border-2 border-black animate-pulse" title="Available"></span>
+                </div>
+
+                <!-- Hero Text Content -->
+                <div>
+                    <p class="text-lg text-gray-400 mb-2">ACCESS GRANTED: WELCOME</p>
+                    <h1 class="text-5xl sm:text-7xl font-extrabold leading-tight">
+                        <span class="block neon-text">SUMAN KARMAKAR</span>
+                        <span class="block text-gray-200">Full-Stack Architect</span>
+                    </h1>
+                    <p class="mt-4 text-xl text-gray-300 max-w-lg mx-auto md:mx-0">
+                        Crafting high-performance, scalable web applications from database to user interface. Specializing in modern frameworks and robust backend systems.
+                    </p>
+                    <div class="mt-8 space-x-4">
+                        <a href="#projects" class="inline-flex items-center px-6 py-3 border-2 border-cyan-400 text-base font-medium rounded-lg text-white bg-transparent hover:bg-cyan-500/20 hover:shadow-lg hover:shadow-cyan-400/50 transition duration-300 ease-in-out">
+                            View Portfolio <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </a>
+                        <a href="#contact" class="inline-flex items-center px-6 py-3 text-base font-medium rounded-lg text-cyan-400 hover:text-white transition duration-300 ease-in-out">
+                            Contact Me <i data-lucide="message-circle" class="w-4 h-4 ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. About Section -->
+        <section id="about" class="py-20">
+            <h2 class="section-title text-4xl font-bold mb-12">/ ABOUT ME</h2>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-lg text-gray-300 space-y-6">
+                    <p>
+                        I'm Suman Karmakar, a dedicated Full-Stack Developer with 5+ years of experience transforming complex ideas into elegant, functional digital solutions. My philosophy centers on building clean, modular, and maintainable code that delivers exceptional user experiences.
+                    </p>
+                    <p>
+                        My journey began with a curiosity for how things work, leading me to master the entire development lifecycle—from defining database schemas to deploying high-availability services on the cloud. I thrive in fast-paced environments, continuously adapting to new technologies to keep my stack state-of-the-art.
+                    </p>
+                    <p class="text-cyan-400 font-medium">
+                        Let's connect and build the next generation of web applications together.
+                    </p>
+                </div>
+                <div class="p-6 neon-border-box rounded-xl">
+                    <h3 class="text-2xl font-semibold mb-4 neon-text">Key Metrics</h3>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="text-center">
+                            <p class="text-5xl font-extrabold neon-text">5+</p>
+                            <p class="text-gray-400 mt-1">Years of Experience</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-5xl font-extrabold neon-text">15</p>
+                            <p class="text-gray-400 mt-1">Projects Launched</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-5xl font-extrabold neon-text">100%</p>
+                            <p class="text-gray-400 mt-1">Client Satisfaction</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-5xl font-extrabold neon-text">3K+</p>
+                            <p class="text-gray-400 mt-1">Code Commits</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Skills Section -->
+        <section id="skills" class="py-20">
+            <h2 class="section-title text-4xl font-bold mb-12">/ SKILL MATRIX</h2>
+
+            <div class="space-y-12">
+                <!-- Frontend Matrix -->
+                <div class="p-6 neon-border-box rounded-xl">
+                    <h3 class="text-2xl font-semibold mb-6 neon-text flex items-center"><i data-lucide="layers-3" class="w-6 h-6 mr-3"></i>Frontend Development</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+                        <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="scan" class="w-8 h-8 mx-auto text-yellow-500 mb-2"></i>
+                            <p class="text-sm font-medium">JavaScript/TS</p>
+                        </div>
+                         <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="atom" class="w-8 h-8 mx-auto text-cyan-500 mb-2"></i>
+                            <p class="text-sm font-medium">React / Next.js</p>
+                        </div>
+                        <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="brush" class="w-8 h-8 mx-auto text-blue-500 mb-2"></i>
+                            <p class="text-sm font-medium">Angular / Vue</p>
+                        </div>
+                        <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="layout-grid" class="w-8 h-8 mx-auto text-purple-500 mb-2"></i>
+                            <p class="text-sm font-medium">Tailwind CSS</p>
+                        </div>
+                        <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="package" class="w-8 h-8 mx-auto text-red-500 mb-2"></i>
+                            <p class="text-sm font-medium">State Mgmt (Redux/Zustand)</p>
+                        </div>
+                        <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="shield" class="w-8 h-8 mx-auto text-green-500 mb-2"></i>
+                            <p class="text-sm font-medium">Testing (Jest/Cypress)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backend & DevOps Matrix -->
+                <div class="p-6 neon-border-box rounded-xl">
+                    <h3 class="text-2xl font-semibold mb-6 neon-text flex items-center"><i data-lucide="server" class="w-6 h-6 mr-3"></i>Backend & Infra</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+                         <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="webhook" class="w-8 h-8 mx-auto text-green-600 mb-2"></i>
+                            <p class="text-sm font-medium">Node.js / Express</p>
+                        </div>
+                        <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="database" class="w-8 h-8 mx-auto text-orange-500 mb-2"></i>
+                            <p class="text-sm font-medium">PostgreSQL / MongoDB</p>
+                        </div>
+                        <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="git-branch" class="w-8 h-8 mx-auto text-red-700 mb-2"></i>
+                            <p class="text-sm font-medium">Go / Python</p>
+                        </div>
+                         <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="cloud" class="w-8 h-8 mx-auto text-yellow-600 mb-2"></i>
+                            <p class="text-sm font-medium">AWS / Azure</p>
+                        </div>
+                        <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="container" class="w-8 h-8 mx-auto text-blue-400 mb-2"></i>
+                            <p class="text-sm font-medium">Docker / Kubernetes</p>
+                        </div>
+                        <div class="text-center p-3 rounded-lg bg-gray-800 hover:bg-cyan-900/40 transition duration-200">
+                            <i data-lucide="lock" class="w-8 h-8 mx-auto text-gray-500 mb-2"></i>
+                            <p class="text-sm font-medium">Security (OAuth/JWT)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Projects Section -->
+        <section id="projects" class="py-20">
+            <h2 class="section-title text-4xl font-bold mb-12">/ PROJECT ARCHIVE</h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Project Card 1 -->
+                <div class="p-5 neon-border-box rounded-xl">
+                    <img src="https://placehold.co/600x400/1e293b/ffffff?text=Project+Alpha" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/600x400/1e293b/ffffff?text=Project+Alpha';" 
+                         alt="Project Alpha Placeholder" 
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                    >
+                    <h3 class="text-xl font-semibold mb-2 neon-text">AI Data Pipeline Visualizer</h3>
+                    <p class="text-gray-400 text-sm mb-4">
+                        A real-time data streaming dashboard built with React and Go backend. Features complex D3.js visualizations.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="text-xs text-white px-2 py-1 rounded-full bg-cyan-700/50">React</span>
+                        <span class="text-xs text-white px-2 py-1 rounded-full bg-cyan-700/50">Go</span>
+                        <span class="text-xs text-white px-2 py-1 rounded-full bg-cyan-700/50">PostgreSQL</span>
+                    </div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="flex items-center text-sm text-cyan-400 hover:text-white transition duration-200"><i data-lucide="link" class="w-4 h-4 mr-1"></i> Live Demo</a>
+                        <a href="#" class="flex items-center text-sm text-gray-400 hover:text-white transition duration-200"><i data-lucide="github" class="w-4 h-4 mr-1"></i> Source</a>
+                    </div>
+                </div>
+
+                 <!-- Project Card 2 -->
+                <div class="p-5 neon-border-box rounded-xl">
+                    <img src="https://placehold.co/600x400/22c55e/ffffff?text=Project+Beta" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/600x400/22c55e/ffffff?text=Project+Beta';" 
+                         alt="Project Beta Placeholder" 
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                    >
+                    <h3 class="text-xl font-semibold mb-2 neon-text">Decentralized Voting System</h3>
+                    <p class="text-gray-400 text-sm mb-4">
+                        A secure, immutable blockchain-based voting application using Node.js and custom web sockets for live updates.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="text-xs text-white px-2 py-1 rounded-full bg-cyan-700/50">Node.js</span>
+                        <span class="text-xs text-white px-2 py-1 rounded-full bg-cyan-700/50">MongoDB</span>
+                        <span class="text-xs text-white px-2 py-1 rounded-full bg-cyan-700/50">Web3</span>
+                    </div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="flex items-center text-sm text-cyan-400 hover:text-white transition duration-200"><i data-lucide="link" class="w-4 h-4 mr-1"></i> Live Demo</a>
+                        <a href="#" class="flex items-center text-sm text-gray-400 hover:text-white transition duration-200"><i data-lucide="github" class="w-4 h-4 mr-1"></i> Source</a>
+                    </div>
+                </div>
+
+                 <!-- Project Card 3 -->
+                <div class="p-5 neon-border-box rounded-xl">
+                    <img src="https://placehold.co/600x400/f97316/ffffff?text=Project+Gamma" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/600x400/f97316/ffffff?text=Project+Gamma';" 
+                         alt="Project Gamma Placeholder" 
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                    >
+                    <h3 class="text-xl font-semibold mb-2 neon-text">E-commerce API Gateway</h3>
+                    <p class="text-gray-400 text-sm mb-4">
+                        A robust, microservices-based API gateway handling high traffic volume using Python (FastAPI) and Docker.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="text-xs text-white px-2 py-1 rounded-full bg-cyan-700/50">Python</span>
+                        <span class="text-xs text-white px-2 py-1 rounded-full bg-cyan-700/50">FastAPI</span>
+                        <span class="text-xs text-white px-2 py-1 rounded-full bg-cyan-700/50">Docker</span>
+                    </div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="flex items-center text-sm text-cyan-400 hover:text-white transition duration-200"><i data-lucide="link" class="w-4 h-4 mr-1"></i> Live Demo</a>
+                        <a href="#" class="flex items-center text-sm text-gray-400 hover:text-white transition duration-200"><i data-lucide="github" class="w-4 h-4 mr-1"></i> Source</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 5. Contact Section -->
+        <section id="contact" class="py-20">
+            <h2 class="section-title text-4xl font-bold mb-12">/ TERMINAL CONNECT</h2>
+
+            <div class="max-w-3xl mx-auto p-8 neon-border-box rounded-xl">
+                <p class="text-gray-300 text-lg mb-6 text-center">
+                    Ready to collaborate on a new project? Send me a message, and I'll respond within 24 hours.
+                </p>
+
+                <!-- Simple Contact Form (Action is placeholder) -->
+                <form id="contact-form" action="#" method="POST" class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-400">Name</label>
+                        <input type="text" id="name" name="name" required
+                               class="mt-1 block w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 text-white transition duration-300">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-400">Email Address</label>
+                        <input type="email" id="email" name="email" required
+                               class="mt-1 block w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 text-white transition duration-300">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-400">Message</label>
+                        <textarea id="message" name="message" rows="4" required
+                                  class="mt-1 block w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 text-white transition duration-300"></textarea>
+                    </div>
+                    <div>
+                        <button type="submit" 
+                                class="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-black bg-cyan-400 hover:bg-cyan-300 transition duration-300 ease-in-out shadow-lg shadow-cyan-500/50">
+                            Send Message <i data-lucide="send" class="w-4 h-4 ml-2"></i>
+                        </button>
+                    </div>
+                    <p id="form-message" class="text-center text-sm text-green-400 hidden mt-4"></p>
+                </form>
+            </div>
+            
+            <!-- Social Links -->
+            <div class="mt-12 text-center">
+                <h3 class="text-2xl font-semibold mb-4 text-gray-200">Connect on Social</h3>
+                <div class="flex justify-center space-x-6">
+                    <a href="#" class="text-gray-400 hover:neon-text transition duration-300"><i data-lucide="github" class="w-8 h-8"></i></a>
+                    <a href="#" class="text-gray-400 hover:neon-text transition duration-300"><i data-lucide="linkedin" class="w-8 h-8"></i></a>
+                    <a href="#" class="text-gray-400 hover:neon-text transition duration-300"><i data-lucide="twitter" class="w-8 h-8"></i></a>
+                    <a href="#" class="text-gray-400 hover:neon-text transition duration-300"><i data-lucide="mail" class="w-8 h-8"></i></a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black/80 py-8 mt-12 border-t border-cyan-400/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 Suman Karmakar | System Status: <span class="text-cyan-400">Online/Operational</span></p>
+            <p class="mt-2">Designed with <i data-lucide="gem" class="w-4 h-4 inline-block text-cyan-400"></i> & Tailwind CSS.</p>
+        </div>
+    </footer>
+<script src="script.js"></script>
 </body>
 </html>
-
-
-
-
