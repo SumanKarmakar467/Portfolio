@@ -65,6 +65,7 @@
         }
 
         .hero-section{
-            animation:slideFormatLeft 1s ease forwards;
+            animation: slideFromLeft 1s ease forwards;
         }
+
 
