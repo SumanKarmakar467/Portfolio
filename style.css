@@ -63,3 +63,8 @@
         [data-lucide] {
             display: inline-block;
         }
+
+        .hero-section{
+            animation:slideFormatLeft 1s ease forwards;
+        }
+
