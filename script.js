@@ -1,50 +1,50 @@
- // Initialize Lucide Icons
-        lucide.createIcons();
+// script.js — corrected theme toggle
 
-        // 1. Mobile Menu Toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        });
+// IDs/classes must match the HTML. Button id in HTML: "theme-toggle"
+const themeBtn = document.getElementById("theme-toggle");
+const body = document.body;
 
-        // Close mobile menu when a link is clicked
-        document.querySelectorAll('.mobile-nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                document.getElementById('mobile-menu').classList.add('hidden');
-            });
-        });
+// If button not found, bail out (prevents errors)
+if (!themeBtn) {
+  console.warn("Theme toggle button not found (expected id='theme-toggle').");
+} else {
+  // Helper to apply theme state (adds/removes .dark and sets icon/label)
+  function applyTheme(isDark) {
+    if (isDark) {
+      body.classList.add("dark");
+      themeBtn.textContent = "☀️";
+      themeBtn.setAttribute("aria-label", "Switch to light theme");
+    } else {
+      body.classList.remove("dark");
+      themeBtn.textContent = "🌙";
+      themeBtn.setAttribute("aria-label", "Switch to dark theme");
+    }
+  }
 
-        // 2. Simple Contact Form Handling (to prevent actual submission and show success message)
-        const form = document.getElementById('contact-form');
-        const messageDisplay = document.getElementById('form-message');
+  // 1) Load saved theme from localStorage
+  const saved = localStorage.getItem("theme");
+  if (saved === "dark" || saved === "light") {
+    applyTheme(saved === "dark");
+  } else {
+    // 2) No saved preference — respect system preference (if available)
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    applyTheme(prefersDark); // will set default based on system
+  }
 
-        form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Stop standard form submission
+  // 3) Toggle on click
+  themeBtn.addEventListener("click", () => {
+    const isDark = body.classList.toggle("dark");
+    applyTheme(isDark);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  });
 
-            // Simple validation check
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const msg = document.getElementById('message').value;
-
-            if (name && email && msg) {
-                // Simulate form submission success
-                console.log('Form data sent:', { name, email, msg });
-
-                messageDisplay.textContent = 'Message Sent Successfully! Suman will respond soon.';
-                messageDisplay.classList.remove('hidden', 'text-red-400');
-                messageDisplay.classList.add('text-green-400');
-                
-                // Reset form fields
-                form.reset();
-
-                // Hide message after 5 seconds
-                setTimeout(() => {
-                    messageDisplay.classList.add('hidden');
-                }, 5000);
-
-            } else {
-                messageDisplay.textContent = 'Error: Please fill in all required fields.';
-                messageDisplay.classList.remove('hidden', 'text-green-400');
-                messageDisplay.classList.add('text-red-400');
-            }
-        });
+  // 4) (Optional) respond to system changes: update only if user hasn't saved a preference
+  if (window.matchMedia) {
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", e => {
+      // only apply system change when user hasn't explicitly saved theme
+      if (!localStorage.getItem("theme")) {
+        applyTheme(e.matches);
+      }
+    });
+  }
+}
