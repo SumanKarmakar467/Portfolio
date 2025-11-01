@@ -5,111 +5,185 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Suman Karmakar | Portfolio</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-  <!-- Header Section -->
+<body class="loading"> <div id="preloader" class="preloader">
+    <div class="preloader-text">Hi, I am <span>Suman Karmakar</span></div>
+  </div>
+
   <header class="header">
     <div class="container">
-      <h1 class="logo">Suman Karmakar</h1>
-      <nav class="navbar">
+      <h1 class="logo"><a href="#home">Suman Karmakar</a></h1>
+      <nav class="navbar" id="navbar">
         <ul>
-          <li><a href="#home" class="active">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#skills">Skills</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#home" class="nav-link active">Home</a></li>
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#skills" class="nav-link">Skills</a></li>
+          <li><a href="#projects" class="nav-link">Projects</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
         </ul>
       </nav>
-      <button id="theme-toggle" class="theme-btn">🌙</button>
+      <div class="header-actions">
+        <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">🌙</button>
+        <div class="menu-btn" id="menu-btn">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section id="home" class="hero">
-    <div class="hero-content">
-      <h2>Hello, I’m <span>Suman Karmakar</span></h2>
-      <p>Full Stack Developer | Java | React | Node.js | MongoDB</p>
-      <a href="#projects" class="btn">View My Work</a>
+  <section id="home" class="hero section">
+    <div class="container hero-layout">
+      <div class="hero-content">
+        <p class="greeting">👋 Hello, I’m</p>
+        <h2><span>Suman Karmakar</span></h2>
+        <h3>Full Stack Developer | Java | React | Node.js | MongoDB</h3>
+        <a href="#projects" class="btn primary-btn">View My Work</a>
+        <a href="link-to-your-resume.pdf" target="_blank" class="btn secondary-btn">Download Resume</a>
+      </div>
+      <div class="hero-image">
+        
+      </div>
     </div>
   </section>
 
-  <!-- About Section -->
   <section id="about" class="about section">
     <div class="container">
-      <h2>About Me</h2>
-      <p>
-        I’m a passionate Full Stack Developer specializing in creating modern,
-        responsive, and user-friendly web applications. I love turning ideas into real-world solutions.
-      </p>
+      <h2 class="section-title">About Me</h2>
+      <div class="about-content">
+        <p>
+          I’m a passionate **Full Stack Developer** specializing in creating modern,
+          responsive, and user-friendly web applications. With expertise in the **Java** ecosystem,
+          **React** for dynamic frontends, and **Node.js/MongoDB** for robust backends, I thrive on
+          turning complex ideas into real-world, efficient, and scalable solutions.
+        </p>
+        <p>
+          My goal is to constantly learn new technologies and apply best practices to build high-quality software.
+          Let's build something amazing together!
+        </p>
+      </div>
     </div>
   </section>
 
-  <!-- Skills Section -->
   <section id="skills" class="skills section">
     <div class="container">
-      <h2>Tech Stack</h2>
-      <div class="skills-grid">
-        <div class="skill-card">HTML</div>
-        <div class="skill-card">CSS</div>
-        <div class="skill-card">JavaScript</div>
-        <div class="skill-card">React</div>
-        <div class="skill-card">Node.js</div>
-        <div class="skill-card">MongoDB</div>
-        <div class="skill-card">Java</div>
-        <div class="skill-card">Git & GitHub</div>
+      <h2 class="section-title">Tech Stack</h2>
+      <div class="skills-categories">
+        
+        <div class="skill-category">
+          <h3>Frontend 🖥️</h3>
+          <div class="skills-grid">
+            <div class="skill-card">HTML</div>
+            <div class="skill-card">CSS</div>
+            <div class="skill-card">JavaScript</div>
+            <div class="skill-card">React</div>
+            <div class="skill-card">Responsive Design</div>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <h3>Backend & Tools ⚙️</h3>
+          <div class="skills-grid">
+            <div class="skill-card">Java (Spring Boot)</div>
+            <div class="skill-card">Node.js (Express)</div>
+            <div class="skill-card">Git & GitHub</div>
+            <div class="skill-card">REST APIs</div>
+            <div class="skill-card">Postman</div>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <h3>Databases & Cloud ☁️</h3>
+          <div class="skills-grid">
+            <div class="skill-card">MongoDB</div>
+            <div class="skill-card">MySQL</div>
+            <div class="skill-card">PostgreSQL</div>
+            <div class="skill-card">AWS Basics</div>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
 
-  <!-- Projects Section -->
   <section id="projects" class="projects section">
     <div class="container">
-      <h2>Projects</h2>
+      <h2 class="section-title">Featured Projects</h2>
       <div class="projects-grid">
+        
         <div class="project-card">
-            <h3>VarifyAI</h3>
-            <p> VerifyAI is an AI-powered tool that detects fake news and deepfake content, helping users verify the authenticity of headlines, articles, and media instantly.</p>
-            <a href="https://github.com/SumanKarmakar467/VerifyAI" target="_blank" class="btn-small">Souce</a>
-            <a href="https://hakkanshah.github.io/VerifyAI/" target="_blank" class="btn-small">View</a>
+          <div class="project-image-placeholder">
+            
+          </div>
+          <h3>VarifyAI</h3>
+          <p>AI-powered tool that detects fake news and deepfake content, helping users verify the authenticity of headlines, articles, and media instantly.</p>
+          <div class="project-links">
+            <a href="https://github.com/SumanKarmakar467/VerifyAI" target="_blank" class="btn-small">Source Code</a>
+            <a href="https://hakkanshah.github.io/VerifyAI/" target="_blank" class="btn-small">Live Demo</a>
+          </div>
         </div>
 
         <div class="project-card">
-            <h3>Tic Tac Toe Game</h3>
-            <p>A simple and interactive Tic Tac Toe game built with JavaScript.</p>
-            <a href="https://github.com/SumanKarmakar467/Tic-Tac-Toe-game" target="_blank" class="btn-small">Souce</a>
-            <a href="https://suman-tic-tac-toe.vercel.app/" target="_blank" class="btn-small">View</a>
+          <div class="project-image-placeholder">
+            
+          </div>
+          <h3>Tic Tac Toe Game</h3>
+          <p>A simple and interactive game built using **Vanilla JavaScript**, focusing on clean logic and DOM manipulation.</p>
+          <div class="project-links">
+            <a href="https://github.com/SumanKarmakar467/Tic-Tac-Toe-game" target="_blank" class="btn-small">Source Code</a>
+            <a href="https://suman-tic-tac-toe.vercel.app/" target="_blank" class="btn-small">Live Demo</a>
+          </div>
         </div>
 
         <div class="project-card">
-            <h3>Scientific Calculator</h3>
-            <p>Responsive calculator for advanced math operations using JS.</p>
-            <a href="https://github.com/SumanKarmakar467/Scientific-Calculator" target="_blank" class="btn-small">Souce</a>
-            <a href="https://scientific-calculator-five-tau.vercel.app" target="_blank" class="btn-small">View</a>
+          <div class="project-image-placeholder">
+            
+          </div>
+          <h3>Scientific Calculator</h3>
+          <p>A fully responsive calculator for advanced mathematical operations, built with HTML, CSS, and robust JavaScript logic.</p>
+          <div class="project-links">
+            <a href="https://github.com/SumanKarmakar467/Scientific-Calculator" target="_blank" class="btn-small">Source Code</a>
+            <a href="https://scientific-calculator-five-tau.vercel.app" target="_blank" class="btn-small">Live Demo</a>
+          </div>
         </div>
 
         <div class="project-card">
-            <h3>Website</h3>
-            <p>A responsive website using HTML & CSS</p>
-            <a href="https://github.com/SumanKarmakar467/SecondWebsite" target="_blank" class="btn-small">Souce</a>
-            <a href="https://second-website-six.vercel.app" target="_blank" class="btn-small">View</a>
+          <div class="project-image-placeholder">
+            
+          </div>
+          <h3>Website Template</h3>
+          <p>A responsive landing page demonstrating modern layout techniques using advanced CSS properties like Flexbox and Grid.</p>
+          <div class="project-links">
+            <a href="https://github.com/SumanKarmakar467/SecondWebsite" target="_blank" class="btn-small">Source Code</a>
+            <a href="https://second-website-six.vercel.app" target="_blank" class="btn-small">Live Demo</a>
+          </div>
         </div>
 
+      </div>
+      <div class="all-projects-link">
+          <a href="https://github.com/SumanKarmakar467/" target="_blank" class="btn primary-btn">See All GitHub Projects →</a>
       </div>
     </div>
   </section>
 
-  <!-- Contact Section -->
   <section id="contact" class="contact section">
     <div class="container">
-      <h2>Contact Me</h2>
-      <p>Have a project or collaboration in mind? Let’s connect!</p>
-      <a href="mailto:sumankarmakar@gmail.com" class="btn">Say Hello</a>
+      <h2 class="section-title">Get In Touch</h2>
+      <p class="contact-pitch">Have a project idea, a collaboration proposal, or just want to chat? I'm always open to new opportunities. Let’s connect!</p>
+      <div class="contact-actions">
+        <a href="mailto:sumankarmakar@gmail.com" class="btn primary-btn large-btn">✉️ Say Hello</a>
+        <a href="https://www.linkedin.com/in/yourprofile/" target="_blank" class="btn secondary-btn large-btn">🔗 LinkedIn Profile</a>
+      </div>
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="footer">
-    <p>© 2025 Suman Karmakar. All rights reserved.</p>
+    <div class="container">
+      <p>Built with ❤️ by Suman Karmakar</p>
+      <p>© 2025 Suman Karmakar. All rights reserved.</p>
+    </div>
   </footer>
 
   <script src="script.js"></script>
