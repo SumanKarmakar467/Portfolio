@@ -70,8 +70,8 @@ if (menuBtn && navbar) {
 const preloader = document.getElementById("preloader");
 
 if (preloader) {
-    // Duration for the "Hi" message (4000ms = 4 seconds)
-    const PRELOADER_DURATION = 4000; 
+    // Duration for the "Hi" message (1000ms = 1 seconds)
+    const PRELOADER_DURATION = 1000; 
 
     // Use a slight delay before starting to ensure the body class is applied
     setTimeout(() => {
