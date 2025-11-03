@@ -74,7 +74,7 @@ a {
   font-weight: 700;
   z-index: 1000;
   opacity: 1;
-  transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+  transition: 0.3s ease-out, visibility 0.3s ease-out;
 }
 
 .preloader.hidden {
@@ -329,24 +329,90 @@ body.dark .secondary-btn {
 }
 
 .hero-image {
+  position: relative;
   flex-shrink: 0;
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 600px;
   background: var(--card-bg);
-  border-radius: 50%;
+  border-radius: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-light);
   overflow: hidden;
+  transition: transform 0.8s ease, box-shadow 0.8s ease;
+  animation: float 5s ease-in-out infinite;
+  perspective: 1000px;
 }
 
-.hero-image  {
+/* Floating animation */
+@keyframes float {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(0.5deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+/* Glowing border animation */
+.hero-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 100px;
+  padding: 2px;
+  background: linear-gradient(45deg, #ff00cc, #3333ff, #00ffcc, #ff6600);
+  background-size: 400%;
+  animation: glow 8s linear infinite;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  pointer-events: none;
+}
+
+@keyframes glow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Image inside hero container */
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.5s ease, filter 0.5s ease;
+  filter: brightness(0.95) contrast(1.1);
+}
+
+/* Hover effects */
+.hero-image:hover {
+  transform: scale(1.05) rotate3d(1, 1, 0, 6deg);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), 0 0 50px rgba(255, 0, 150, 0.3);
+}
+
+.hero-image:hover img {
+  transform: scale(1.15) rotate(1deg);
+  filter: brightness(1.05) contrast(1.2);
+}
+
+
+/* .hero-image  {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-}
+} */
 
 
 /* ---------- About ---------- */
@@ -625,4 +691,3 @@ body.dark .secondary-btn {
         font-size: 2rem;
     }
 }
-
