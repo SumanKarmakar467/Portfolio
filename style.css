@@ -7,7 +7,7 @@
   --text-color: #222222;
   --accent-color: #007bff; /* Vibrant Blue */
   --accent-hover: #0056b3;
-  --card-bg: #f5f8ff; /* Very light subtle background */
+  --card-bg: #E1EBEE; /* Very light subtle background */
   --btn-text: #ffffff;
   --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.08);
   --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -691,3 +691,4 @@ body.dark .secondary-btn {
         font-size: 2rem;
     }
 }
+
