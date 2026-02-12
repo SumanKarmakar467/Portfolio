@@ -444,6 +444,34 @@ h1 {
   gap: 0.65rem;
 }
 
+.project-preview {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin: 0;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transform: translateY(-4px);
+  transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease,
+    margin-bottom 0.35s ease, border-color 0.25s ease;
+}
+
+.project-preview img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  display: block;
+}
+
+.project-card:hover .project-preview,
+.project-card:focus-within .project-preview {
+  max-height: 190px;
+  opacity: 1;
+  transform: translateY(0);
+  margin-bottom: 0.35rem;
+  border-color: var(--stroke);
+}
+
 .certs-section .section-head p {
   max-width: 60ch;
 }
@@ -528,7 +556,7 @@ h1 {
   top: auto;
   transform: none;
   border-radius: 14px;
-  overflow: hidden;
+  overflow: visible;
   transition: filter 0.24s ease, background 0.24s ease;
 }
 
@@ -569,15 +597,23 @@ h1 {
 }
 
 .skill-icon-item::before {
-  content: "";
+  content: attr(data-level);
   position: absolute;
-  inset: 8px;
-  border-radius: 12px;
-  background: radial-gradient(circle at 50% 20%, color-mix(in srgb, var(--accent) 38%, transparent), transparent 62%);
+  left: 50%;
+  top: -10px;
+  transform: translate(-50%, -4px);
+  padding: 0.24rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--stroke);
+  background: var(--surface-strong);
+  color: var(--text);
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
   opacity: 0;
-  transform: scale(0.86);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition: opacity 0.22s ease, transform 0.22s ease;
   pointer-events: none;
+  z-index: 3;
 }
 
 .skill-icon-item::after {
@@ -598,11 +634,12 @@ h1 {
 .skill-icon-item:hover {
   filter: contrast(1.04);
   background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
+  z-index: 5;
 }
 
 .skill-icon-item:hover::before {
   opacity: 1;
-  transform: scale(1);
+  transform: translate(-50%, -8px);
 }
 
 .skill-icon-item:hover::after {
@@ -612,7 +649,7 @@ h1 {
 
 .skill-icon-item:hover i,
 .skill-icon-item:hover .skill-fallback-icon {
-  transform: translateY(-3px) scale(1.08);
+  transform: none;
   box-shadow: 0 12px 22px rgba(17, 19, 24, 0.2);
   border-color: color-mix(in srgb, var(--accent-2) 55%, var(--stroke));
   filter: saturate(1.16);
@@ -620,7 +657,7 @@ h1 {
 
 .skill-icon-item:hover > span:not(.skill-fallback-icon) {
   color: var(--accent);
-  transform: translateY(1px);
+  transform: none;
 }
 
 /* ===== Education Timeline ===== */
