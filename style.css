@@ -444,6 +444,52 @@ h1 {
   gap: 0.65rem;
 }
 
+.certs-section .section-head p {
+  max-width: 60ch;
+}
+
+.certs-grid {
+  align-items: stretch;
+}
+
+.certificate-media {
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--stroke);
+  background: color-mix(in srgb, var(--surface-strong) 82%, transparent);
+}
+
+.certificate-media img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.certificate-card:hover .certificate-media img {
+  transform: scale(1.03);
+}
+
+.certificate-body {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.certificate-body h3 {
+  font-size: 1.03rem;
+}
+
+.certificate-body p {
+  color: var(--muted);
+  margin-bottom: 0.1rem;
+}
+
+.certificate-body .btn {
+  justify-self: start;
+}
+
 .project-type {
   color: var(--accent-2);
   font-weight: 700;
@@ -921,6 +967,10 @@ h1 {
   .service-grid,
   .testimonial-grid,
   .mini-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .certs-grid {
     grid-template-columns: 1fr;
   }
 
