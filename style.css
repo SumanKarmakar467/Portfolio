@@ -577,6 +577,107 @@ h1 {
   transform: translateY(1px);
 }
 
+/* ===== Education Timeline ===== */
+
+.edu-timeline {
+  position: relative;
+  padding-left: 2rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.edu-timeline::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(var(--accent), var(--accent-2));
+}
+
+.edu-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: 0.3s ease;
+}
+
+.edu-card::before {
+  content: "";
+  position: absolute;
+  left: -18px;
+  top: 28px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+.edu-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+}
+
+.edu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.edu-header h3 {
+  margin-bottom: 0.3rem;
+}
+
+.edu-college {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.edu-location {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.edu-year span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.edu-badge {
+  margin-top: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  display: inline-block;
+}
+
+.edu-content ul {
+  margin-top: 1rem;
+  padding-left: 1.2rem;
+  color: var(--muted);
+}
+
+.edu-content ul li {
+  margin-bottom: 0.4rem;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .edu-header {
+    flex-direction: column;
+  }
+}
+
 
 .project-card p,
 .service-card p,
