@@ -52,13 +52,13 @@ if (heroHeading) {
   const sourceText = heroHeading.textContent.trim();
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const keywords = {
-    full: '#f97316',
-    stack: '#0ea5e9',
-    developer: '#22c55e',
-    java: '#ef4444',
-    react: '#3b82f6',
-    'node.js': '#a855f7',
-    mongodb: '#14b8a6'
+    full: '#ff8a3d',
+    stack: '#12c2a4',
+    developer: '#0b8f7d',
+    java: '#fb7185',
+    react: '#38bdf8',
+    'node.js': '#22c55e',
+    mongodb: '#f59e0b'
   };
   const tokens = sourceText.split(/(\s+|\|)/);
   const focusableIndexes = [];
