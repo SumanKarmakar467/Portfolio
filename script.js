@@ -258,39 +258,36 @@ if (form && formMsg) {
   });
 }
 
-// Education section functionality
-const eduSteps = document.querySelectorAll('.edu-step');
-const educationResult = document.querySelector('.education-result');
-const educationData = document.querySelector('.education-data');
+// Education result toggle functionality
+const eduResultButtons = document.querySelectorAll('.edu-result-btn');
 
-if (eduSteps.length && educationResult && educationData) {
-  const updateEducation = (targetId) => {
-    const dataArticle = educationData.querySelector(`[data-edu-id="${targetId}"]`);
-    if (dataArticle) {
-      const title = dataArticle.getAttribute('data-title');
-      const year = dataArticle.getAttribute('data-year');
-      const percentage = dataArticle.getAttribute('data-percentage');
-      const board = dataArticle.getAttribute('data-board');
-      const school = dataArticle.getAttribute('data-school');
-
-      educationResult.querySelector('.edu-title').textContent = title;
-      educationResult.querySelector('.edu-year').textContent = year;
-      educationResult.querySelector('.edu-percentage').textContent = percentage;
-      educationResult.querySelector('.edu-board').textContent = board;
-      educationResult.querySelector('.edu-school').textContent = school;
-    }
+if (eduResultButtons.length) {
+  const setEduPanelState = (button, panel, isOpen) => {
+    button.setAttribute('aria-expanded', String(isOpen));
+    button.textContent = isOpen
+      ? button.dataset.openLabel || 'Hide Result'
+      : button.dataset.closeLabel || 'Show Result';
+    panel.hidden = !isOpen;
   };
 
-  eduSteps.forEach(step => {
-    step.addEventListener('click', () => {
-      const targetId = step.getAttribute('data-edu-target');
-      eduSteps.forEach(s => {
-        s.classList.remove('active');
-        s.setAttribute('aria-selected', 'false');
+  eduResultButtons.forEach((button) => {
+    const panelId = button.getAttribute('aria-controls');
+    const panel = panelId ? document.getElementById(panelId) : null;
+    if (!panel) return;
+
+    setEduPanelState(button, panel, false);
+
+    button.addEventListener('click', () => {
+      const isOpen = button.getAttribute('aria-expanded') === 'true';
+
+      eduResultButtons.forEach((otherButton) => {
+        const otherPanelId = otherButton.getAttribute('aria-controls');
+        const otherPanel = otherPanelId ? document.getElementById(otherPanelId) : null;
+        if (!otherPanel || otherButton === button) return;
+        setEduPanelState(otherButton, otherPanel, false);
       });
-      step.classList.add('active');
-      step.setAttribute('aria-selected', 'true');
-      updateEducation(targetId);
+
+      setEduPanelState(button, panel, !isOpen);
     });
   });
 }

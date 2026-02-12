@@ -754,6 +754,55 @@ h1 {
   margin-bottom: 0.4rem;
 }
 
+.edu-result-actions {
+  margin-top: 1rem;
+}
+
+.edu-result-panel {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: color-mix(in srgb, var(--surface-strong) 84%, transparent);
+}
+
+.edu-result-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.edu-result-item {
+  display: block;
+  text-decoration: none;
+  color: var(--text);
+  border: 1px solid color-mix(in srgb, var(--stroke) 75%, transparent);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface-strong);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.edu-result-item:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 64%, var(--stroke));
+}
+
+.edu-result-item img {
+  display: block;
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+}
+
+.edu-result-item span {
+  display: block;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.45rem 0.5rem 0.5rem;
+}
+
 /* Responsive */
 @media (max-width: 700px) {
   .edu-header {
@@ -842,6 +891,45 @@ h1 {
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   align-items: start;
+}
+
+.contact-socials {
+  margin-top: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.contact-socials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--stroke);
+  background: color-mix(in srgb, var(--surface-strong) 82%, transparent);
+  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.contact-socials a svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.contact-socials a:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent) 64%, var(--stroke));
+  color: var(--accent);
+}
+
+.contact-say-hello {
+  min-width: 180px;
+  text-align: center;
 }
 
 .contact-form {
