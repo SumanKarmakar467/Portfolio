@@ -537,6 +537,10 @@ h1 {
   align-items: stretch;
 }
 
+#skills .service-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
 .project-card,
 .service-card,
 .timeline article,
