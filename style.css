@@ -234,11 +234,15 @@ h3,
   cursor: pointer;
   color: var(--text);
   background: var(--surface-strong);
-  transition: 0.2s ease;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease,
+    background 0.22s ease, color 0.22s ease;
 }
 
 .theme-toggle:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 52%, var(--stroke));
+  background: color-mix(in srgb, var(--surface-strong) 76%, var(--accent));
+  box-shadow: 0 12px 24px rgba(17, 19, 24, 0.2);
 }
 
 .theme-switch {
@@ -259,11 +263,18 @@ h3,
   cursor: pointer;
   color: var(--muted);
   background: transparent;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .theme-btn.active {
   color: #ffffff;
   background: linear-gradient(135deg, var(--accent), #0aa693);
+}
+
+.theme-btn:hover {
+  transform: translateY(-1px);
+  color: var(--text);
+  background: color-mix(in srgb, var(--surface-strong) 64%, var(--accent));
 }
 
 .nav-links {
@@ -292,9 +303,12 @@ h3,
   width: 44px;
   height: 44px;
   display: none;
-  border: 0;
+  border: 1px solid transparent;
+  border-radius: 12px;
   background: transparent;
   cursor: pointer;
+  transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
 .menu-toggle span {
@@ -303,6 +317,18 @@ h3,
   display: block;
   margin: 5px auto;
   background: var(--text);
+  transition: background 0.22s ease, transform 0.22s ease;
+}
+
+.menu-toggle:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--stroke));
+  background: color-mix(in srgb, var(--surface-strong) 78%, transparent);
+  box-shadow: 0 10px 20px rgba(17, 19, 24, 0.18);
+}
+
+.menu-toggle:hover span {
+  background: var(--accent);
 }
 
 .hero {
@@ -422,17 +448,29 @@ h1 {
   padding: 0.75rem 1.1rem;
   color: #ffffff;
   background: linear-gradient(135deg, var(--accent-2), #f8570a);
-  transition: transform 0.2s ease;
+  box-shadow: 0 10px 22px rgba(248, 87, 10, 0.28);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease,
+    background 0.22s ease, border-color 0.22s ease, color 0.22s ease;
 }
 
 .btn:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  filter: saturate(1.08);
+  box-shadow: 0 16px 30px rgba(248, 87, 10, 0.34);
 }
 
 .btn-light {
   color: var(--text);
   background: var(--surface-strong);
   border: 1px solid var(--stroke);
+  box-shadow: 0 10px 22px rgba(17, 19, 24, 0.12);
+}
+
+.btn-light:hover {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--stroke));
+  background: color-mix(in srgb, var(--surface-strong) 72%, var(--accent));
+  box-shadow: 0 14px 24px rgba(17, 19, 24, 0.2);
 }
 
 .btn .ripple-wave {
@@ -1151,7 +1189,8 @@ h1 {
   opacity: 0;
   transform: translateY(18px);
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease,
+    border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   z-index: 110;
 }
 
@@ -1162,7 +1201,28 @@ h1 {
 }
 
 .back-top:hover {
+  transform: translateY(-2px);
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--stroke));
   background: color-mix(in srgb, var(--surface-strong) 70%, var(--accent));
+  box-shadow: 0 14px 26px rgba(17, 19, 24, 0.24);
+}
+
+.btn:active,
+.theme-toggle:active,
+.theme-btn:active,
+.menu-toggle:active,
+.back-top:active {
+  transform: translateY(0);
+}
+
+.btn:focus-visible,
+.theme-toggle:focus-visible,
+.theme-btn:focus-visible,
+.menu-toggle:focus-visible,
+.back-top:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent-2) 68%, #ffffff);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
