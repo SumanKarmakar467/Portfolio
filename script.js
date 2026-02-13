@@ -193,18 +193,7 @@ revealElements.forEach((el, index) => {
 });
 
 tiltCards.forEach((card) => {
-  card.addEventListener('mousemove', (event) => {
-    const rect = card.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width;
-    const y = (event.clientY - rect.top) / rect.height;
-    const rotateX = (0.5 - y) * 9;
-    const rotateY = (x - 0.5) * 10;
-    card.style.transform = `perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
-  });
-
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
-  });
+  card.style.transform = 'none';
 });
 
 window.addEventListener(
@@ -220,7 +209,7 @@ window.addEventListener(
     });
 
     if (heroGallery) {
-      heroGallery.style.transform = `translate(${xRatio * 10}px, ${yRatio * 8}px)`;
+      heroGallery.style.transform = 'none';
     }
   },
   { passive: true }
