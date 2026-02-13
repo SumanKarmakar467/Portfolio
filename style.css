@@ -562,6 +562,7 @@ h1 {
   margin: 0 0 0.35rem;
   border-radius: 12px;
   border: 1px solid var(--stroke);
+  background: #060f1f;
   transform: translateY(0);
   transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease,
     margin-bottom 0.35s ease, border-color 0.25s ease;
@@ -569,11 +570,44 @@ h1 {
 
 .project-preview img {
   width: 100%;
-  height: 170px;
+  height: 190px;
   object-fit: cover;
+  object-position: var(--preview-position, 50% 50%);
+  transform: scale(var(--preview-zoom, 1));
   display: block;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transition: transform 0.35s ease;
+}
+
+.project-card:hover .project-preview img,
+.project-card:focus-within .project-preview img {
+  transform: scale(calc(var(--preview-zoom, 1) + 0.025));
+}
+
+.preview-verifyai {
+  --preview-zoom: 1.42;
+  --preview-position: 50% 40%;
+}
+
+.preview-leetcode {
+  --preview-zoom: 1.34;
+  --preview-position: 50% 34%;
+}
+
+.preview-bellavista {
+  --preview-zoom: 1.18;
+  --preview-position: 50% 20%;
+}
+
+.preview-myfood {
+  --preview-zoom: 1.18;
+  --preview-position: 50% 32%;
+}
+
+.preview-template {
+  --preview-zoom: 1.2;
+  --preview-position: 50% 34%;
 }
 
 .project-card:hover .project-preview,
