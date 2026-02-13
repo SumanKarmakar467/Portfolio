@@ -52,7 +52,6 @@ if (heroHeading) {
   const sourceText = heroHeading.textContent.trim();
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const keywords = {
-    full: '#ff8a3d',
     stack: '#12c2a4',
     developer: '#0b8f7d',
     java: '#fb7185',
@@ -63,16 +62,22 @@ if (heroHeading) {
   const tokens = sourceText.split(/(\s+|\|)/);
   const focusableIndexes = [];
 
-  const renderHeading = (activeFocus = -1) => {
+  const renderHeading = (typedChars = sourceText.length, activeFocus = -1) => {
+    let remainingChars = typedChars;
     heroHeading.innerHTML = tokens
       .map((token, index) => {
-        if (!token || token === '|' || /^\s+$/.test(token)) return token;
+        if (!token || remainingChars <= 0) return '';
+        const visibleLength = Math.min(token.length, remainingChars);
+        remainingChars -= visibleLength;
+        const visibleToken = token.slice(0, visibleLength);
+        if (token === '|' || /^\s+$/.test(token)) return visibleToken;
         const normalized = token.toLowerCase().replace(/^[^\w]+|[^\w.]+$/g, '');
         const color = keywords[normalized];
-        if (!color) return token;
+        if (!color) return visibleToken;
         const focusIndex = focusableIndexes.indexOf(index);
-        const activeClass = focusIndex === activeFocus ? ' is-active' : '';
-        return `<span class="hero-keyword${activeClass}" style="color:${color}">${token}</span>`;
+        const isComplete = visibleLength === token.length;
+        const activeClass = isComplete && focusIndex === activeFocus ? ' is-active' : '';
+        return `<span class="hero-keyword${activeClass}" style="color:${color}">${visibleToken}</span>`;
       })
       .join('');
   };
@@ -82,14 +87,33 @@ if (heroHeading) {
     if (keywords[normalized]) focusableIndexes.push(index);
   });
 
-  renderHeading(0);
-
-  if (!prefersReducedMotion && focusableIndexes.length > 1) {
+  const startKeywordPulse = () => {
+    if (focusableIndexes.length <= 1) return;
     let currentFocus = 0;
+    renderHeading(sourceText.length, currentFocus);
     setInterval(() => {
       currentFocus = (currentFocus + 1) % focusableIndexes.length;
-      renderHeading(currentFocus);
+      renderHeading(sourceText.length, currentFocus);
     }, 3000);
+  };
+
+  if (prefersReducedMotion) {
+    renderHeading(sourceText.length, 0);
+  } else {
+    heroHeading.classList.add('is-typing');
+    let typedChars = 0;
+    const typeNext = () => {
+      typedChars += 1;
+      renderHeading(typedChars, -1);
+      if (typedChars < sourceText.length) {
+        const delay = sourceText[typedChars - 1] === '|' ? 110 : 42;
+        setTimeout(typeNext, delay);
+      } else {
+        heroHeading.classList.remove('is-typing');
+        startKeywordPulse();
+      }
+    };
+    typeNext();
   }
 }
 

@@ -345,6 +345,28 @@ h1 {
   min-height: 2.2em;
 }
 
+.hero-content h1.is-typing::after {
+  content: "";
+  display: inline-block;
+  width: 0.11em;
+  height: 0.9em;
+  margin-left: 0.12em;
+  vertical-align: -0.08em;
+  background: currentColor;
+  animation: blinkCaret 0.8s steps(1, end) infinite;
+}
+
+@keyframes blinkCaret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
 .hero-keyword {
   display: inline-block;
   transition: transform 0.32s ease, text-shadow 0.32s ease, filter 0.32s ease;
@@ -528,13 +550,13 @@ h1 {
 }
 
 .project-preview {
-  max-height: 0;
-  opacity: 0;
+  max-height: 190px;
+  opacity: 1;
   overflow: hidden;
-  margin: 0;
+  margin: 0 0 0.35rem;
   border-radius: 12px;
-  border: 1px solid transparent;
-  transform: translateY(-4px);
+  border: 1px solid var(--stroke);
+  transform: translateY(0);
   transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease,
     margin-bottom 0.35s ease, border-color 0.25s ease;
 }
