@@ -16,6 +16,7 @@
   --ambient-b: rgba(20, 184, 166, 0.2);
   --code-rain: rgba(11, 143, 125, 0.22);
   --code-grid: rgba(11, 143, 125, 0.08);
+  --terminal-green: #ff6b6b;
 }
 
 body.theme-dark {
@@ -35,6 +36,7 @@ body.theme-dark {
   --ambient-b: rgba(18, 194, 164, 0.24);
   --code-rain: rgba(45, 212, 191, 0.34);
   --code-grid: rgba(45, 212, 191, 0.12);
+  --terminal-green: #ff8fab;
 }
 
 * {
@@ -343,6 +345,7 @@ h1 {
   line-height: 1.05;
   max-width: 19ch;
   min-height: 2.2em;
+  color: var(--terminal-green);
 }
 
 .hero-content h1.is-typing::after {
@@ -352,7 +355,7 @@ h1 {
   height: 0.9em;
   margin-left: 0.12em;
   vertical-align: -0.08em;
-  background: currentColor;
+  background: var(--terminal-green);
   animation: blinkCaret 0.8s steps(1, end) infinite;
 }
 

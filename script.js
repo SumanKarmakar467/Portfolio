@@ -52,12 +52,12 @@ if (heroHeading) {
   const sourceText = heroHeading.textContent.trim();
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const keywords = {
-    stack: '#12c2a4',
-    developer: '#0b8f7d',
-    java: '#fb7185',
-    react: '#38bdf8',
-    'node.js': '#22c55e',
-    mongodb: '#f59e0b'
+    stack: '#ffb703',
+    developer: '#ff6b6b',
+    java: '#ffd166',
+    react: '#00d4ff',
+    'node.js': '#06d6a0',
+    mongodb: '#c77dff'
   };
   const tokens = sourceText.split(/(\s+|\|)/);
   const focusableIndexes = [];
