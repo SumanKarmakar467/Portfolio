@@ -39,8 +39,16 @@ Portfolio/
 ## Run Locally
 
 1. Clone/download this repository.
-2. Open the folder in VS Code.
-3. Run with Live Server (recommended) or open `index.html` directly in browser.
+2. Open the folder in terminal.
+3. Start the local server:
+
+```bash
+npm run dev
+```
+
+4. Open `http://127.0.0.1:5500` in your browser.
+
+Alternative (without Node scripts): open `index.html` directly or use Live Server.
 
 ## Customization
 
