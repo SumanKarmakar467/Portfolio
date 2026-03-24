@@ -4,6 +4,7 @@ import ScrollProgress from './components/ScrollProgress';
 import BackToTop from './components/BackToTop';
 import CustomCursor from './components/CustomCursor';
 import useTheme from './hooks/useTheme';
+import useVisitNotifier from './hooks/useVisitNotifier';
 
 const Hero = lazy(() => import('./sections/Hero'));
 const About = lazy(() => import('./sections/About'));
@@ -17,6 +18,7 @@ const Footer = lazy(() => import('./sections/Footer'));
 
 export default function App() {
   const { theme, toggleTheme } = useTheme();
+  useVisitNotifier();
 
   return (
     <div className={`min-h-screen ${theme}`}>

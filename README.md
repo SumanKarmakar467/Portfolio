@@ -123,6 +123,15 @@ Configure EmailJS in `src/sections/Contact.jsx`:
 emailjs.init('YOUR_SERVICE_ID');
 ```
 
+### Visit Notifications
+To get notified when someone visits your live portfolio:
+
+1. Copy `.env.example` to `.env`
+2. Set `VITE_VISIT_NOTIFY_ENDPOINT` to your webhook endpoint
+3. Optionally set `VITE_VISIT_NOTIFY_TOKEN` for endpoint verification
+
+Notification payload includes URL, time, referrer, timezone, language, and user-agent.
+
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
