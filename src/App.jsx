@@ -34,7 +34,7 @@ export default function App() {
             </div>
           </div>
         }>
-          <About />
+          <About theme={theme} />
           <Projects />
           <TechStack />
           <Education />

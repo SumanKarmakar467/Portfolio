@@ -2,8 +2,9 @@ import React from 'react';
 import CountUp from 'react-countup';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
 
-export default function About() {
+export default function About({ theme }) {
   const { ref, hasIntersected } = useIntersectionObserver();
+  const profileImage = theme === 'dark' ? '/profile/dark-theme.jpg' : '/profile/light-theme.jpg';
 
   const stats = [
     { label: 'Projects Built', value: 15, suffix: '+' },
@@ -29,14 +30,9 @@ export default function About() {
                 <div className="w-80 h-80 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-2xl rotate-6 animate-float" />
                 <div className="absolute inset-4 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
                   <img
-                    src="/profile/light-theme.jpg"
-                    alt="Suman portrait for light theme"
-                    className="h-full w-full object-cover transition-all duration-500 dark:opacity-0"
-                  />
-                  <img
-                    src="/profile/dark-theme.jpg"
-                    alt="Suman portrait for dark theme"
-                    className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-500 dark:opacity-100"
+                    src={profileImage}
+                    alt={theme === 'dark' ? 'Suman portrait for dark theme' : 'Suman portrait for light theme'}
+                    className="h-full w-full object-cover transition-all duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                 </div>
