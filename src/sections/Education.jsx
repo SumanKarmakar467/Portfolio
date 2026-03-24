@@ -39,21 +39,7 @@ export default function Education() {
                     </span>
                   </div>
 
-                  <p className="text-muted mb-4 leading-relaxed">{edu.description}</p>
-
-                  {edu.achievements && edu.achievements.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold mb-2 text-sm text-primary">Highlights:</h4>
-                      <ul className="space-y-1">
-                        {edu.achievements.map((achievement, idx) => (
-                          <li key={idx} className="text-sm text-muted flex items-start">
-                            <span className="text-primary mr-2 mt-1">-</span>
-                            {achievement}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                  <p className="text-muted leading-relaxed">{edu.description}</p>
                 </div>
               </div>
             ))}
