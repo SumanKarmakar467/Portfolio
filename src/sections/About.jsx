@@ -33,6 +33,8 @@ export default function About({ theme }) {
                     src={profileImage}
                     alt={theme === 'dark' ? 'Suman portrait for dark theme' : 'Suman portrait for light theme'}
                     className="h-full w-full object-cover transition-all duration-500"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                 </div>

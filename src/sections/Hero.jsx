@@ -1,5 +1,4 @@
 import React from 'react';
-import { TypeAnimation } from 'react-type-animation';
 
 export default function Hero() {
   return (
@@ -26,22 +25,7 @@ export default function Hero() {
           </h1>
 
           <div className="text-xl md:text-2xl text-muted mb-6 h-16 flex items-center justify-center">
-            <TypeAnimation
-              sequence={[
-                'MERN Stack Developer',
-                2000,
-                'MERN Stack Developer',
-                2000,
-                'MERN Stack Developer',
-                2000,
-                'MERN Stack Developer',
-                2000,
-              ]}
-              wrapper="span"
-              cursor
-              repeat={Infinity}
-              className="font-space font-medium"
-            />
+            <span className="font-space font-medium">MERN Stack Developer</span>
           </div>
 
           <p className="text-lg text-muted max-w-2xl mx-auto mb-8 leading-relaxed">

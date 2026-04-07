@@ -5,19 +5,26 @@ export default function CustomCursor() {
   const cursorDotRef = useRef(null);
 
   useEffect(() => {
-    // Only enable on desktop
-    if (window.innerWidth < 768) return;
+    const canUseCustomCursor =
+      window.innerWidth >= 768 &&
+      window.matchMedia('(pointer: fine)').matches &&
+      window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+    if (!canUseCustomCursor) return;
 
     const cursor = cursorRef.current;
     const cursorDot = cursorDotRef.current;
+    if (!cursor || !cursorDot) return;
     let mouseX = 0;
     let mouseY = 0;
     let cursorX = 0;
     let cursorY = 0;
     let dotX = 0;
     let dotY = 0;
+    let rafId = 0;
+    let paused = false;
 
     const updateCursor = () => {
+      if (paused) return;
       // Smooth cursor movement
       cursorX += (mouseX - cursorX) * 0.1;
       cursorY += (mouseY - cursorY) * 0.1;
@@ -33,7 +40,7 @@ export default function CustomCursor() {
         cursorDot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
       }
 
-      requestAnimationFrame(updateCursor);
+      rafId = requestAnimationFrame(updateCursor);
     };
 
     const handleMouseMove = (e) => {
@@ -87,15 +94,34 @@ export default function CustomCursor() {
     document.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('mouseover', handleElementHover);
 
+    const handleVisibility = () => {
+      if (document.hidden) {
+        paused = true;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+      } else if (paused) {
+        paused = false;
+        updateCursor();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
     updateCursor();
 
     return () => {
+      paused = true;
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseenter', handleMouseEnter);
       document.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('mouseover', handleElementHover);
+      document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, []);
 
