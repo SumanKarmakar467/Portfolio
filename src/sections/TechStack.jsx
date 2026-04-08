@@ -11,8 +11,6 @@ const CATEGORY_CONFIG = [
   { id: 'database', label: 'Database' },
   { id: 'ai', label: 'AI Tools' },
 ];
-const ICON_RED_HEX = 'ff5a6e';
-const ICON_RED_COLOR = '#ff5a6e';
 
 const SIMPLE_ICON_SLUGS = {
   HTML: 'html5',
@@ -140,20 +138,38 @@ const ICON_URLS = {
   ],
 };
 
-function getIconSources(name) {
-  const withAccent = (url) =>
-    url.startsWith('https://cdn.simpleicons.org/')
-      ? `https://cdn.simpleicons.org/${url.replace('https://cdn.simpleicons.org/', '').split('/')[0]}/${ICON_RED_HEX}`
-      : url;
+const ICON_ACCENTS = {
+  HTML: '#E34F26',
+  CSS: '#1572B6',
+  JavaScript: '#F7DF1E',
+  React: '#61DAFB',
+  'Tailwind CSS': '#06B6D4',
+  'Responsive Design': '#1572B6',
+  Java: '#ED8B00',
+  'Spring Boot': '#6DB33F',
+  'Node.js': '#339933',
+  Express: '#6B7280',
+  'REST APIs': '#FF6C37',
+  MongoDB: '#47A248',
+  MySQL: '#4479A1',
+  PostgreSQL: '#4169E1',
+  'AWS Basics': '#FF9900',
+  ChatGPT: '#10A37F',
+  Blackbox: '#007ACC',
+  Gemini: '#4285F4',
+  Codex: '#412991',
+  'GitHub Copilot': '#8957E5',
+  Git: '#F05032',
+  GitHub: '#6E5494',
+  Netlify: '#00C7B7',
+  Vercel: '#111827',
+};
 
-  if (ICON_URLS[name]?.length) {
-    return ICON_URLS[name].map((url, index) => (index === 0 ? withAccent(url) : url));
-  }
+function getIconSources(name) {
+  if (ICON_URLS[name]?.length) return ICON_URLS[name];
 
   const slug = SIMPLE_ICON_SLUGS[name];
-  return slug
-    ? [`https://cdn.simpleicons.org/${slug}/${ICON_RED_HEX}`, `https://cdn.simpleicons.org/${slug}/${ICON_RED_HEX}`]
-    : [];
+  return slug ? [`https://cdn.simpleicons.org/${slug}`] : [];
 }
 
 function getFallbackLabel(name) {
@@ -334,7 +350,7 @@ export default function TechStack() {
               const sourceIndex = failedIconSourceIndex[stateKey] || 0;
               const iconUrl = iconSources[sourceIndex];
               const showFallback = !iconUrl;
-              const accentColor = ICON_RED_COLOR;
+              const accentColor = ICON_ACCENTS[skill.name] || 'var(--primary)';
 
               return (
                 <button

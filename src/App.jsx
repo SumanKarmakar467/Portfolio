@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import ScrollProgress from './components/ScrollProgress';
 import BackToTop from './components/BackToTop';
 import CustomCursor from './components/CustomCursor';
+import GeoBackground from './components/GeoBackground';
 import useTheme from './hooks/useTheme';
 import useVisitNotifier from './hooks/useVisitNotifier';
 import Hero from './sections/Hero';
@@ -44,7 +45,8 @@ export default function App() {
   }, []);
 
   return (
-    <div className={`min-h-screen ${theme}`}>
+    <div className={`relative z-0 min-h-screen ${theme}`}>
+      <GeoBackground />
       <ScrollProgress />
       <CustomCursor />
       <Navbar theme={theme} toggleTheme={toggleTheme} />
