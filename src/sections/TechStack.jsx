@@ -180,7 +180,7 @@ function clamp(number, min, max) {
 
 function buildFloatLayout(items, groupKey = 'default') {
   const total = Math.max(items.length, 1);
-  const columns = Math.max(4, Math.ceil(Math.sqrt(total * 1.55)));
+  const columns = Math.max(3, Math.ceil(Math.sqrt(total * 1.35)));
   const rows = Math.max(2, Math.ceil(total / columns));
 
   return items.map((item, index) => {
@@ -243,6 +243,12 @@ export default function TechStack() {
     () => buildFloatLayout(visibleSkills, activeFilter),
     [visibleSkills, activeFilter],
   );
+  const dynamicBoxHeight = useMemo(() => {
+    const skillsCount = Math.max(visibleSkills.length, 1);
+    const iconsPerRow = activeFilter === ALL_FILTER ? 5 : 4;
+    const rows = Math.max(2, Math.ceil(skillsCount / iconsPerRow));
+    return clamp(185 + rows * 70, 250, 520);
+  }, [visibleSkills.length, activeFilter]);
 
   const activeCategoryLabel =
     activeFilter === ALL_FILTER
@@ -296,6 +302,7 @@ export default function TechStack() {
           <div
             className={`tech-skill-box ${isIntersecting ? '' : 'tech-skill-box--paused'}`}
             aria-label={`${activeCategoryLabel} animated skills`}
+            style={{ '--dynamic-box-height': `${dynamicBoxHeight}px` }}
           >
             <div className="tech-skill-box-header">
               <p className="tech-skill-box-title">{activeCategoryLabel}</p>

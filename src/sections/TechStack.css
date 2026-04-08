@@ -5,9 +5,9 @@
 
 .tech-filter-nav {
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 0.62rem;
-  overflow-x: auto;
-  scrollbar-width: none;
   padding-bottom: 0.3rem;
 }
 
@@ -48,7 +48,9 @@
 
 .tech-skill-box {
   position: relative;
-  min-height: clamp(280px, 42vw, 360px);
+  --dynamic-box-height: 320px;
+  height: var(--dynamic-box-height);
+  min-height: 250px;
   border-radius: 1.2rem;
   border: 1px solid var(--border);
   background:
@@ -226,8 +228,12 @@
 }
 
 @media (max-width: 640px) {
+  .tech-filter-nav {
+    justify-content: flex-start;
+  }
+
   .tech-skill-box {
-    min-height: 330px;
+    min-height: 280px;
   }
 
   .tech-floating-icon {
