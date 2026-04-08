@@ -5,12 +5,11 @@ import './TechStack.css';
 
 const PROJECT_SEARCH_EVENT = 'portfolio-project-search';
 const CATEGORY_CONFIG = [
-  { id: 'frontend', label: 'Frontend' },
   { id: 'backend', label: 'Backend' },
+  { id: 'frontend', label: 'Frontend' },
   { id: 'database', label: 'Database & Cloud' },
-  { id: 'auth', label: 'Auth' },
   { id: 'ai', label: 'AI Tools' },
-  { id: 'tools', label: 'Tools' },
+  { id: 'tools', label: 'Tools & DevOps' },
 ];
 
 const SIMPLE_ICON_SLUGS = {
@@ -139,6 +138,33 @@ const ICON_URLS = {
   ],
 };
 
+const ICON_ACCENTS = {
+  HTML: '#F97316',
+  CSS: '#2563EB',
+  JavaScript: '#FACC15',
+  React: '#38BDF8',
+  'Tailwind CSS': '#22D3EE',
+  'Responsive Design': '#60A5FA',
+  Java: '#F97316',
+  'Spring Boot': '#22C55E',
+  'Node.js': '#22C55E',
+  Express: '#94A3B8',
+  'REST APIs': '#A5B4FC',
+  MongoDB: '#22C55E',
+  MySQL: '#60A5FA',
+  PostgreSQL: '#38BDF8',
+  'AWS Basics': '#F59E0B',
+  ChatGPT: '#34D399',
+  Blackbox: '#A855F7',
+  Gemini: '#60A5FA',
+  Codex: '#38BDF8',
+  'GitHub Copilot': '#8B5CF6',
+  Git: '#F97316',
+  GitHub: '#F8FAFC',
+  Netlify: '#2DD4BF',
+  Vercel: '#E2E8F0',
+};
+
 function getIconSources(name) {
   if (ICON_URLS[name]?.length) return ICON_URLS[name];
   const slug = SIMPLE_ICON_SLUGS[name];
@@ -154,67 +180,18 @@ function getFallbackLabel(name) {
     .toUpperCase();
 }
 
-function hashString(value) {
-  let hash = 2166136261;
-  for (let i = 0; i < value.length; i += 1) {
-    hash ^= value.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function clamp(number, min, max) {
-  return Math.max(min, Math.min(max, number));
-}
-
-function buildFloatLayout(names, groupKey = 'default') {
-  const total = names.length;
-  const columns = Math.max(4, Math.ceil(Math.sqrt(total * 1.5)));
-  const rows = Math.max(3, Math.ceil(total / columns));
-
-  return names.map((name, index) => {
-    let seed = hashString(`${groupKey}-${name}-${index}`);
-    const random = () => {
-      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
-      return seed / 4294967296;
-    };
-
-    const col = index % columns;
-    const row = Math.floor(index / columns);
-    const baseX = ((col + 0.5) / columns) * 100;
-    const baseY = ((row + 0.5) / rows) * 100;
-
-    return {
-      name,
-      slug: SIMPLE_ICON_SLUGS[name],
-      x: clamp(baseX + (random() * 10 - 5), 8, 92),
-      y: clamp(baseY + (random() * 12 - 6), 10, 90),
-      dx1: Math.round(random() * 50 - 25),
-      dy1: Math.round(random() * 48 - 24),
-      dx2: Math.round(random() * 40 - 20),
-      dy2: Math.round(random() * 40 - 20),
-      dx3: Math.round(random() * 46 - 23),
-      dy3: Math.round(random() * 44 - 22),
-      duration: (11 + random() * 8).toFixed(2),
-      delay: (-random() * 8).toFixed(2),
-    };
-  });
-}
-
 export default function TechStack() {
   const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.15, rootMargin: '120px 0px' });
   const [failedIconSourceIndex, setFailedIconSourceIndex] = useState({});
 
-  const categoryBoxes = useMemo(() => {
-    return CATEGORY_CONFIG.map((category) => {
-      const techNames = (techStack[category.id] || []).map((item) => item.name);
-      const mappedTechNames = techNames.filter((name) => getIconSources(name).length > 0);
-      return {
+  const categories = useMemo(
+    () =>
+      CATEGORY_CONFIG.map((category) => ({
         ...category,
-        floatingIcons: buildFloatLayout(mappedTechNames, category.id),
-      };
-    });
-  }, []);
+        items: (techStack[category.id] || []).filter((item) => getIconSources(item.name).length > 0),
+      })).filter((category) => category.items.length > 0),
+    [],
+  );
 
   const handleTechClick = (techName) => {
     localStorage.setItem('projectSearchQuery', techName);
@@ -235,66 +212,53 @@ export default function TechStack() {
   return (
     <section id="techstack" className="section bg-surface">
       <div className="container" ref={ref}>
-        <p className="mb-3 text-sm font-medium text-muted md:hidden">
-          See skills -&gt; swipe horizontally to view more
-        </p>
         <div className="tech-category-grid">
-          {categoryBoxes.map((category) => (
-            <div key={category.id} className="tech-category-card">
+          {categories.map((category, categoryIndex) => (
+            <div key={category.id} className="tech-category-panel">
               <p className="tech-category-title">{category.label}</p>
-              <div
-                className={`tech-icon-box ${isIntersecting ? '' : 'tech-icon-box--paused'}`}
-                aria-label={`${category.label} animated icons`}
-              >
-                {category.floatingIcons.length === 0 && (
-                  <p className="tech-empty-state">No skills added yet.</p>
-                )}
-                {category.floatingIcons.map((icon) => {
-                  const iconSources = getIconSources(icon.name);
-                  const stateKey = `${category.id}:${icon.name}`;
+              <div className="tech-icons-grid" aria-label={`${category.label} skills`}>
+                {category.items.map((item, itemIndex) => {
+                  const iconSources = getIconSources(item.name);
+                  const stateKey = `${category.id}:${item.name}`;
                   const sourceIndex = failedIconSourceIndex[stateKey] || 0;
                   const iconUrl = iconSources[sourceIndex];
                   const showFallback = !iconUrl;
+                  const revealDelay = `${(categoryIndex * 0.08 + itemIndex * 0.05).toFixed(2)}s`;
+                  const accentColor = ICON_ACCENTS[item.name] || 'var(--primary)';
 
                   return (
                     <button
-                      key={`${category.id}-${icon.name}`}
+                      key={`${category.id}-${item.name}`}
                       type="button"
-                      className="tech-floating-icon"
-                      title={icon.name}
-                      aria-label={icon.name}
-                      onClick={() => handleTechClick(icon.name)}
+                      className={`tech-skill-tile ${isIntersecting ? 'is-visible' : ''}`}
+                      title={item.name}
+                      aria-label={item.name}
+                      onClick={() => handleTechClick(item.name)}
                       style={{
-                        '--start-x': `${icon.x}%`,
-                        '--start-y': `${icon.y}%`,
-                        '--dx1': `${icon.dx1}px`,
-                        '--dy1': `${icon.dy1}px`,
-                        '--dx2': `${icon.dx2}px`,
-                        '--dy2': `${icon.dy2}px`,
-                        '--dx3': `${icon.dx3}px`,
-                        '--dy3': `${icon.dy3}px`,
-                        '--duration': `${icon.duration}s`,
-                        '--delay': `${icon.delay}s`,
+                        '--tile-delay': revealDelay,
+                        '--accent': accentColor,
                       }}
                     >
-                      {showFallback ? (
-                        <span className="tech-floating-fallback">{getFallbackLabel(icon.name)}</span>
-                      ) : (
-                        <img
-                          src={iconUrl}
-                          alt=""
-                          loading="lazy"
-                          className="tech-floating-icon-img"
-                          onError={(event) => {
-                            event.currentTarget.onerror = null;
-                            setFailedIconSourceIndex((prev) => ({
-                              ...prev,
-                              [stateKey]: sourceIndex + 1,
-                            }));
-                          }}
-                        />
-                      )}
-                      <span className="tech-floating-label">{icon.name}</span>
+                      <span className="tech-skill-icon-shell">
+                        {showFallback ? (
+                          <span className="tech-skill-fallback">{getFallbackLabel(item.name)}</span>
+                        ) : (
+                          <img
+                            src={iconUrl}
+                            alt=""
+                            loading="lazy"
+                            className="tech-skill-icon-img"
+                            onError={(event) => {
+                              event.currentTarget.onerror = null;
+                              setFailedIconSourceIndex((prev) => ({
+                                ...prev,
+                                [stateKey]: sourceIndex + 1,
+                              }));
+                            }}
+                          />
+                        )}
+                      </span>
+                      <span className="tech-skill-label">{item.name}</span>
                     </button>
                   );
                 })}

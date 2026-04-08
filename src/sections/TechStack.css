@@ -1,210 +1,184 @@
 .tech-category-grid {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  gap: 1rem;
-  padding-bottom: 0.4rem;
+  display: grid;
+  gap: 2.25rem;
 }
 
-.tech-category-grid::-webkit-scrollbar {
-  display: none;
-}
-
-.tech-category-card {
-  width: 84vw;
-  max-width: 380px;
-  min-width: 84vw;
-  flex-shrink: 0;
-  scroll-snap-align: start;
-  border: 1px solid var(--border);
-  border-radius: 1.2rem;
-  background: rgba(255, 255, 255, 0.45);
-  padding: 0.85rem;
-}
-
-.dark .tech-category-card {
-  background: rgba(15, 23, 42, 0.7);
+.tech-category-panel {
+  width: 100%;
 }
 
 .tech-category-title {
-  margin: 0 0 0.55rem;
+  margin: 0 0 1rem;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text);
+  color: var(--muted);
 }
 
-.tech-icon-box {
+.tech-icons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 1rem 0.9rem;
+}
+
+.tech-skill-tile {
+  --tile-delay: 0s;
+  --accent: var(--primary);
+  display: grid;
+  justify-items: center;
+  gap: 0.62rem;
+  border: 0;
+  background: transparent;
+  padding: 0.2rem;
+  text-align: center;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(18px) scale(0.96);
+}
+
+.tech-skill-tile.is-visible {
+  animation: techTileReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) var(--tile-delay) forwards;
+}
+
+.tech-skill-icon-shell {
   position: relative;
-  width: 100%;
-  margin: 0;
-  height: clamp(210px, 28vw, 250px);
-  overflow: hidden;
-  border-radius: 1rem;
-  border: 1px solid var(--border);
-  background:
-    radial-gradient(circle at 15% 12%, rgba(139, 94, 60, 0.2), transparent 36%),
-    radial-gradient(circle at 85% 90%, rgba(182, 122, 75, 0.18), transparent 40%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.6), rgba(0, 0, 0, 0.03));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-
-.dark .tech-icon-box {
-  background:
-    radial-gradient(circle at 15% 12%, rgba(255, 90, 110, 0.22), transparent 36%),
-    radial-gradient(circle at 85% 90%, rgba(255, 138, 122, 0.2), transparent 40%),
-    #0f172a;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-}
-
-.tech-empty-state {
-  position: absolute;
-  inset: 0;
   display: grid;
   place-items: center;
-  color: var(--muted);
-  font-size: 0.9rem;
+  width: clamp(62px, 9vw, 72px);
+  aspect-ratio: 1;
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background:
+    radial-gradient(circle at 26% 20%, rgba(255, 255, 255, 0.18), transparent 45%),
+    linear-gradient(155deg, #101b2f 0%, #081322 62%, #070f1c 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 24px -18px rgba(6, 10, 22, 0.9);
+  transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
 }
 
-.tech-icon-box--paused .tech-floating-icon {
+.tech-skill-icon-shell::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 22%, var(--accent), transparent 72%);
+  opacity: 0;
+  filter: blur(14px);
+  transition: opacity 0.24s ease;
+  pointer-events: none;
+}
+
+.tech-skill-tile.is-visible .tech-skill-icon-shell {
+  animation: techIconIdle 5.6s ease-in-out var(--tile-delay) infinite;
+}
+
+.tech-skill-tile:hover .tech-skill-icon-shell,
+.tech-skill-tile:focus-visible .tech-skill-icon-shell {
+  transform: translateY(-4px) scale(1.045);
+  border-color: var(--accent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 16px 28px -20px var(--accent),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
   animation-play-state: paused;
 }
 
-.tech-floating-icon {
-  position: absolute;
-  left: var(--start-x);
-  top: var(--start-y);
-  width: 62px;
-  height: 62px;
-  border: 1px solid rgba(148, 163, 184, 0.32);
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.86);
-  display: grid;
-  place-items: center;
-  transform: translate(-50%, -50%);
-  animation: iconDrift var(--duration) ease-in-out var(--delay) infinite alternate;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, z-index 0.2s ease;
-  z-index: 1;
+.tech-skill-tile:hover .tech-skill-icon-shell::after,
+.tech-skill-tile:focus-visible .tech-skill-icon-shell::after {
+  opacity: 0.32;
 }
 
-.dark .tech-floating-icon {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(148, 163, 184, 0.3);
-}
-
-.tech-floating-icon:hover {
-  transform: translate(-50%, -50%) scale(1.12);
-  border-color: var(--primary);
-  box-shadow: 0 0 0 1px rgba(139, 94, 60, 0.3), 0 0 20px rgba(139, 94, 60, 0.3);
-  z-index: 9;
-}
-
-.dark .tech-floating-icon:hover {
-  box-shadow: 0 0 0 1px rgba(255, 90, 110, 0.4), 0 0 22px rgba(255, 90, 110, 0.35);
-}
-
-.tech-floating-icon:focus-visible {
+.tech-skill-tile:focus-visible {
   outline: 2px solid var(--primary);
-  outline-offset: 3px;
+  outline-offset: 4px;
+  border-radius: 1rem;
 }
 
-.tech-floating-icon-img {
-  width: 30px;
-  height: 30px;
+.tech-skill-icon-img {
+  width: clamp(30px, 4vw, 36px);
+  height: clamp(30px, 4vw, 36px);
   object-fit: contain;
   pointer-events: none;
   user-select: none;
 }
 
-.tech-floating-fallback {
+.tech-skill-fallback {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--text);
-}
-
-.tech-floating-label {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 8px);
-  transform: translateX(-50%) translateY(4px);
-  white-space: nowrap;
-  border-radius: 0.45rem;
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.95);
-  color: var(--text);
-  padding: 0.2rem 0.42rem;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
-  pointer-events: none;
-}
-
-.dark .tech-floating-label {
-  background: rgba(15, 23, 42, 0.95);
   color: #f8fafc;
 }
 
-.tech-floating-icon:hover .tech-floating-label,
-.tech-floating-icon:focus-visible .tech-floating-label {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
+.tech-skill-label {
+  font-size: 0.93rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  text-wrap: balance;
 }
 
-@keyframes iconDrift {
-  0% {
-    transform: translate(calc(-50% + var(--dx1)), calc(-50% + var(--dy1))) rotate(0deg);
+@keyframes techTileReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
   }
-  33% {
-    transform: translate(calc(-50% + var(--dx2)), calc(-50% + var(--dy2))) rotate(10deg);
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
-  66% {
-    transform: translate(calc(-50% + var(--dx3)), calc(-50% + var(--dy3))) rotate(-8deg);
-  }
+}
+
+@keyframes techIconIdle {
+  0%,
   100% {
-    transform: translate(calc(-50% - var(--dx1)), calc(-50% - var(--dy1))) rotate(4deg);
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
   }
 }
 
 @media (max-width: 640px) {
-  .tech-floating-icon {
-    width: 54px;
-    height: 54px;
+  .tech-icons-grid {
+    grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
+    gap: 0.95rem 0.75rem;
   }
 
-  .tech-floating-icon-img {
-    width: 26px;
-    height: 26px;
+  .tech-skill-label {
+    font-size: 0.86rem;
   }
 }
 
 @media (min-width: 900px) {
   .tech-category-grid {
-    display: grid;
-    overflow: visible;
-    scroll-snap-type: none;
-    padding-bottom: 0;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem;
   }
 
-  .tech-category-card {
-    width: auto;
-    max-width: none;
-    min-width: 0;
+  .tech-icons-grid {
+    grid-template-columns: repeat(auto-fit, minmax(102px, 1fr));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tech-floating-icon {
+  .tech-skill-tile,
+  .tech-skill-tile.is-visible {
+    opacity: 1;
+    transform: none;
     animation: none;
-    transform: translate(-50%, -50%);
+  }
+
+  .tech-skill-icon-shell,
+  .tech-skill-tile.is-visible .tech-skill-icon-shell {
+    animation: none;
+  }
+
+  .tech-skill-tile:hover .tech-skill-icon-shell,
+  .tech-skill-tile:focus-visible .tech-skill-icon-shell {
+    transform: none;
   }
 }
