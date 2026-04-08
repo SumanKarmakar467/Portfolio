@@ -178,10 +178,19 @@ function clamp(number, min, max) {
   return Math.max(min, Math.min(max, number));
 }
 
-function buildFloatLayout(items, groupKey = 'default') {
-  const total = Math.max(items.length, 1);
-  const columns = Math.max(3, Math.ceil(Math.sqrt(total * 1.35)));
-  const rows = Math.max(2, Math.ceil(total / columns));
+function getGridLayout(skillsCount, isAllSkillsView) {
+  const total = Math.max(skillsCount, 1);
+  const columns = isAllSkillsView
+    ? clamp(Math.ceil(Math.sqrt(total * 1.3)), 4, 6)
+    : clamp(Math.ceil(Math.sqrt(total * 1.2)), 2, 4);
+  const rows = Math.max(1, Math.ceil(total / columns));
+  return { columns, rows };
+}
+
+function buildFloatLayout(items, groupKey = 'default', layout) {
+  const fallbackLayout = getGridLayout(items.length, groupKey === ALL_FILTER);
+  const columns = layout?.columns || fallbackLayout.columns;
+  const rows = layout?.rows || fallbackLayout.rows;
 
   return items.map((item, index) => {
     let seed = hashString(`${groupKey}-${item.name}-${index}`);
@@ -239,16 +248,21 @@ export default function TechStack() {
     return skillsByCategory[activeFilter] || [];
   }, [activeFilter, allSkills, skillsByCategory]);
 
-  const floatingSkills = useMemo(
-    () => buildFloatLayout(visibleSkills, activeFilter),
-    [visibleSkills, activeFilter],
+  const layout = useMemo(
+    () => getGridLayout(visibleSkills.length, activeFilter === ALL_FILTER),
+    [visibleSkills.length, activeFilter],
   );
-  const dynamicBoxHeight = useMemo(() => {
-    const skillsCount = Math.max(visibleSkills.length, 1);
-    const iconsPerRow = activeFilter === ALL_FILTER ? 5 : 4;
-    const rows = Math.max(2, Math.ceil(skillsCount / iconsPerRow));
-    return clamp(185 + rows * 70, 250, 520);
-  }, [visibleSkills.length, activeFilter]);
+
+  const floatingSkills = useMemo(
+    () => buildFloatLayout(visibleSkills, activeFilter, layout),
+    [visibleSkills, activeFilter, layout],
+  );
+
+  const boxSize = useMemo(() => {
+    const dynamicBoxWidth = clamp(140 + layout.columns * 96, 280, activeFilter === ALL_FILTER ? 940 : 760);
+    const dynamicBoxHeight = clamp(150 + layout.rows * 90, 250, 520);
+    return { width: dynamicBoxWidth, height: dynamicBoxHeight };
+  }, [layout, activeFilter]);
 
   const activeCategoryLabel =
     activeFilter === ALL_FILTER
@@ -302,7 +316,10 @@ export default function TechStack() {
           <div
             className={`tech-skill-box ${isIntersecting ? '' : 'tech-skill-box--paused'}`}
             aria-label={`${activeCategoryLabel} animated skills`}
-            style={{ '--dynamic-box-height': `${dynamicBoxHeight}px` }}
+            style={{
+              '--dynamic-box-width': `${boxSize.width}px`,
+              '--dynamic-box-height': `${boxSize.height}px`,
+            }}
           >
             <div className="tech-skill-box-header">
               <p className="tech-skill-box-title">{activeCategoryLabel}</p>
