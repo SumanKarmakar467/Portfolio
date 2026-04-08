@@ -4,14 +4,14 @@
 
 @layer base {
   :root {
-    /* Light theme: Ivory & Brown */
-    --primary: #8b5e3c;
-    --secondary: #b67a4b;
-    --text: #3b2416;
-    --muted: #7a5c46;
-    --surface: #fffdf7;
-    --background: #fff8e7;
-    --border: #e6d6c3;
+    /* Light theme: Serene Canvas */
+    --primary: #44a194;
+    --secondary: #ec8f8d;
+    --text: #537d96;
+    --muted: #6f90a3;
+    --surface: #faf6eb;
+    --background: #f4f0e4;
+    --border: #ddd8ca;
   }
 
   .dark {
