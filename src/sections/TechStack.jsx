@@ -11,6 +11,8 @@ const CATEGORY_CONFIG = [
   { id: 'database', label: 'Database' },
   { id: 'ai', label: 'AI Tools' },
 ];
+const ICON_RED_HEX = 'ff5a6e';
+const ICON_RED_COLOR = '#ff5a6e';
 
 const SIMPLE_ICON_SLUGS = {
   HTML: 'html5',
@@ -138,38 +140,10 @@ const ICON_URLS = {
   ],
 };
 
-const ICON_ACCENTS = {
-  HTML: '#F97316',
-  CSS: '#2563EB',
-  JavaScript: '#FACC15',
-  React: '#38BDF8',
-  'Tailwind CSS': '#22D3EE',
-  'Responsive Design': '#60A5FA',
-  Java: '#F97316',
-  'Spring Boot': '#22C55E',
-  'Node.js': '#22C55E',
-  Express: '#94A3B8',
-  'REST APIs': '#A5B4FC',
-  MongoDB: '#22C55E',
-  MySQL: '#60A5FA',
-  PostgreSQL: '#38BDF8',
-  'AWS Basics': '#F59E0B',
-  ChatGPT: '#34D399',
-  Blackbox: '#A855F7',
-  Gemini: '#60A5FA',
-  Codex: '#38BDF8',
-  'GitHub Copilot': '#8B5CF6',
-  Git: '#F97316',
-  GitHub: '#F8FAFC',
-  Netlify: '#2DD4BF',
-  Vercel: '#E2E8F0',
-};
-
 function getIconSources(name) {
-  const accentHex = (ICON_ACCENTS[name] || '#8b5e3c').replace('#', '');
   const withAccent = (url) =>
     url.startsWith('https://cdn.simpleicons.org/')
-      ? `https://cdn.simpleicons.org/${url.replace('https://cdn.simpleicons.org/', '').split('/')[0]}/${accentHex}`
+      ? `https://cdn.simpleicons.org/${url.replace('https://cdn.simpleicons.org/', '').split('/')[0]}/${ICON_RED_HEX}`
       : url;
 
   if (ICON_URLS[name]?.length) {
@@ -178,7 +152,7 @@ function getIconSources(name) {
 
   const slug = SIMPLE_ICON_SLUGS[name];
   return slug
-    ? [`https://cdn.simpleicons.org/${slug}/${accentHex}`, `https://cdn.simpleicons.org/${slug}`]
+    ? [`https://cdn.simpleicons.org/${slug}/${ICON_RED_HEX}`, `https://cdn.simpleicons.org/${slug}/${ICON_RED_HEX}`]
     : [];
 }
 
@@ -336,7 +310,7 @@ export default function TechStack() {
               const sourceIndex = failedIconSourceIndex[stateKey] || 0;
               const iconUrl = iconSources[sourceIndex];
               const showFallback = !iconUrl;
-              const accentColor = ICON_ACCENTS[skill.name] || 'var(--primary)';
+              const accentColor = ICON_RED_COLOR;
 
               return (
                 <button

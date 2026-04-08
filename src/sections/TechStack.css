@@ -166,6 +166,8 @@
   object-fit: contain;
   pointer-events: none;
   user-select: none;
+  filter: brightness(0) saturate(100%) invert(53%) sepia(76%) saturate(1945%) hue-rotate(314deg)
+    brightness(102%) contrast(103%);
 }
 
 .tech-floating-fallback {
