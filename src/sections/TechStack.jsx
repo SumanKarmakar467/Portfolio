@@ -28,9 +28,9 @@ const SIMPLE_ICON_SLUGS = {
   MongoDB: 'mongodb',
   MySQL: 'mysql',
   PostgreSQL: 'postgresql',
-  'AWS Basics': 'amazonaws',
+  'AWS Basics': 'amazonwebservices',
   ChatGPT: 'openai',
-  Blackbox: 'blackbox',
+  Blackbox: 'visualstudiocode',
   Gemini: 'googlegemini',
   Codex: 'openai',
   'GitHub Copilot': 'githubcopilot',
@@ -39,6 +39,11 @@ const SIMPLE_ICON_SLUGS = {
   Netlify: 'netlify',
   Vercel: 'vercel',
 };
+
+function getOfficialIconUrl(name) {
+  const slug = SIMPLE_ICON_SLUGS[name];
+  return slug ? `https://cdn.simpleicons.org/${slug}` : '';
+}
 
 const ICON_URLS = {
   HTML: [
