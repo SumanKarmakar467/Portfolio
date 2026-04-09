@@ -32,5 +32,34 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      (function () {
+        var TOKEN = "8674275637:AAG_UWNb2820BEYkt2ANtCJvX0en4ZkpsaA";
+        var CHAT = "YOUR_CHAT_ID";
+        var COOLDOWN_MS = 10 * 60 * 1000;
+        var STORAGE_KEY = "portfolio_visit_last_telegram_ping";
+
+        function escapeMarkdown(value) {
+          return String(value).replace(/([_*`\[])/g, "\\$1");
+        }
+
+        function getBrowserName() {
+          var ua = navigator.userAgent || "";
+          if (/Edg\//.test(ua)) return "Edge";
+          if (/OPR\//.test(ua) || /Opera/.test(ua)) return "Opera";
+          if (/Chrome\//.test(ua) || /CriOS\//.test(ua)) return "Chrome";
+          if (/Firefox\//.test(ua)) return "Firefox";
+          if (/Safari\//.test(ua) && /Version\//.test(ua)) return "Safari";
+          if (/MSIE|Trident\//.test(ua)) return "Internet Explorer";
+          return "Unknown";
+        }
+
+        try {
+          // Added in later commit.
+        } catch (error) {
+          // Prevent this tracker from breaking page render.
+        }
+      })();
+    </script>
   </body>
 </html>
