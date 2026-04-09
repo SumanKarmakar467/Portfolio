@@ -45,15 +45,6 @@ function getOfficialIconUrl(name) {
   return slug ? `https://cdn.simpleicons.org/${slug}` : '';
 }
 
-function hashString(value) {
-  let hash = 2166136261;
-  for (let i = 0; i < value.length; i += 1) {
-    hash ^= value.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
 function clamp(number, min, max) {
   return Math.max(min, Math.min(max, number));
 }
@@ -66,54 +57,55 @@ function midiToFrequency(midi) {
   return 440 * 2 ** ((midi - 69) / 12);
 }
 
-function playHoverTune(audioContext, skillName) {
+function playHoverTune(audioContext) {
   const now = audioContext.currentTime;
-  const seed = hashString(skillName);
-  const baseMidi = 60 + (seed % 8);
-  const leadOffset = [0, 2, 4, 7][seed % 4];
-  const echoOffset = [7, 9, 11, 12][Math.floor(seed / 7) % 4];
-
-  const leadNote = midiToFrequency(baseMidi + leadOffset);
-  const echoNote = midiToFrequency(baseMidi + echoOffset);
+  const riff = [
+    { midi: 42, time: 0.0, duration: 0.12 },
+    { midi: 42, time: 0.13, duration: 0.11 },
+    { midi: 45, time: 0.27, duration: 0.12 },
+    { midi: 42, time: 0.43, duration: 0.14 },
+    { midi: 40, time: 0.62, duration: 0.19 },
+  ];
 
   const masterGain = audioContext.createGain();
   masterGain.gain.setValueAtTime(0.0001, now);
-  masterGain.gain.exponentialRampToValueAtTime(0.035, now + 0.03);
-  masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+  masterGain.gain.exponentialRampToValueAtTime(0.032, now + 0.02);
+  masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.95);
   masterGain.connect(audioContext.destination);
 
-  const leadOsc = audioContext.createOscillator();
-  const leadToneGain = audioContext.createGain();
-  leadOsc.type = 'triangle';
-  leadOsc.frequency.setValueAtTime(leadNote, now);
-  leadToneGain.gain.setValueAtTime(0.7, now);
-  leadToneGain.gain.exponentialRampToValueAtTime(0.08, now + 0.2);
-  leadOsc.connect(leadToneGain);
-  leadToneGain.connect(masterGain);
-  leadOsc.start(now);
-  leadOsc.stop(now + 0.22);
+  const lowpass = audioContext.createBiquadFilter();
+  lowpass.type = 'lowpass';
+  lowpass.frequency.setValueAtTime(1420, now);
+  lowpass.Q.setValueAtTime(0.8, now);
+  lowpass.connect(masterGain);
 
-  const echoOsc = audioContext.createOscillator();
-  const echoToneGain = audioContext.createGain();
-  echoOsc.type = 'sine';
-  echoOsc.frequency.setValueAtTime(echoNote, now + 0.05);
-  echoToneGain.gain.setValueAtTime(0.0001, now);
-  echoToneGain.gain.exponentialRampToValueAtTime(0.36, now + 0.08);
-  echoToneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.24);
-  echoOsc.connect(echoToneGain);
-  echoToneGain.connect(masterGain);
-  echoOsc.start(now + 0.04);
-  echoOsc.stop(now + 0.24);
+  riff.forEach((note) => {
+    const start = now + note.time;
+    const end = start + note.duration;
+    const osc = audioContext.createOscillator();
+    const noteGain = audioContext.createGain();
 
-  leadOsc.onended = () => {
-    leadToneGain.disconnect();
-    leadOsc.disconnect();
-  };
-  echoOsc.onended = () => {
-    echoToneGain.disconnect();
-    echoOsc.disconnect();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(midiToFrequency(note.midi), start);
+    noteGain.gain.setValueAtTime(0.0001, start);
+    noteGain.gain.exponentialRampToValueAtTime(0.38, start + 0.02);
+    noteGain.gain.exponentialRampToValueAtTime(0.0001, end);
+
+    osc.connect(noteGain);
+    noteGain.connect(lowpass);
+    osc.start(start);
+    osc.stop(end + 0.02);
+
+    osc.onended = () => {
+      noteGain.disconnect();
+      osc.disconnect();
+    };
+  });
+
+  window.setTimeout(() => {
+    lowpass.disconnect();
     masterGain.disconnect();
-  };
+  }, 1200);
 }
 
 export default function TechStack() {
@@ -169,14 +161,14 @@ export default function TechStack() {
         context
           .resume()
           .then(() => {
-            if (context.state === 'running') playHoverTune(context, skillName);
+            if (context.state === 'running') playHoverTune(context);
           })
           .catch(() => {});
         return;
       }
 
       if (context.state === 'running') {
-        playHoverTune(context, skillName);
+        playHoverTune(context);
       }
     },
     [getAudioContext],
