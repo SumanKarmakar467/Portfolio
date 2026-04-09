@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { techStack } from '../constants/techStack';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
 import './TechStack.css';
@@ -10,6 +10,7 @@ const CATEGORY_CONFIG = [
   { id: 'backend', label: 'Backend' },
   { id: 'database', label: 'Database' },
   { id: 'ai', label: 'AI Tools' },
+  { id: 'tools', label: 'Tools & Deploy' },
 ];
 
 const SIMPLE_ICON_SLUGS = {
@@ -194,52 +195,130 @@ function clamp(number, min, max) {
   return Math.max(min, Math.min(max, number));
 }
 
-function getGridLayout(skillsCount, isAllSkillsView) {
-  const total = Math.max(skillsCount, 1);
-  const columns = isAllSkillsView
-    ? clamp(Math.ceil(Math.sqrt(total * 1.3)), 4, 6)
-    : clamp(Math.ceil(Math.sqrt(total * 1.2)), 2, 4);
-  const rows = Math.max(1, Math.ceil(total / columns));
-  return { columns, rows };
+function getSkillLevel(skill) {
+  return clamp(Number(skill?.level) || 70, 42, 100);
 }
 
-function buildFloatLayout(items, groupKey = 'default', layout) {
-  const fallbackLayout = getGridLayout(items.length, groupKey === ALL_FILTER);
-  const columns = layout?.columns || fallbackLayout.columns;
-  const rows = layout?.rows || fallbackLayout.rows;
+function midiToFrequency(midi) {
+  return 440 * 2 ** ((midi - 69) / 12);
+}
 
-  return items.map((item, index) => {
-    let seed = hashString(`${groupKey}-${item.name}-${index}`);
-    const random = () => {
-      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
-      return seed / 4294967296;
-    };
+function playHoverTune(audioContext, skillName) {
+  const now = audioContext.currentTime;
+  const seed = hashString(skillName);
+  const baseMidi = 60 + (seed % 8);
+  const leadOffset = [0, 2, 4, 7][seed % 4];
+  const echoOffset = [7, 9, 11, 12][Math.floor(seed / 7) % 4];
 
-    const col = index % columns;
-    const row = Math.floor(index / columns);
-    const baseX = ((col + 0.5) / columns) * 100;
-    const baseY = 26 + ((row + 0.5) / rows) * 68;
+  const leadNote = midiToFrequency(baseMidi + leadOffset);
+  const echoNote = midiToFrequency(baseMidi + echoOffset);
 
-    return {
-      ...item,
-      x: clamp(baseX + (random() * 8 - 4), 8, 92),
-      y: clamp(baseY + (random() * 8 - 4), 28, 92),
-      dx1: Math.round(random() * 24 - 12),
-      dy1: Math.round(random() * 22 - 11),
-      dx2: Math.round(random() * 20 - 10),
-      dy2: Math.round(random() * 18 - 9),
-      dx3: Math.round(random() * 22 - 11),
-      dy3: Math.round(random() * 22 - 11),
-      duration: (8.6 + random() * 5.2).toFixed(2),
-      delay: (-random() * 5.5).toFixed(2),
-    };
-  });
+  const masterGain = audioContext.createGain();
+  masterGain.gain.setValueAtTime(0.0001, now);
+  masterGain.gain.exponentialRampToValueAtTime(0.035, now + 0.03);
+  masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+  masterGain.connect(audioContext.destination);
+
+  const leadOsc = audioContext.createOscillator();
+  const leadToneGain = audioContext.createGain();
+  leadOsc.type = 'triangle';
+  leadOsc.frequency.setValueAtTime(leadNote, now);
+  leadToneGain.gain.setValueAtTime(0.7, now);
+  leadToneGain.gain.exponentialRampToValueAtTime(0.08, now + 0.2);
+  leadOsc.connect(leadToneGain);
+  leadToneGain.connect(masterGain);
+  leadOsc.start(now);
+  leadOsc.stop(now + 0.22);
+
+  const echoOsc = audioContext.createOscillator();
+  const echoToneGain = audioContext.createGain();
+  echoOsc.type = 'sine';
+  echoOsc.frequency.setValueAtTime(echoNote, now + 0.05);
+  echoToneGain.gain.setValueAtTime(0.0001, now);
+  echoToneGain.gain.exponentialRampToValueAtTime(0.36, now + 0.08);
+  echoToneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.24);
+  echoOsc.connect(echoToneGain);
+  echoToneGain.connect(masterGain);
+  echoOsc.start(now + 0.04);
+  echoOsc.stop(now + 0.24);
+
+  leadOsc.onended = () => {
+    leadToneGain.disconnect();
+    leadOsc.disconnect();
+  };
+  echoOsc.onended = () => {
+    echoToneGain.disconnect();
+    echoOsc.disconnect();
+    masterGain.disconnect();
+  };
 }
 
 export default function TechStack() {
   const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.15, rootMargin: '120px 0px' });
   const [activeFilter, setActiveFilter] = useState(ALL_FILTER);
   const [failedIconSourceIndex, setFailedIconSourceIndex] = useState({});
+  const audioContextRef = useRef(null);
+  const lastHoverRef = useRef({ key: '', time: 0 });
+
+  const getAudioContext = useCallback(() => {
+    if (typeof window === 'undefined') return null;
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContextClass();
+    }
+
+    return audioContextRef.current;
+  }, []);
+
+  const unlockAudio = useCallback(() => {
+    const context = getAudioContext();
+    if (context?.state === 'suspended') {
+      context.resume().catch(() => {});
+    }
+  }, [getAudioContext]);
+
+  useEffect(() => {
+    window.addEventListener('pointerdown', unlockAudio);
+    window.addEventListener('keydown', unlockAudio);
+
+    return () => {
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(() => {});
+        audioContextRef.current = null;
+      }
+    };
+  }, [unlockAudio]);
+
+  const handleSkillHover = useCallback(
+    (skillName) => {
+      const now = performance.now();
+      if (lastHoverRef.current.key === skillName && now - lastHoverRef.current.time < 150) return;
+      lastHoverRef.current = { key: skillName, time: now };
+
+      const context = getAudioContext();
+      if (!context) return;
+
+      if (context.state === 'suspended') {
+        context
+          .resume()
+          .then(() => {
+            if (context.state === 'running') playHoverTune(context, skillName);
+          })
+          .catch(() => {});
+        return;
+      }
+
+      if (context.state === 'running') {
+        playHoverTune(context, skillName);
+      }
+    },
+    [getAudioContext],
+  );
 
   const skillsByCategory = useMemo(() => {
     return CATEGORY_CONFIG.reduce((accumulator, category) => {
@@ -250,35 +329,18 @@ export default function TechStack() {
     }, {});
   }, []);
 
-  const allSkills = useMemo(() => {
-    const seenNames = new Set();
-    return CATEGORY_CONFIG.flatMap((category) => skillsByCategory[category.id] || []).filter((skill) => {
-      if (seenNames.has(skill.name)) return false;
-      seenNames.add(skill.name);
-      return true;
-    });
-  }, [skillsByCategory]);
+  const visibleCategories = useMemo(() => {
+    if (activeFilter === ALL_FILTER) {
+      return CATEGORY_CONFIG.map((category) => ({
+        ...category,
+        skills: skillsByCategory[category.id] || [],
+      }));
+    }
 
-  const visibleSkills = useMemo(() => {
-    if (activeFilter === ALL_FILTER) return allSkills;
-    return skillsByCategory[activeFilter] || [];
-  }, [activeFilter, allSkills, skillsByCategory]);
-
-  const layout = useMemo(
-    () => getGridLayout(visibleSkills.length, activeFilter === ALL_FILTER),
-    [visibleSkills.length, activeFilter],
-  );
-
-  const floatingSkills = useMemo(
-    () => buildFloatLayout(visibleSkills, activeFilter, layout),
-    [visibleSkills, activeFilter, layout],
-  );
-
-  const boxSize = useMemo(() => {
-    const dynamicBoxWidth = clamp(140 + layout.columns * 96, 280, activeFilter === ALL_FILTER ? 940 : 760);
-    const dynamicBoxHeight = clamp(150 + layout.rows * 90, 250, 520);
-    return { width: dynamicBoxWidth, height: dynamicBoxHeight };
-  }, [layout, activeFilter]);
+    const category = CATEGORY_CONFIG.find((item) => item.id === activeFilter);
+    if (!category) return [];
+    return [{ ...category, skills: skillsByCategory[category.id] || [] }];
+  }, [activeFilter, skillsByCategory]);
 
   const activeCategoryLabel =
     activeFilter === ALL_FILTER
@@ -305,6 +367,15 @@ export default function TechStack() {
     <section id="techstack" className="section bg-surface">
       <div className="container" ref={ref}>
         <div className="tech-stack-shell">
+          <div className="tech-intro">
+            <p className="tech-intro-kicker">Skill Zone</p>
+            <h2 className="section-title">Tech Stack</h2>
+            <p className="section-subtitle">
+              Explore my stack by category. Hover a skill icon for a soft audio cue, and click any skill
+              to jump into matching projects.
+            </p>
+          </div>
+
           <div className="tech-filter-nav" role="tablist" aria-label="Skill categories">
             <button
               type="button"
@@ -330,71 +401,91 @@ export default function TechStack() {
           </div>
 
           <div
-            className={`tech-skill-box ${isIntersecting ? '' : 'tech-skill-box--paused'}`}
-            aria-label={`${activeCategoryLabel} animated skills`}
-            style={{
-              '--dynamic-box-width': `${boxSize.width}px`,
-              '--dynamic-box-height': `${boxSize.height}px`,
-            }}
+            className={`tech-collection-surface ${isIntersecting ? 'is-visible' : ''}`}
+            aria-label={`${activeCategoryLabel} skills`}
           >
-            <div className="tech-skill-box-header">
-              <p className="tech-skill-box-title">{activeCategoryLabel}</p>
-              <p className="tech-skill-box-hint">Click any icon to view related projects</p>
+            <div className="tech-collection-head">
+              <p className="tech-collection-title">{activeCategoryLabel}</p>
+              <p className="tech-collection-hint">Click a skill to filter matching projects instantly.</p>
             </div>
 
-            {floatingSkills.length === 0 && <p className="tech-empty-state">No skills available.</p>}
-
-            {floatingSkills.map((skill) => {
-              const iconSources = getIconSources(skill.name);
-              const stateKey = `${activeFilter}:${skill.name}`;
-              const sourceIndex = failedIconSourceIndex[stateKey] || 0;
-              const iconUrl = iconSources[sourceIndex];
-              const showFallback = !iconUrl;
-              const accentColor = ICON_ACCENTS[skill.name] || 'var(--primary)';
-
-              return (
-                <button
-                  key={`${activeFilter}-${skill.name}`}
-                  type="button"
-                  className="tech-floating-icon"
-                  title={skill.name}
-                  aria-label={skill.name}
-                  onClick={() => handleTechClick(skill.name)}
-                  style={{
-                    '--start-x': `${skill.x}%`,
-                    '--start-y': `${skill.y}%`,
-                    '--dx1': `${skill.dx1}px`,
-                    '--dy1': `${skill.dy1}px`,
-                    '--dx2': `${skill.dx2}px`,
-                    '--dy2': `${skill.dy2}px`,
-                    '--dx3': `${skill.dx3}px`,
-                    '--dy3': `${skill.dy3}px`,
-                    '--duration': `${skill.duration}s`,
-                    '--delay': `${skill.delay}s`,
-                    '--accent': accentColor,
-                  }}
+            <div
+              className={`tech-categories-grid ${
+                visibleCategories.length === 1 ? 'tech-categories-grid--single' : ''
+              }`}
+            >
+              {visibleCategories.map((category, categoryIndex) => (
+                <article
+                  key={category.id}
+                  className="tech-category-panel"
+                  style={{ '--panel-delay': `${categoryIndex * 70}ms` }}
                 >
-                  {showFallback ? (
-                    <span className="tech-floating-fallback">{getFallbackLabel(skill.name)}</span>
-                  ) : (
-                    <img
-                      src={iconUrl}
-                      alt=""
-                      loading="lazy"
-                      className="tech-floating-icon-img"
-                      onError={(event) => {
-                        event.currentTarget.onerror = null;
-                        setFailedIconSourceIndex((prev) => ({
-                          ...prev,
-                          [stateKey]: sourceIndex + 1,
-                        }));
-                      }}
-                    />
+                  <div className="tech-category-head">
+                    <h3 className="tech-category-title">{category.label}</h3>
+                    <span className="tech-category-count">{category.skills.length} skills</span>
+                  </div>
+
+                  {category.skills.length === 0 && (
+                    <p className="tech-empty-state">No skills available in this category.</p>
                   )}
-                  <span className="tech-floating-label">{skill.name}</span>
-                </button>
-              );
-            })}
+
+                  <div className="tech-skill-list">
+                    {category.skills.map((skill) => {
+                      const iconSources = getIconSources(skill.name);
+                      const stateKey = `${category.id}:${skill.name}`;
+                      const sourceIndex = failedIconSourceIndex[stateKey] || 0;
+                      const iconUrl = iconSources[sourceIndex];
+                      const showFallback = !iconUrl;
+                      const accentColor = ICON_ACCENTS[skill.name] || 'var(--primary)';
+                      const level = getSkillLevel(skill);
+
+                      return (
+                        <button
+                          key={`${category.id}-${skill.name}`}
+                          type="button"
+                          className="tech-skill-chip"
+                          title={skill.name}
+                          aria-label={skill.name}
+                          onClick={() => handleTechClick(skill.name)}
+                          onMouseEnter={() => handleSkillHover(skill.name)}
+                          onFocus={() => handleSkillHover(skill.name)}
+                          style={{ '--accent': accentColor }}
+                        >
+                          <span className="tech-skill-main">
+                            <span className="tech-skill-icon-wrap">
+                              {showFallback ? (
+                                <span className="tech-skill-fallback">{getFallbackLabel(skill.name)}</span>
+                              ) : (
+                                <img
+                                  src={iconUrl}
+                                  alt=""
+                                  loading="lazy"
+                                  className="tech-skill-icon-img"
+                                  onError={(event) => {
+                                    event.currentTarget.onerror = null;
+                                    setFailedIconSourceIndex((prev) => ({
+                                      ...prev,
+                                      [stateKey]: sourceIndex + 1,
+                                    }));
+                                  }}
+                                />
+                              )}
+                            </span>
+                            <span className="tech-skill-copy">
+                              <span className="tech-skill-name">{skill.name}</span>
+                              <span className="tech-skill-action">View projects</span>
+                            </span>
+                          </span>
+                          <span className="tech-skill-meter" aria-hidden="true">
+                            <span style={{ width: `${level}%` }} />
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </div>
