@@ -327,8 +327,8 @@ export default function TechStack() {
 
   const skillsByCategory = useMemo(() => {
     return CATEGORY_CONFIG.reduce((accumulator, category) => {
-      accumulator[category.id] = (techStack[category.id] || []).filter(
-        (item) => getIconSources(item.name).length > 0,
+      accumulator[category.id] = (techStack[category.id] || []).filter((item) =>
+        Boolean(getOfficialIconUrl(item.name)),
       );
       return accumulator;
     }, {});
@@ -436,13 +436,9 @@ export default function TechStack() {
 
                   <div className="tech-skill-list">
                     {category.skills.map((skill) => {
-                      const iconSources = getIconSources(skill.name);
-                      const stateKey = `${category.id}:${skill.name}`;
-                      const sourceIndex = failedIconSourceIndex[stateKey] || 0;
-                      const iconUrl = iconSources[sourceIndex];
-                      const showFallback = !iconUrl;
-                      const accentColor = ICON_ACCENTS[skill.name] || 'var(--primary)';
+                      const iconUrl = getOfficialIconUrl(skill.name);
                       const level = getSkillLevel(skill);
+                      if (!iconUrl) return null;
 
                       return (
                         <button
@@ -454,27 +450,14 @@ export default function TechStack() {
                           onClick={() => handleTechClick(skill.name)}
                           onMouseEnter={() => handleSkillHover(skill.name)}
                           onFocus={() => handleSkillHover(skill.name)}
-                          style={{ '--accent': accentColor }}
                         >
                           <span className="tech-skill-main">
                             <span className="tech-skill-icon-wrap">
-                              {showFallback ? (
-                                <span className="tech-skill-fallback">{getFallbackLabel(skill.name)}</span>
-                              ) : (
-                                <img
-                                  src={iconUrl}
-                                  alt=""
-                                  loading="lazy"
-                                  className="tech-skill-icon-img"
-                                  onError={(event) => {
-                                    event.currentTarget.onerror = null;
-                                    setFailedIconSourceIndex((prev) => ({
-                                      ...prev,
-                                      [stateKey]: sourceIndex + 1,
-                                    }));
-                                  }}
-                                />
-                              )}
+                              <span
+                                className="tech-skill-icon-mask"
+                                style={{ '--icon-url': `url("${iconUrl}")` }}
+                                aria-hidden="true"
+                              />
                             </span>
                             <span className="tech-skill-copy">
                               <span className="tech-skill-name">{skill.name}</span>
