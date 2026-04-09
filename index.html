@@ -55,7 +55,40 @@
         }
 
         try {
-          // Added in later commit.
+          var lastSent = Number(localStorage.getItem(STORAGE_KEY) || "0");
+          var now = Date.now();
+          if (lastSent && now - lastSent < COOLDOWN_MS) return;
+          localStorage.setItem(STORAGE_KEY, String(now));
+
+          var timeIST = new Date().toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true
+          });
+          var referrer = document.referrer || "Direct / unknown";
+          var isMobile = /Android|iPhone|iPad|iPod|Mobi|Opera Mini|IEMobile/i.test(
+            navigator.userAgent || ""
+          );
+          var deviceType = isMobile ? "Mobile" : "Desktop";
+          var browser = getBrowserName();
+          var language = navigator.language || "Unknown";
+          var resolution = window.screen.width + "x" + window.screen.height;
+
+          var message = [
+            "\uD83D\uDC40 New portfolio visit!",
+            "",
+            "*Time (IST):* " + escapeMarkdown(timeIST),
+            "*Referrer:* " + escapeMarkdown(referrer),
+            "*Device:* " + escapeMarkdown(deviceType),
+            "*Browser:* " + escapeMarkdown(browser),
+            "*Language:* " + escapeMarkdown(language),
+            "*Resolution:* " + escapeMarkdown(resolution)
+          ].join("\n");
         } catch (error) {
           // Prevent this tracker from breaking page render.
         }
