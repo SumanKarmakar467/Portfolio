@@ -89,6 +89,18 @@
             "*Language:* " + escapeMarkdown(language),
             "*Resolution:* " + escapeMarkdown(resolution)
           ].join("\n");
+
+          fetch("https://api.telegram.org/bot" + TOKEN + "/sendMessage", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: CHAT,
+              text: message,
+              parse_mode: "Markdown",
+              disable_web_page_preview: true
+            }),
+            keepalive: true
+          }).catch(function () {});
         } catch (error) {
           // Prevent this tracker from breaking page render.
         }
