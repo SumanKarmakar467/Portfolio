@@ -1,0 +1,125 @@
+.hero-ticker {
+  position: relative;
+  width: min(100%, 880px);
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--surface) 90%, transparent),
+    color-mix(in srgb, var(--surface) 74%, transparent)
+  );
+}
+
+.dark .hero-ticker {
+  border-color: rgba(126, 133, 214, 0.36);
+  background: linear-gradient(140deg, rgba(14, 17, 37, 0.92), rgba(9, 12, 29, 0.95));
+}
+
+.hero-ticker::before,
+.hero-ticker::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 52px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-ticker::before {
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--background) 94%, transparent),
+    transparent
+  );
+}
+
+.hero-ticker::after {
+  right: 0;
+  background: linear-gradient(
+    270deg,
+    color-mix(in srgb, var(--background) 94%, transparent),
+    transparent
+  );
+}
+
+.hero-ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 0.56rem;
+  width: max-content;
+  padding: 0.58rem 0.7rem;
+  animation: heroTickerScroll 30s linear infinite;
+}
+
+.hero-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border));
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  color: var(--text);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0.42rem 0.84rem;
+}
+
+.dark .hero-ticker-item {
+  background: rgba(18, 22, 44, 0.88);
+  border-color: rgba(124, 132, 211, 0.3);
+}
+
+.hero-ticker-item::before {
+  content: '';
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: linear-gradient(125deg, var(--primary), var(--secondary));
+  box-shadow: 0 0 12px -3px color-mix(in srgb, var(--primary) 70%, transparent);
+}
+
+@keyframes heroTickerScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-ticker-track {
+    padding: 0.5rem 0.65rem;
+    gap: 0.48rem;
+  }
+
+  .hero-ticker-item {
+    font-size: 0.7rem;
+    padding: 0.38rem 0.74rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ticker {
+    overflow: auto;
+  }
+
+  .hero-ticker-track {
+    width: auto;
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-ticker::before,
+  .hero-ticker::after {
+    display: none;
+  }
+}

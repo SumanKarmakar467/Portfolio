@@ -1,4 +1,15 @@
 import React from 'react';
+import './Hero.css';
+
+const HERO_TICKER_ITEMS = [
+  'MERN Stack Web Applications',
+  'Spring Boot API Development',
+  'DSA and Problem Solving with Java',
+  'Responsive React + Tailwind Interfaces',
+  'MongoDB, MySQL, and PostgreSQL',
+  'AI-assisted Coding with ChatGPT, Gemini, and Codex',
+  'Deployment with Netlify and Vercel',
+];
 
 export default function Hero() {
   return (
@@ -32,6 +43,16 @@ export default function Hero() {
             I build responsive web applications with React, Node.js, and MongoDB,
             with focus on clear UI and practical backend architecture.
           </p>
+
+          <div className="hero-ticker mb-8" aria-label="Portfolio highlights">
+            <div className="hero-ticker-track">
+              {[...HERO_TICKER_ITEMS, ...HERO_TICKER_ITEMS].map((item, index) => (
+                <span className="hero-ticker-item" key={`${item}-${index}`}>
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
 
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             {['Spring Boot', 'React', 'Node.js', 'MongoDB', 'REST APIs'].map((tech) => (

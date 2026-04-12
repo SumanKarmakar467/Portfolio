@@ -6,51 +6,42 @@ import './TechStack.css';
 const PROJECT_SEARCH_EVENT = 'portfolio-project-search';
 const ALL_FILTER = 'all';
 const CATEGORY_CONFIG = [
-  { id: 'frontend', label: 'Frontend' },
-  { id: 'backend', label: 'Backend' },
-  { id: 'database', label: 'Database' },
-  { id: 'ai', label: 'AI Tools' },
-  { id: 'tools', label: 'Tools & Deploy' },
+  { id: 'frontend', label: 'Frontend', sources: ['frontend'] },
+  { id: 'backend', label: 'Backend', sources: ['backend'] },
+  { id: 'databaseTools', label: 'Database & Tools', sources: ['database', 'tools'] },
+  { id: 'ai', label: 'AI Toolkit', sources: ['ai'] },
 ];
 
-const SIMPLE_ICON_SLUGS = {
-  HTML: 'html5',
-  CSS: 'css3',
-  JavaScript: 'javascript',
-  React: 'react',
-  'Tailwind CSS': 'tailwindcss',
-  'Responsive Design': 'css3',
-  Java: 'openjdk',
-  'Spring Boot': 'springboot',
-  'Node.js': 'nodedotjs',
-  Express: 'express',
-  'REST APIs': 'postman',
-  MongoDB: 'mongodb',
-  MySQL: 'mysql',
-  PostgreSQL: 'postgresql',
-  'AWS Basics': 'amazonwebservices',
-  ChatGPT: 'openai',
-  Blackbox: 'visualstudiocode',
-  Gemini: 'googlegemini',
-  Codex: 'openai',
-  'GitHub Copilot': 'githubcopilot',
-  Git: 'git',
-  GitHub: 'github',
-  Netlify: 'netlify',
-  Vercel: 'vercel',
+const ICON_CONFIG = {
+  HTML: { slug: 'html5', color: 'E34F26' },
+  CSS: { slug: 'css3', color: '1572B6' },
+  JavaScript: { slug: 'javascript', color: 'F7DF1E' },
+  React: { slug: 'react', color: '61DAFB' },
+  'Tailwind CSS': { slug: 'tailwindcss', color: '06B6D4' },
+  'Responsive Design': { slug: 'css3', color: '1572B6' },
+  Java: { slug: 'openjdk', color: 'F89820' },
+  'Spring Boot': { slug: 'springboot', color: '6DB33F' },
+  'Node.js': { slug: 'nodedotjs', color: '339933' },
+  Express: { slug: 'express', color: 'FFFFFF' },
+  'REST APIs': { slug: 'postman', color: 'FF6C37' },
+  MongoDB: { slug: 'mongodb', color: '47A248' },
+  MySQL: { slug: 'mysql', color: '4479A1' },
+  PostgreSQL: { slug: 'postgresql', color: '4169E1' },
+  'AWS Basics': { slug: 'amazonwebservices', color: 'FF9900' },
+  ChatGPT: { slug: 'openai', color: '74AA9C' },
+  Blackbox: { slug: 'visualstudiocode', color: '007ACC' },
+  Gemini: { slug: 'googlegemini', color: '8E75FF' },
+  Codex: { slug: 'openai', color: '74AA9C' },
+  'GitHub Copilot': { slug: 'githubcopilot', color: 'FFFFFF' },
+  Git: { slug: 'git', color: 'F05032' },
+  GitHub: { slug: 'github', color: 'FFFFFF' },
+  Netlify: { slug: 'netlify', color: '00C7B7' },
+  Vercel: { slug: 'vercel', color: 'FFFFFF' },
 };
 
 function getOfficialIconUrl(name) {
-  const slug = SIMPLE_ICON_SLUGS[name];
-  return slug ? `https://cdn.simpleicons.org/${slug}` : '';
-}
-
-function clamp(number, min, max) {
-  return Math.max(min, Math.min(max, number));
-}
-
-function getSkillLevel(skill) {
-  return clamp(Number(skill?.level) || 70, 42, 100);
+  const icon = ICON_CONFIG[name];
+  return icon ? `https://cdn.simpleicons.org/${icon.slug}/${icon.color}` : '';
 }
 
 function midiToFrequency(midi) {
@@ -106,6 +97,47 @@ function playHoverTune(audioContext) {
     lowpass.disconnect();
     masterGain.disconnect();
   }, 1200);
+}
+
+function CategoryIcon({ categoryId }) {
+  if (categoryId === 'frontend') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3.5" y="4.5" width="17" height="12" rx="2.2" />
+        <path d="M9 19.5h6" />
+        <path d="M12 16.5v3" />
+      </svg>
+    );
+  }
+
+  if (categoryId === 'backend') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3.5" y="4" width="17" height="6.5" rx="1.8" />
+        <rect x="3.5" y="13.5" width="17" height="6.5" rx="1.8" />
+        <path d="M7.5 7.2h.01" />
+        <path d="M7.5 16.8h.01" />
+        <path d="M11 7.2h2.2" />
+        <path d="M11 16.8h2.2" />
+      </svg>
+    );
+  }
+
+  if (categoryId === 'databaseTools') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <ellipse cx="12" cy="5.5" rx="8.5" ry="3" />
+        <path d="M3.5 5.5v6c0 1.6 3.8 3 8.5 3s8.5-1.4 8.5-3v-6" />
+        <path d="M3.5 11.5v6c0 1.6 3.8 3 8.5 3s8.5-1.4 8.5-3v-6" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2.5 14.4 8l5.8.8-4.2 4.1 1 5.8L12 15.9 7 18.7l1-5.8L3.8 8.8 9.6 8Z" />
+    </svg>
+  );
 }
 
 export default function TechStack() {
@@ -176,7 +208,8 @@ export default function TechStack() {
 
   const skillsByCategory = useMemo(() => {
     return CATEGORY_CONFIG.reduce((accumulator, category) => {
-      accumulator[category.id] = (techStack[category.id] || []).filter((item) =>
+      const groupedSkills = category.sources.flatMap((source) => techStack[source] || []);
+      accumulator[category.id] = groupedSkills.filter((item) =>
         Boolean(getOfficialIconUrl(item.name)),
       );
       return accumulator;
@@ -222,11 +255,10 @@ export default function TechStack() {
       <div className="container" ref={ref}>
         <div className="tech-stack-shell">
           <div className="tech-intro">
-            <p className="tech-intro-kicker">Skill Zone</p>
-            <h2 className="section-title">Tech Stack</h2>
+            <p className="tech-intro-kicker">Expertise</p>
+            <h2 className="section-title">Skills &amp; Technologies</h2>
             <p className="section-subtitle">
-              Explore my stack by category. Hover a skill icon for a soft audio cue, and click any skill
-              to jump into matching projects.
+              The tools, languages, and frameworks I use to build full-stack web products.
             </p>
           </div>
 
@@ -260,7 +292,7 @@ export default function TechStack() {
           >
             <div className="tech-collection-head">
               <p className="tech-collection-title">{activeCategoryLabel}</p>
-              <p className="tech-collection-hint">Click a skill to filter matching projects instantly.</p>
+              <p className="tech-collection-hint">Click any skill to jump to matching projects.</p>
             </div>
 
             <div
@@ -275,7 +307,12 @@ export default function TechStack() {
                   style={{ '--panel-delay': `${categoryIndex * 70}ms` }}
                 >
                   <div className="tech-category-head">
-                    <h3 className="tech-category-title">{category.label}</h3>
+                    <div className="tech-category-title-wrap">
+                      <span className="tech-category-icon">
+                        <CategoryIcon categoryId={category.id} />
+                      </span>
+                      <h3 className="tech-category-title">{category.label}</h3>
+                    </div>
                     <span className="tech-category-count">{category.skills.length} skills</span>
                   </div>
 
@@ -286,7 +323,6 @@ export default function TechStack() {
                   <div className="tech-skill-list">
                     {category.skills.map((skill) => {
                       const iconUrl = getOfficialIconUrl(skill.name);
-                      const level = getSkillLevel(skill);
                       if (!iconUrl) return null;
 
                       return (
@@ -302,19 +338,9 @@ export default function TechStack() {
                         >
                           <span className="tech-skill-main">
                             <span className="tech-skill-icon-wrap">
-                              <span
-                                className="tech-skill-icon-mask"
-                                style={{ '--icon-url': `url("${iconUrl}")` }}
-                                aria-hidden="true"
-                              />
+                              <img src={iconUrl} alt="" className="tech-skill-icon" loading="lazy" />
                             </span>
-                            <span className="tech-skill-copy">
-                              <span className="tech-skill-name">{skill.name}</span>
-                              <span className="tech-skill-action">View projects</span>
-                            </span>
-                          </span>
-                          <span className="tech-skill-meter" aria-hidden="true">
-                            <span style={{ width: `${level}%` }} />
+                            <span className="tech-skill-name">{skill.name}</span>
                           </span>
                         </button>
                       );
