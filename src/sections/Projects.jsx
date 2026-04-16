@@ -669,24 +669,39 @@ export default function Projects() {
                       ))}
                     </div>
 
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedProject(project)}
-                        className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
-                      >
-                        Preview
-                      </button>
-                      {project.liveUrl && (
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted hover:border-primary hover:text-primary"
-                        >
-                          Live
-                        </a>
-                      )}
+                    <div className="mt-5 overflow-hidden">
+                      <div className="pointer-events-none max-h-0 translate-y-2 opacity-0 transition-all duration-300 group-hover:pointer-events-auto group-hover:max-h-24 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:max-h-24 group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                        <div className="flex flex-wrap gap-2 border-t border-border/70 pt-3">
+                          {project.liveUrl ? (
+                            <a
+                              href={project.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
+                            >
+                              Demo
+                            </a>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedProject(project)}
+                              className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
+                            >
+                              Demo
+                            </button>
+                          )}
+                          {project.github && (
+                            <a
+                              href={project.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted hover:border-primary hover:text-primary"
+                            >
+                              Source
+                            </a>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
