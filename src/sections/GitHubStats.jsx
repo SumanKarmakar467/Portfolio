@@ -35,6 +35,16 @@ function formatDateLabel(isoDate) {
   return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
+function getLast12Months() {
+  const months = [];
+  const now = new Date();
+  for (let i = 11; i >= 0; i -= 1) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push(d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' }));
+  }
+  return months;
+}
+
 function githubHeatColor(count) {
   if (count <= 0) return 'bg-[#211a1d]';
   if (count <= 2) return 'bg-[#5a252b]';
@@ -45,6 +55,7 @@ function githubHeatColor(count) {
 
 function GitHubHeatmap({ weeks, mode = 'contributions' }) {
   const [hovered, setHovered] = useState(null);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, placement: 'top' });
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   const monthMarkers = useMemo(() => {
@@ -67,8 +78,8 @@ function GitHubHeatmap({ weeks, mode = 'contributions' }) {
         ))}
       </div>
 
-      <div className="overflow-x-auto">
-        <div className="relative inline-flex gap-[3px]">
+      <div className="overflow-hidden">
+        <div className="relative inline-flex max-w-full gap-[2px]">
           {weeks.map((week, weekIdx) => (
             <div key={weekIdx} className="flex flex-col gap-[3px]">
               {week.map((day, dayIdx) =>
@@ -78,8 +89,18 @@ function GitHubHeatmap({ weeks, mode = 'contributions' }) {
                   <button
                     key={day.date}
                     type="button"
-                    className={`h-[12px] w-[12px] rounded-[3px] ${githubHeatColor(day.count)} transition-transform duration-150 hover:scale-125 hover:ring-1 hover:ring-primary/80`}
+                    className={`h-[10px] w-[10px] rounded-[2px] ${githubHeatColor(day.count)} transition-transform duration-150 hover:scale-125 hover:ring-1 hover:ring-primary/80`}
                     onMouseEnter={() => setHovered(day)}
+                    onMouseMove={(event) => {
+                      const rect = event.currentTarget.getBoundingClientRect();
+                      const parentRect = event.currentTarget.closest('.relative').getBoundingClientRect();
+                      const isNearTop = rect.top - parentRect.top < 36;
+                      setTooltipPos({
+                        x: rect.left - parentRect.left + rect.width / 2,
+                        y: isNearTop ? rect.top - parentRect.top + rect.height + 8 : rect.top - parentRect.top - 8,
+                        placement: isNearTop ? 'bottom' : 'top',
+                      });
+                    }}
                     onMouseLeave={() => setHovered(null)}
                     aria-label={`${day.count} contributions on ${day.date}`}
                   />
@@ -88,8 +109,15 @@ function GitHubHeatmap({ weeks, mode = 'contributions' }) {
             </div>
           ))}
           {hovered && (
-            <div className="pointer-events-none absolute -top-12 left-0 z-20 rounded-lg border border-border bg-background/95 px-2.5 py-1.5 text-xs text-text shadow-lg">
-              {hovered.count} {mode} on {formatDateLabel(hovered.date)}
+            <div
+              className={`pointer-events-none absolute z-20 -translate-x-1/2 rounded-lg border border-primary/40 bg-[#120a12]/95 px-3 py-1.5 text-xs text-text shadow-lg ${
+                tooltipPos.placement === 'top' ? '-translate-y-full' : 'translate-y-0'
+              }`}
+              style={{ left: tooltipPos.x, top: tooltipPos.y }}
+            >
+              <span className="font-semibold text-primary">{hovered.count}</span>{' '}
+              <span className="text-text">{mode}</span>{' '}
+              <span className="text-muted">on {formatDateLabel(hovered.date)}</span>
             </div>
           )}
         </div>
@@ -172,15 +200,7 @@ export default function GitHubStats() {
     };
   }, []);
 
-  const monthOptions = useMemo(() => {
-    const unique = new Set(
-      contributions.map((d) => {
-        const date = new Date(`${d.date}T00:00:00`);
-        return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
-      }),
-    );
-    return ['all', ...Array.from(unique)];
-  }, [contributions]);
+  const monthOptions = useMemo(() => ['all', ...getLast12Months()], []);
 
   const filteredContributions = useMemo(() => {
     if (monthFilter === 'all') return contributions;
@@ -271,7 +291,7 @@ export default function GitHubStats() {
                               <img src={entry.avatar_url} alt={entry.login} className="h-5 w-5 rounded-full border border-border" />
                               <span className="truncate">{entry.login}</span>
                             </div>
-                            {entry.meta !== null && <span className="text-[10px] text-muted">★ {entry.meta}</span>}
+                            {entry.meta !== null && <span className="text-[10px] text-muted">* {entry.meta}</span>}
                           </div>
                         ))}
                       {(item.key === 'repos' ? reposList : item.key === 'followers' ? followersList : followingList).length === 0 && (
@@ -292,7 +312,7 @@ export default function GitHubStats() {
                 <select
                   value={monthFilter}
                   onChange={(e) => setMonthFilter(e.target.value)}
-                  className="rounded-full border border-border bg-background px-3 py-1 text-xs text-text outline-none"
+                  className="appearance-none rounded-xl border border-primary/40 bg-surface/90 px-3 py-1.5 text-xs font-medium text-text outline-none transition hover:border-primary/70"
                 >
                   {monthOptions.map((option) => (
                     <option key={option} value={option}>
@@ -346,3 +366,4 @@ export default function GitHubStats() {
     </section>
   );
 }
+

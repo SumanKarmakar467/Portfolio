@@ -11,7 +11,7 @@ const HERO_TICKER_ITEMS = [
   'Deployment with Netlify and Vercel',
 ];
 
-const HERO_TITLE_TEXT = 'MERN stack developer , DSA in java | ReactJs | NodeJs | MongoDB';
+const HERO_TITLE_TEXT = 'Full Stack Web Developer';
 
 export default function Hero() {
   return (
@@ -36,10 +36,6 @@ export default function Hero() {
           <h1 className="text-4xl md:text-6xl font-playfair font-bold mb-6 animate-fade-in-up leading-tight">
             {HERO_TITLE_TEXT}
           </h1>
-
-          <div className="text-xl md:text-2xl text-muted mb-6 h-16 flex items-center justify-center">
-            <span className="hero-skillline font-space font-semibold">{HERO_TITLE_TEXT}</span>
-          </div>
 
           <p className="text-lg text-muted max-w-2xl mx-auto mb-8 leading-relaxed">
             I build responsive web applications with React, Node.js, and MongoDB,
