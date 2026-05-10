@@ -252,7 +252,8 @@ export default function LeetCodeStats() {
                     <select
                       value={monthFilter}
                       onChange={(e) => setMonthFilter(e.target.value)}
-                      className="appearance-none rounded-xl border border-primary/40 bg-surface/90 px-3 py-1.5 text-xs font-medium text-text outline-none transition hover:border-primary/70"
+                      className="appearance-none rounded-xl border border-primary/70 bg-[#120a12] px-3 py-1.5 text-xs font-semibold text-primary shadow-[0_0_0_1px_rgba(255,77,109,0.18)] outline-none transition hover:bg-primary/20 hover:border-primary"
+                      style={{ colorScheme: 'dark' }}
                     >
                       {monthOptions.map((option) => (
                         <option key={option} value={option}>

@@ -3,8 +3,20 @@ import React, { useEffect, useMemo, useState } from 'react';
 const GITHUB_USERNAME = 'SumanKarmakar467';
 
 function groupWeeksFromContributions(contributions = []) {
-  const todayIso = new Date().toISOString().slice(0, 10);
-  const past = contributions.filter((day) => day.date <= todayIso).slice(-364);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const start = new Date(today);
+  start.setDate(start.getDate() - 364);
+
+  const sorted = [...contributions]
+    .filter((day) => day?.date)
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  const past = sorted.filter((day) => {
+    const d = new Date(`${day.date}T00:00:00`);
+    return d >= start && d <= today;
+  });
+
   const cells = past.map((day) => {
     const d = new Date(`${day.date}T00:00:00`);
     return { date: day.date, count: day.count || 0, month: d.getMonth(), weekday: d.getDay() };
@@ -28,6 +40,22 @@ function groupWeeksFromContributions(contributions = []) {
   const weeks = [];
   for (let i = 0; i < padded.length; i += 7) weeks.push(padded.slice(i, i + 7));
   return weeks;
+}
+
+function getRollingYearTotal(contributions = []) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const start = new Date(today);
+  start.setDate(start.getDate() - 364);
+
+  return [...contributions]
+    .filter((day) => day?.date)
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .filter((day) => {
+      const d = new Date(`${day.date}T00:00:00`);
+      return d >= start && d <= today;
+    })
+    .reduce((sum, day) => sum + (day.count || 0), 0);
 }
 
 function formatDateLabel(isoDate) {
@@ -167,14 +195,11 @@ export default function GitHubStats() {
               following: profileResult.value?.following ?? null,
             });
           }
-          if (contributionsResult.status === 'fulfilled') {
-            const daily = contributionsResult.value?.contributions || [];
-            const thisYear = new Date().getFullYear();
-            const prevYear = thisYear - 1;
-            const total = (contributionsResult.value?.total?.[thisYear] || 0) + (contributionsResult.value?.total?.[prevYear] || 0);
-            setContributions(daily);
-            setTotalContributions(total || null);
-          }
+        if (contributionsResult.status === 'fulfilled') {
+          const daily = contributionsResult.value?.contributions || [];
+          setContributions(daily);
+          setTotalContributions(getRollingYearTotal(daily) || 0);
+        }
           if (followersResult.status === 'fulfilled' && Array.isArray(followersResult.value)) {
             setFollowersList(followersResult.value);
           }
@@ -312,7 +337,8 @@ export default function GitHubStats() {
                 <select
                   value={monthFilter}
                   onChange={(e) => setMonthFilter(e.target.value)}
-                  className="appearance-none rounded-xl border border-primary/40 bg-surface/90 px-3 py-1.5 text-xs font-medium text-text outline-none transition hover:border-primary/70"
+                  className="appearance-none rounded-xl border border-primary/70 bg-[#120a12] px-3 py-1.5 text-xs font-semibold text-primary shadow-[0_0_0_1px_rgba(255,77,109,0.18)] outline-none transition hover:bg-primary/20 hover:border-primary"
+                  style={{ colorScheme: 'dark' }}
                 >
                   {monthOptions.map((option) => (
                     <option key={option} value={option}>
