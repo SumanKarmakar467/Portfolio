@@ -26,6 +26,8 @@ export default function Footer() {
                 { label: 'About', href: '#about' },
                 { label: 'Projects', href: '#projects' },
                 { label: 'Skills', href: '#techstack' },
+                { label: 'GitHub', href: '#github' },
+                { label: 'LeetCode', href: '#leetcode' },
                 { label: 'Education', href: '#education' },
                 { label: 'Certifications', href: '#certifications' },
                 { label: 'Contact', href: '#contact' },

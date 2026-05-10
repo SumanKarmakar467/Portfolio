@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React from 'react';
 import './Hero.css';
 
 const HERO_TICKER_ITEMS = [
@@ -12,48 +12,8 @@ const HERO_TICKER_ITEMS = [
 ];
 
 const HERO_TITLE_TEXT = 'MERN stack developer , DSA in java | ReactJs | NodeJs | MongoDB';
-const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789|/.:';
 
 export default function Hero() {
-  const [heroTitle, setHeroTitle] = useState(HERO_TITLE_TEXT);
-  const scrambleIntervalRef = useRef(null);
-  const isScramblingRef = useRef(false);
-
-  const startTitleScramble = useCallback(() => {
-    if (isScramblingRef.current) return;
-    isScramblingRef.current = true;
-
-    let revealProgress = 0;
-    scrambleIntervalRef.current = window.setInterval(() => {
-      const nextText = HERO_TITLE_TEXT.split('')
-        .map((char, index) => {
-          if (char === ' ') return ' ';
-          if (index < revealProgress) return HERO_TITLE_TEXT[index];
-          const randomIndex = Math.floor(Math.random() * SCRAMBLE_CHARS.length);
-          return SCRAMBLE_CHARS[randomIndex];
-        })
-        .join('');
-
-      setHeroTitle(nextText);
-      revealProgress += 1 / 1.8;
-
-      if (revealProgress >= HERO_TITLE_TEXT.length) {
-        window.clearInterval(scrambleIntervalRef.current);
-        scrambleIntervalRef.current = null;
-        isScramblingRef.current = false;
-        setHeroTitle(HERO_TITLE_TEXT);
-      }
-    }, 30);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (scrambleIntervalRef.current) {
-        window.clearInterval(scrambleIntervalRef.current);
-      }
-    };
-  }, []);
-
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
@@ -73,18 +33,12 @@ export default function Hero() {
             </span>
           </div>
 
-          <h1
-            className="text-4xl md:text-6xl font-playfair font-bold mb-6 animate-fade-in-up leading-tight"
-            onMouseEnter={startTitleScramble}
-            onMouseMove={startTitleScramble}
-          >
-            {heroTitle}
+          <h1 className="text-4xl md:text-6xl font-playfair font-bold mb-6 animate-fade-in-up leading-tight">
+            {HERO_TITLE_TEXT}
           </h1>
 
-          <div className="ghost-ghoul-line text-xl md:text-2xl text-muted mb-6 h-16 flex items-center justify-center">
-            <span className="ghost-icon" aria-hidden="true">Ghost</span>
-            <span className="font-space font-medium">{HERO_TITLE_TEXT}</span>
-            <span className="ghoul-icon" aria-hidden="true">Ghoul</span>
+          <div className="text-xl md:text-2xl text-muted mb-6 h-16 flex items-center justify-center">
+            <span className="hero-skillline font-space font-semibold">{HERO_TITLE_TEXT}</span>
           </div>
 
           <p className="text-lg text-muted max-w-2xl mx-auto mb-8 leading-relaxed">

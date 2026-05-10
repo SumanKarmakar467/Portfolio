@@ -124,35 +124,85 @@
   }
 }
 
-.ghost-ghoul-line {
+.hero-skillline {
   position: relative;
-  gap: 0.7rem;
+  display: inline-block;
+  line-height: 1.3;
+  background: linear-gradient(
+    105deg,
+    color-mix(in srgb, var(--text) 90%, #ffffff 10%) 0%,
+    color-mix(in srgb, var(--text) 72%, var(--primary) 28%) 32%,
+    color-mix(in srgb, var(--text) 96%, #ffffff 4%) 50%,
+    color-mix(in srgb, var(--text) 72%, var(--secondary) 28%) 68%,
+    color-mix(in srgb, var(--text) 90%, #ffffff 10%) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: heroSkilllineShimmer 4.2s ease-in-out infinite;
 }
 
-.ghost-icon,
-.ghoul-icon {
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.28rem 0.62rem;
+.hero-skillline::after {
+  content: '';
+  position: absolute;
+  left: -0.25rem;
+  right: -0.25rem;
+  bottom: -0.28rem;
+  height: 2px;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  color: var(--primary);
-  animation: ghostGhoulFloat 2.2s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--primary) 40%, transparent) 20%,
+    color-mix(in srgb, var(--secondary) 55%, transparent) 50%,
+    color-mix(in srgb, var(--primary) 40%, transparent) 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: heroSkilllineBeam 4.2s ease-in-out infinite;
+  opacity: 0.95;
 }
 
-.ghoul-icon {
-  animation-delay: 0.45s;
-}
-
-@keyframes ghostGhoulFloat {
-  0%, 100% {
-    transform: translateY(0);
-    filter: drop-shadow(0 0 0 transparent);
+@keyframes heroSkilllineShimmer {
+  0% {
+    background-position: 0% 50%;
+    filter: drop-shadow(0 0 0 color-mix(in srgb, var(--primary) 0%, transparent));
   }
   50% {
-    transform: translateY(-5px);
-    filter: drop-shadow(0 5px 12px color-mix(in srgb, var(--primary) 35%, transparent));
+    background-position: 100% 50%;
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--primary) 28%, transparent));
+  }
+  100% {
+    background-position: 0% 50%;
+    filter: drop-shadow(0 0 0 color-mix(in srgb, var(--primary) 0%, transparent));
+  }
+}
+
+@keyframes heroSkilllineBeam {
+  0% {
+    background-position: 0% 50%;
+    transform: scaleX(0.92);
+  }
+  50% {
+    background-position: 100% 50%;
+    transform: scaleX(1);
+  }
+  100% {
+    background-position: 0% 50%;
+    transform: scaleX(0.92);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-skillline {
+    font-size: 1.28rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-skillline,
+  .hero-skillline::after {
+    animation: none;
   }
 }

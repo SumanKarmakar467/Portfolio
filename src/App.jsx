@@ -12,9 +12,10 @@ import Hero from './sections/Hero';
 const About = lazy(() => import('./sections/About'));
 const Projects = lazy(() => import('./sections/Projects'));
 const TechStack = lazy(() => import('./sections/TechStack'));
+const GitHubStats = lazy(() => import('./sections/GitHubStats'));
+const LeetCodeStats = lazy(() => import('./sections/LeetCodeStats'));
 const Education = lazy(() => import('./sections/Education'));
 const Certifications = lazy(() => import('./sections/Certifications'));
-const GitHubStats = lazy(() => import('./sections/GitHubStats'));
 const Contact = lazy(() => import('./sections/Contact'));
 const Footer = lazy(() => import('./sections/Footer'));
 
@@ -67,9 +68,10 @@ export default function App() {
             <About theme={theme} />
             <Projects />
             <TechStack />
+            <GitHubStats />
+            <LeetCodeStats />
             <Education />
             <Certifications />
-            <GitHubStats />
             <Contact />
             <Footer />
           </Suspense>
