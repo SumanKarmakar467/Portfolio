@@ -90,7 +90,7 @@ function HeatmapGrid({ weeks }) {
                 <button
                   key={day.date}
                   type="button"
-                  className={`h-[11px] w-[11px] rounded-[3px] ${heatColor(day.count)} transition-transform duration-150 hover:scale-125 hover:ring-1 hover:ring-primary/80`}
+                  className={`h-[12px] w-[12px] rounded-[3px] ${heatColor(day.count)} transition-transform duration-150 hover:scale-125 hover:ring-1 hover:ring-primary/80`}
                   onMouseEnter={() => setHovered(day)}
                   onMouseLeave={() => setHovered(null)}
                   aria-label={`${day.count} submissions on ${day.date}`}
@@ -147,6 +147,13 @@ export default function LeetCodeStats() {
   }, []);
 
   const weeks = useMemo(() => buildWeeklyHeatmapFromUnixMap(calendar), [calendar]);
+  const graphStats = useMemo(() => {
+    const cells = weeks.flat();
+    const solved = cells.reduce((sum, day) => sum + day.count, 0);
+    const activeDays = cells.filter((day) => day.count > 0).length;
+    const bestDay = cells.reduce((max, day) => Math.max(max, day.count), 0);
+    return { solved, activeDays, bestDay };
+  }, [weeks]);
   const displayValue = (value) => (value === null ? '--' : value);
 
   return (
@@ -186,6 +193,29 @@ export default function LeetCodeStats() {
                   <span className="text-xs text-muted">Interactive</span>
                 </div>
                 <HeatmapGrid weeks={weeks} />
+                <div className="mt-3 flex items-center justify-between text-xs text-muted">
+                  <span>Less</span>
+                  <div className="flex items-center gap-1">
+                    {[0, 1, 2, 3, 4].map((lvl) => (
+                      <span key={lvl} className={`h-2.5 w-2.5 rounded-sm ${heatColor(lvl === 0 ? 0 : lvl * 3)}`} />
+                    ))}
+                  </div>
+                  <span>More</span>
+                </div>
+                <div className="mt-4 grid gap-3 text-center sm:grid-cols-3">
+                  <div className="rounded-xl border border-border/70 bg-background/35 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Solved</p>
+                    <p className="mt-1 text-lg font-semibold text-text">{graphStats.solved}</p>
+                  </div>
+                  <div className="rounded-xl border border-border/70 bg-background/35 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Submission Days</p>
+                    <p className="mt-1 text-lg font-semibold text-text">{graphStats.activeDays}</p>
+                  </div>
+                  <div className="rounded-xl border border-border/70 bg-background/35 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Best Day</p>
+                    <p className="mt-1 text-lg font-semibold text-text">{graphStats.bestDay}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </article>
