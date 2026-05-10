@@ -74,11 +74,11 @@ function getLast12Months() {
 }
 
 function githubHeatColor(count) {
-  if (count <= 0) return 'bg-[#211a1d]';
-  if (count <= 2) return 'bg-[#5a252b]';
-  if (count <= 6) return 'bg-[#8a2f3b]';
-  if (count <= 12) return 'bg-[#c73f58]';
-  return 'bg-[#ff5f7d]';
+  if (count <= 0) return 'bg-[#2b2b2b]';
+  if (count <= 2) return 'bg-[#1e4f2b]';
+  if (count <= 6) return 'bg-[#1f7a36]';
+  if (count <= 12) return 'bg-[#24a148]';
+  return 'bg-[#4cd964]';
 }
 
 function GitHubHeatmap({ weeks, mode = 'contributions' }) {

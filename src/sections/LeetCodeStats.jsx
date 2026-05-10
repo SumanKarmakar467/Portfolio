@@ -65,11 +65,11 @@ function getLast12Months() {
 }
 
 function heatColor(count) {
-  if (count <= 0) return 'bg-[#24191b]';
-  if (count <= 2) return 'bg-[#5a252b]';
-  if (count <= 5) return 'bg-[#8a2f3b]';
-  if (count <= 9) return 'bg-[#c73f58]';
-  return 'bg-[#ff5f7d]';
+  if (count <= 0) return 'bg-[#2b2b2b]';
+  if (count <= 2) return 'bg-[#1e4f2b]';
+  if (count <= 5) return 'bg-[#1f7a36]';
+  if (count <= 9) return 'bg-[#24a148]';
+  return 'bg-[#4cd964]';
 }
 
 function HeatmapGrid({ weeks, mode = 'submissions' }) {
@@ -206,11 +206,21 @@ export default function LeetCodeStats() {
   }, [allWeeks, monthFilter]);
 
   const graphStats = useMemo(() => {
-    const cells = weeks.flat();
+    const cells = weeks.flat().sort((a, b) => new Date(a.date) - new Date(b.date));
     const solved = cells.reduce((sum, day) => sum + day.count, 0);
     const activeDays = cells.filter((day) => day.count > 0).length;
     const bestDay = cells.reduce((max, day) => Math.max(max, day.count), 0);
-    return { solved, activeDays, bestDay };
+    let streak = 0;
+    let maxStreak = 0;
+    cells.forEach((day) => {
+      if (day.count > 0) {
+        streak += 1;
+        if (streak > maxStreak) maxStreak = streak;
+      } else {
+        streak = 0;
+      }
+    });
+    return { solved, activeDays, bestDay, maxStreak };
   }, [weeks]);
   const displayValue = (value) => (value === null ? '--' : value);
 
@@ -264,7 +274,13 @@ export default function LeetCodeStats() {
                     <span className="text-xs text-muted">Interactive</span>
                   </div>
                 </div>
-                <HeatmapGrid weeks={weeks} mode="solved" />
+                <div className="mb-2 flex items-center justify-between text-xs text-muted">
+                  <span>
+                    <span className="font-semibold text-text">{graphStats.solved}</span> submissions in the past one year
+                  </span>
+                  <span>Max streak: {graphStats.maxStreak}</span>
+                </div>
+                <HeatmapGrid weeks={weeks} mode="submissions" />
                 <div className="mt-3 flex items-center justify-between text-xs text-muted">
                   <span>Less</span>
                   <div className="flex items-center gap-1">
@@ -276,11 +292,11 @@ export default function LeetCodeStats() {
                 </div>
                 <div className="mt-4 grid gap-3 text-center sm:grid-cols-3">
                   <div className="rounded-xl border border-border/70 bg-background/35 px-3 py-2">
-                    <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Solved</p>
+                    <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Submissions</p>
                     <p className="mt-1 text-lg font-semibold text-text">{graphStats.solved}</p>
                   </div>
                   <div className="rounded-xl border border-border/70 bg-background/35 px-3 py-2">
-                    <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Submission Days</p>
+                    <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Active Days</p>
                     <p className="mt-1 text-lg font-semibold text-text">{graphStats.activeDays}</p>
                   </div>
                   <div className="rounded-xl border border-border/70 bg-background/35 px-3 py-2">
