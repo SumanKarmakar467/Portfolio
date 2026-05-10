@@ -634,6 +634,38 @@ export default function Projects() {
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+                      <div className="flex flex-wrap items-center justify-center gap-2 rounded-full border border-white/30 bg-black/45 px-3 py-2 backdrop-blur-sm">
+                        {project.liveUrl ? (
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
+                          >
+                            Demo
+                          </a>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setSelectedProject(project)}
+                            className="pointer-events-auto rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
+                          >
+                            Demo
+                          </button>
+                        )}
+                        {project.github && (
+                          <a
+                            href={project.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-white/45 px-4 py-2 text-sm font-semibold text-white"
+                          >
+                            Source
+                          </a>
+                        )}
+                      </div>
+                    </div>
                     <div className="absolute left-4 right-4 top-4 flex items-center justify-between gap-3">
                       <span className="rounded-full border border-white/30 bg-black/35 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
                         {project.category}
@@ -669,39 +701,8 @@ export default function Projects() {
                       ))}
                     </div>
 
-                    <div className="mt-5 overflow-hidden">
-                      <div className="pointer-events-none max-h-0 translate-y-2 opacity-0 transition-all duration-300 group-hover:pointer-events-auto group-hover:max-h-24 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:max-h-24 group-focus-within:translate-y-0 group-focus-within:opacity-100">
-                        <div className="flex flex-wrap gap-2 border-t border-border/70 pt-3">
-                          {project.liveUrl ? (
-                            <a
-                              href={project.liveUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
-                            >
-                              Demo
-                            </a>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => setSelectedProject(project)}
-                              className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
-                            >
-                              Demo
-                            </button>
-                          )}
-                          {project.github && (
-                            <a
-                              href={project.github}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted hover:border-primary hover:text-primary"
-                            >
-                              Source
-                            </a>
-                          )}
-                        </div>
-                      </div>
+                    <div className="mt-5 border-t border-border/70 pt-3 text-xs text-muted">
+                      Hover on image to open demo and source quickly.
                     </div>
                   </div>
                 </div>

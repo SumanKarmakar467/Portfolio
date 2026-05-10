@@ -11,7 +11,7 @@ const HERO_TICKER_ITEMS = [
   'Deployment with Netlify and Vercel',
 ];
 
-const HERO_TITLE_TEXT = 'MERN Stack Developer | DSA with Java | React | Node.js | MongoDB';
+const HERO_TITLE_TEXT = 'MERN stack developer , DSA in java | ReactJs | NodeJs | MongoDB';
 const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789|/.:';
 
 export default function Hero() {
@@ -81,8 +81,10 @@ export default function Hero() {
             {heroTitle}
           </h1>
 
-          <div className="text-xl md:text-2xl text-muted mb-6 h-16 flex items-center justify-center">
-            <span className="font-space font-medium">MERN Stack Developer</span>
+          <div className="ghost-ghoul-line text-xl md:text-2xl text-muted mb-6 h-16 flex items-center justify-center">
+            <span className="ghost-icon" aria-hidden="true">Ghost</span>
+            <span className="font-space font-medium">{HERO_TITLE_TEXT}</span>
+            <span className="ghoul-icon" aria-hidden="true">Ghoul</span>
           </div>
 
           <p className="text-lg text-muted max-w-2xl mx-auto mb-8 leading-relaxed">
