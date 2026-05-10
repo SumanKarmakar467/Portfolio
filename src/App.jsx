@@ -5,6 +5,7 @@ import BackToTop from './components/BackToTop';
 import CustomCursor from './components/CustomCursor';
 import GeoBackground from './components/GeoBackground';
 import SparkleBackground from './components/SparkleBackground';
+import VoiceAssistant from './components/VoiceAssistant';
 import useTheme from './hooks/useTheme';
 import useVisitNotifier from './hooks/useVisitNotifier';
 import Hero from './sections/Hero';
@@ -70,6 +71,7 @@ export default function App() {
             <TechStack />
             <GitHubStats />
             <LeetCodeStats />
+            <VoiceAssistant />
             <Education />
             <Certifications />
             <Contact />
