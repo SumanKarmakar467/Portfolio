@@ -11,14 +11,20 @@ function StatCard({ label, value, tone }) {
     tone === 'easy' ? 'text-emerald-500' : tone === 'medium' ? 'text-amber-500' : 'text-rose-500';
 
   return (
-    <div className="rounded-2xl border border-border bg-gradient-to-br from-surface to-background/70 p-5 text-center shadow-sm">
-      <p className="text-xs uppercase tracking-[0.2em] text-muted">{label}</p>
-      <p className={`mt-2 text-3xl font-playfair font-bold ${toneClass}`}>{value}</p>
+    <div className="rounded-2xl border border-border bg-gradient-to-br from-surface to-background/70 p-5 text-center shadow-sm min-h-[118px] flex flex-col items-center justify-center">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted leading-5">{label}</p>
+      <p className={`mt-2 text-4xl font-playfair font-bold leading-none tabular-nums ${toneClass}`}>{value}</p>
     </div>
   );
 }
 
 function buildWeeklyHeatmapFromUnixMap(unixMap = {}) {
+  const dateCountMap = new Map();
+  Object.entries(unixMap).forEach(([unix, count]) => {
+    const isoDate = new Date(Number(unix) * 1000).toISOString().slice(0, 10);
+    dateCountMap.set(isoDate, Number(count || 0));
+  });
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const start = new Date(today);
@@ -30,10 +36,9 @@ function buildWeeklyHeatmapFromUnixMap(unixMap = {}) {
   const cells = [];
   for (let d = new Date(gridStart); d <= today; d.setDate(d.getDate() + 1)) {
     const iso = d.toISOString().slice(0, 10);
-    const unix = String(Math.floor(d.getTime() / 1000));
     cells.push({
       date: iso,
-      count: Number(unixMap[unix] || 0),
+      count: Number(dateCountMap.get(iso) || 0),
       weekday: d.getDay(),
       month: d.getMonth(),
     });
@@ -44,6 +49,11 @@ function buildWeeklyHeatmapFromUnixMap(unixMap = {}) {
   return weeks;
 }
 
+function formatDateLabel(isoDate) {
+  const d = new Date(`${isoDate}T00:00:00`);
+  return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
 function heatColor(count) {
   if (count <= 0) return 'bg-[#24191b]';
   if (count <= 2) return 'bg-[#5a252b]';
@@ -52,7 +62,7 @@ function heatColor(count) {
   return 'bg-[#ff5f7d]';
 }
 
-function HeatmapGrid({ weeks }) {
+function HeatmapGrid({ weeks, mode = 'submissions' }) {
   const [hovered, setHovered] = useState(null);
   const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -101,7 +111,7 @@ function HeatmapGrid({ weeks }) {
 
           {hovered && (
             <div className="pointer-events-none absolute -top-12 left-0 z-20 rounded-lg border border-border bg-background/95 px-2.5 py-1.5 text-xs text-text shadow-lg">
-              {hovered.count} submissions on {hovered.date}
+              {hovered.count} {mode} on {formatDateLabel(hovered.date)}
             </div>
           )}
         </div>
@@ -113,6 +123,8 @@ function HeatmapGrid({ weeks }) {
 export default function LeetCodeStats() {
   const [stats, setStats] = useState({ easySolved: null, mediumSolved: null, hardSolved: null, totalSolved: null });
   const [calendar, setCalendar] = useState({});
+  const [monthFilter, setMonthFilter] = useState('all');
+  const [lastUpdated, setLastUpdated] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -121,7 +133,7 @@ export default function LeetCodeStats() {
     const fetchStats = async () => {
       for (const url of LEETCODE_API_URLS) {
         try {
-          const response = await fetch(url);
+          const response = await fetch(url, { cache: 'no-store' });
           const data = await response.json();
           const easy = data.easySolved ?? null;
           const medium = data.mediumSolved ?? null;
@@ -132,6 +144,7 @@ export default function LeetCodeStats() {
             if (!isMounted) return;
             setStats({ easySolved: easy, mediumSolved: medium, hardSolved: hard, totalSolved: total });
             if (data.submissionCalendar) setCalendar(data.submissionCalendar);
+            setLastUpdated(new Date());
             return;
           }
         } catch (_) {}
@@ -141,12 +154,35 @@ export default function LeetCodeStats() {
     fetchStats().finally(() => {
       if (isMounted) setLoading(false);
     });
+    const intervalId = window.setInterval(fetchStats, 120000);
     return () => {
       isMounted = false;
+      window.clearInterval(intervalId);
     };
   }, []);
 
-  const weeks = useMemo(() => buildWeeklyHeatmapFromUnixMap(calendar), [calendar]);
+  const allWeeks = useMemo(() => buildWeeklyHeatmapFromUnixMap(calendar), [calendar]);
+  const monthOptions = useMemo(() => {
+    const days = allWeeks.flat();
+    const set = new Set(
+      days.map((d) => new Date(`${d.date}T00:00:00`).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })),
+    );
+    return ['all', ...Array.from(set)];
+  }, [allWeeks]);
+
+  const weeks = useMemo(() => {
+    if (monthFilter === 'all') return allWeeks;
+    const filteredDays = allWeeks
+      .flat()
+      .filter(
+        (d) =>
+          new Date(`${d.date}T00:00:00`).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) === monthFilter,
+      );
+    const regrouped = [];
+    for (let i = 0; i < filteredDays.length; i += 7) regrouped.push(filteredDays.slice(i, i + 7));
+    return regrouped;
+  }, [allWeeks, monthFilter]);
+
   const graphStats = useMemo(() => {
     const cells = weeks.flat();
     const solved = cells.reduce((sum, day) => sum + day.count, 0);
@@ -190,9 +226,22 @@ export default function LeetCodeStats() {
               <div>
                 <div className="mb-3 flex items-center justify-between">
                   <h4 className="text-sm font-semibold uppercase tracking-[0.16em] text-primary">Heatmap</h4>
-                  <span className="text-xs text-muted">Interactive</span>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={monthFilter}
+                      onChange={(e) => setMonthFilter(e.target.value)}
+                      className="rounded-full border border-border bg-background px-3 py-1 text-xs text-text outline-none"
+                    >
+                      {monthOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option === 'all' ? 'All Months' : option}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="text-xs text-muted">Interactive</span>
+                  </div>
                 </div>
-                <HeatmapGrid weeks={weeks} />
+                <HeatmapGrid weeks={weeks} mode="solved" />
                 <div className="mt-3 flex items-center justify-between text-xs text-muted">
                   <span>Less</span>
                   <div className="flex items-center gap-1">
@@ -216,6 +265,9 @@ export default function LeetCodeStats() {
                     <p className="mt-1 text-lg font-semibold text-text">{graphStats.bestDay}</p>
                   </div>
                 </div>
+                <p className="mt-3 text-right text-[11px] text-muted">
+                  {lastUpdated ? `Auto-updated: ${lastUpdated.toLocaleTimeString()}` : ''}
+                </p>
               </div>
             </div>
           </article>

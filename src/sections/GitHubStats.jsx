@@ -30,6 +30,11 @@ function groupWeeksFromContributions(contributions = []) {
   return weeks;
 }
 
+function formatDateLabel(isoDate) {
+  const d = new Date(`${isoDate}T00:00:00`);
+  return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
 function githubHeatColor(count) {
   if (count <= 0) return 'bg-[#211a1d]';
   if (count <= 2) return 'bg-[#5a252b]';
@@ -38,7 +43,7 @@ function githubHeatColor(count) {
   return 'bg-[#ff5f7d]';
 }
 
-function GitHubHeatmap({ weeks }) {
+function GitHubHeatmap({ weeks, mode = 'contributions' }) {
   const [hovered, setHovered] = useState(null);
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -84,7 +89,7 @@ function GitHubHeatmap({ weeks }) {
           ))}
           {hovered && (
             <div className="pointer-events-none absolute -top-12 left-0 z-20 rounded-lg border border-border bg-background/95 px-2.5 py-1.5 text-xs text-text shadow-lg">
-              {hovered.count} contributions on {hovered.date}
+              {hovered.count} {mode} on {formatDateLabel(hovered.date)}
             </div>
           )}
         </div>
@@ -97,59 +102,95 @@ export default function GitHubStats() {
   const [profile, setProfile] = useState({ publicRepos: null, followers: null, following: null });
   const [totalContributions, setTotalContributions] = useState(null);
   const [contributions, setContributions] = useState([]);
+  const [reposList, setReposList] = useState([]);
   const [followersList, setFollowersList] = useState([]);
   const [followingList, setFollowingList] = useState([]);
+  const [monthFilter, setMonthFilter] = useState('all');
+  const [lastUpdated, setLastUpdated] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
 
-    const profileRequest = fetch(`https://api.github.com/users/${GITHUB_USERNAME}`).then((res) => res.json());
-    const contributionsRequest = fetch(`https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}`).then((res) =>
-      res.json(),
-    );
-    const followersRequest = fetch(`https://api.github.com/users/${GITHUB_USERNAME}/followers?per_page=12`).then((res) =>
-      res.json(),
-    );
-    const followingRequest = fetch(`https://api.github.com/users/${GITHUB_USERNAME}/following?per_page=12`).then((res) =>
-      res.json(),
-    );
+    const fetchAll = () => {
+      const options = { cache: 'no-store' };
+      const profileRequest = fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, options).then((res) => res.json());
+      const contributionsRequest = fetch(`https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}`, options).then((res) =>
+        res.json(),
+      );
+      const followersRequest = fetch(`https://api.github.com/users/${GITHUB_USERNAME}/followers?per_page=12`, options).then((res) =>
+        res.json(),
+      );
+      const followingRequest = fetch(`https://api.github.com/users/${GITHUB_USERNAME}/following?per_page=12`, options).then((res) =>
+        res.json(),
+      );
+      const reposRequest = fetch(
+        `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=12`,
+        options,
+      ).then((res) => res.json());
 
-    Promise.allSettled([profileRequest, contributionsRequest, followersRequest, followingRequest])
-      .then(([profileResult, contributionsResult, followersResult, followingResult]) => {
-        if (!isMounted) return;
-        if (profileResult.status === 'fulfilled') {
-          setProfile({
-            publicRepos: profileResult.value?.public_repos ?? null,
-            followers: profileResult.value?.followers ?? null,
-            following: profileResult.value?.following ?? null,
-          });
-        }
-        if (contributionsResult.status === 'fulfilled') {
-          const daily = contributionsResult.value?.contributions || [];
-          const thisYear = new Date().getFullYear();
-          const prevYear = thisYear - 1;
-          const total = (contributionsResult.value?.total?.[thisYear] || 0) + (contributionsResult.value?.total?.[prevYear] || 0);
-          setContributions(daily);
-          setTotalContributions(total || null);
-        }
-        if (followersResult.status === 'fulfilled' && Array.isArray(followersResult.value)) {
-          setFollowersList(followersResult.value);
-        }
-        if (followingResult.status === 'fulfilled' && Array.isArray(followingResult.value)) {
-          setFollowingList(followingResult.value);
-        }
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
-      });
+      Promise.allSettled([profileRequest, contributionsRequest, followersRequest, followingRequest, reposRequest])
+        .then(([profileResult, contributionsResult, followersResult, followingResult, reposResult]) => {
+          if (!isMounted) return;
+          if (profileResult.status === 'fulfilled') {
+            setProfile({
+              publicRepos: profileResult.value?.public_repos ?? null,
+              followers: profileResult.value?.followers ?? null,
+              following: profileResult.value?.following ?? null,
+            });
+          }
+          if (contributionsResult.status === 'fulfilled') {
+            const daily = contributionsResult.value?.contributions || [];
+            const thisYear = new Date().getFullYear();
+            const prevYear = thisYear - 1;
+            const total = (contributionsResult.value?.total?.[thisYear] || 0) + (contributionsResult.value?.total?.[prevYear] || 0);
+            setContributions(daily);
+            setTotalContributions(total || null);
+          }
+          if (followersResult.status === 'fulfilled' && Array.isArray(followersResult.value)) {
+            setFollowersList(followersResult.value);
+          }
+          if (followingResult.status === 'fulfilled' && Array.isArray(followingResult.value)) {
+            setFollowingList(followingResult.value);
+          }
+          if (reposResult.status === 'fulfilled' && Array.isArray(reposResult.value)) {
+            setReposList(reposResult.value);
+          }
+          setLastUpdated(new Date());
+        })
+        .finally(() => {
+          if (isMounted) setLoading(false);
+        });
+    };
+
+    fetchAll();
+    const intervalId = window.setInterval(fetchAll, 120000);
 
     return () => {
       isMounted = false;
+      window.clearInterval(intervalId);
     };
   }, []);
 
-  const weeks = useMemo(() => groupWeeksFromContributions(contributions), [contributions]);
+  const monthOptions = useMemo(() => {
+    const unique = new Set(
+      contributions.map((d) => {
+        const date = new Date(`${d.date}T00:00:00`);
+        return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+      }),
+    );
+    return ['all', ...Array.from(unique)];
+  }, [contributions]);
+
+  const filteredContributions = useMemo(() => {
+    if (monthFilter === 'all') return contributions;
+    return contributions.filter((d) => {
+      const key = new Date(`${d.date}T00:00:00`).toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+      return key === monthFilter;
+    });
+  }, [contributions, monthFilter]);
+
+  const weeks = useMemo(() => groupWeeksFromContributions(filteredContributions), [filteredContributions]);
   const graphStats = useMemo(() => {
     const cells = weeks.flat().filter((day) => !day.empty);
     const committed = cells.reduce((sum, day) => sum + day.count, 0);
@@ -159,7 +200,12 @@ export default function GitHubStats() {
   }, [weeks]);
   const statItems = [
     { label: 'Last Year Contributions', value: totalContributions ?? '--' },
-    { label: 'Public Repositories', value: profile.publicRepos ?? '--' },
+    {
+      label: 'Public Repositories',
+      value: profile.publicRepos ?? '--',
+      key: 'repos',
+      href: `https://github.com/${GITHUB_USERNAME}?tab=repositories`,
+    },
     {
       label: 'Followers',
       value: profile.followers ?? '--',
@@ -197,16 +243,38 @@ export default function GitHubStats() {
                 {item.key && (
                   <div className="pointer-events-none absolute left-1/2 top-full z-20 hidden w-64 -translate-x-1/2 rounded-xl border border-border bg-background/95 p-3 text-left shadow-xl group-hover:block">
                     <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-                      {item.key === 'followers' ? 'Followers Preview' : 'Following Preview'}
+                      {item.key === 'followers'
+                        ? 'Followers Preview'
+                        : item.key === 'following'
+                          ? 'Following Preview'
+                          : 'Projects Preview'}
                     </p>
                     <div className="space-y-1.5">
-                      {(item.key === 'followers' ? followersList : followingList).slice(0, 6).map((user) => (
-                        <div key={user.id} className="flex items-center gap-2 text-xs text-text">
-                          <img src={user.avatar_url} alt={user.login} className="h-5 w-5 rounded-full border border-border" />
-                          <span className="truncate">{user.login}</span>
-                        </div>
-                      ))}
-                      {(item.key === 'followers' ? followersList : followingList).length === 0 && (
+                      {(item.key === 'repos'
+                        ? reposList.map((repo) => ({
+                            id: repo.id,
+                            avatar_url: repo.owner?.avatar_url,
+                            login: repo.name,
+                            meta: repo.stargazers_count,
+                          }))
+                        : (item.key === 'followers' ? followersList : followingList).map((user) => ({
+                            id: user.id,
+                            avatar_url: user.avatar_url,
+                            login: user.login,
+                            meta: null,
+                          }))
+                      )
+                        .slice(0, 6)
+                        .map((entry) => (
+                          <div key={entry.id} className="flex items-center justify-between gap-2 text-xs text-text">
+                            <div className="flex min-w-0 items-center gap-2">
+                              <img src={entry.avatar_url} alt={entry.login} className="h-5 w-5 rounded-full border border-border" />
+                              <span className="truncate">{entry.login}</span>
+                            </div>
+                            {entry.meta !== null && <span className="text-[10px] text-muted">★ {entry.meta}</span>}
+                          </div>
+                        ))}
+                      {(item.key === 'repos' ? reposList : item.key === 'followers' ? followersList : followingList).length === 0 && (
                         <p className="text-xs text-muted">No preview available right now.</p>
                       )}
                     </div>
@@ -220,11 +288,24 @@ export default function GitHubStats() {
           <article className="rounded-2xl border border-border bg-gradient-to-br from-surface to-background/70 p-4 sm:p-6 shadow-sm">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h3 className="text-lg font-space font-semibold text-primary">Contribution Graph</h3>
-              <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                {loading ? 'Loading live data...' : 'Interactive'}
-              </span>
+              <div className="flex items-center gap-2">
+                <select
+                  value={monthFilter}
+                  onChange={(e) => setMonthFilter(e.target.value)}
+                  className="rounded-full border border-border bg-background px-3 py-1 text-xs text-text outline-none"
+                >
+                  {monthOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option === 'all' ? 'All Months' : option}
+                    </option>
+                  ))}
+                </select>
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                  {loading ? 'Loading live data...' : 'Interactive'}
+                </span>
+              </div>
             </div>
-            <GitHubHeatmap weeks={weeks} />
+            <GitHubHeatmap weeks={weeks} mode="commits" />
             <div className="mt-3 flex items-center justify-between text-xs text-muted">
               <span>Less</span>
               <div className="flex items-center gap-1">
@@ -248,6 +329,9 @@ export default function GitHubStats() {
                 <p className="mt-1 text-lg font-semibold text-text">{graphStats.bestDay}</p>
               </div>
             </div>
+            <p className="mt-3 text-right text-[11px] text-muted">
+              {lastUpdated ? `Auto-updated: ${lastUpdated.toLocaleTimeString()}` : ''}
+            </p>
           </article>
 
           <article className="rounded-2xl border border-border bg-primary/5 p-5 text-center">
