@@ -11,7 +11,7 @@ A modern, responsive portfolio website built with React 18, Vite, and Tailwind C
 - **Accessibility**: WCAG compliant with proper ARIA labels and keyboard navigation
 - **SEO Ready**: Meta tags and Open Graph support for social sharing
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React 18, Vite
 - **Styling**: Tailwind CSS, CSS Custom Properties
