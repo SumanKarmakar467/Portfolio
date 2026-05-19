@@ -132,7 +132,7 @@ To get notified when someone visits your live portfolio:
 
 Notification payload includes URL, time, referrer, timezone, language, and user-agent.
 
-## 🚀 Deployment
+## Deployment
 
 ### Vercel (Recommended)
 1. Connect your GitHub repository to Vercel
@@ -150,7 +150,7 @@ npm run build
 # Upload the 'dist' folder to your hosting provider
 ```
 
-## 📱 Browser Support
+## Browser Support
 
 - Chrome 90+
 - Firefox 88+
