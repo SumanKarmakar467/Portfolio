@@ -94,7 +94,7 @@ src/
     └── animations.css  # Keyframe animations
 ```
 
-## 🎨 Customization
+## Customization
 
 ### Theme Colors
 Update color variables in `src/index.css`:
