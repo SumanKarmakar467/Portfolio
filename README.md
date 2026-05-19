@@ -34,7 +34,7 @@ A modern, responsive portfolio website built with React 18, Vite, and Tailwind C
 }
 ```
 
-## 🏃‍♂️ Getting Started
+## Getting Started
 
 1. **Clone the repository**
    ```bash
