@@ -157,7 +157,7 @@ npm run build
 - Safari 14+
 - Edge 90+
 
-## 📄 License
+## License
 
 This project is open source and available under the [MIT License](LICENSE).
 
