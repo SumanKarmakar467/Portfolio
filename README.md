@@ -1,4 +1,4 @@
-# Suman Karmakar 
+# Suman Karmakar Portfolio
 
 A modern, responsive portfolio website built with React 18, Vite, and Tailwind CSS. Showcasing MERN Stack development skills with beautiful animations and interactive elements.
 
