@@ -19,7 +19,7 @@ A modern, responsive portfolio website built with React 18, Vite, and Tailwind C
 - **Icons**: Custom SVG icons
 - **Fonts**: Google Fonts (Playfair Display, Space Grotesk, DM Sans, JetBrains Mono)
 
-## 📦 Dependencies
+## Dependencies
 
 ```json
 {
