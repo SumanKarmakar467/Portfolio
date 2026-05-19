@@ -62,7 +62,7 @@ A modern, responsive portfolio website built with React 18, Vite, and Tailwind C
    npm run preview
    ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
