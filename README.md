@@ -161,7 +161,7 @@ npm run build
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## 👨‍💻 Author
+## Author
 
 **Suman Karmakar**
 - Website: [suman-karmakar.dev](https://suman-karmakar.dev)
