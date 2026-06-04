@@ -1,4 +1,5 @@
 import React from 'react';
+import ResumePreviewLink from '../components/ResumePreviewLink';
 import './Hero.css';
 
 const HERO_TICKER_ITEMS = [
@@ -67,9 +68,7 @@ export default function Hero() {
             <a href="#projects" className="btn">
               View My Work
             </a>
-            <a href="/resume.pdf" className="btn btn-outline" download>
-              Download Resume
-            </a>
+            <ResumePreviewLink previewPosition="top">Download Resume</ResumePreviewLink>
           </div>
 
           <div className="flex justify-center space-x-6 mt-12">

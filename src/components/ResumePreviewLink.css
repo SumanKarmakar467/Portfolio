@@ -1,0 +1,72 @@
+.resume-preview-link {
+  position: relative;
+  display: inline-flex;
+  width: fit-content;
+}
+
+.resume-preview {
+  position: absolute;
+  left: 50%;
+  z-index: 80;
+  display: block;
+  width: min(320px, calc(100vw - 32px));
+  height: 430px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--primary) 26%, var(--border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(8px) scale(0.96);
+  transform-origin: top center;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.resume-preview-link--bottom .resume-preview {
+  top: calc(100% + 14px);
+}
+
+.resume-preview-link--top .resume-preview {
+  bottom: calc(100% + 14px);
+  transform: translateX(-50%) translateY(-8px) scale(0.96);
+  transform-origin: bottom center;
+}
+
+.resume-preview-link:hover .resume-preview,
+.resume-preview-link:focus-within .resume-preview {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.resume-preview__label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.resume-preview__frame {
+  display: block;
+  width: 100%;
+  height: calc(100% - 20px);
+  border: 0;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.dark .resume-preview {
+  background: rgba(15, 18, 32, 0.98);
+  border-color: rgba(126, 133, 214, 0.38);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+}
+
+@media (max-width: 640px), (hover: none) {
+  .resume-preview {
+    display: none;
+  }
+}

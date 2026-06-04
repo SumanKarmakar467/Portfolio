@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ResumePreviewLink from './ResumePreviewLink';
 import ThemeToggle from './ThemeToggle';
 
 const navItems = [
@@ -48,9 +49,9 @@ export default function Navbar({ theme, toggleTheme }) {
                 {item.label}
               </a>
             ))}
-            <a href="/resume.pdf" className="btn btn-outline text-sm px-4 py-2" download>
+            <ResumePreviewLink className="btn btn-outline text-sm px-4 py-2">
               Resume
-            </a>
+            </ResumePreviewLink>
             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
           </nav>
 
@@ -88,14 +89,12 @@ export default function Navbar({ theme, toggleTheme }) {
                   {item.label}
                 </a>
               ))}
-              <a
-                href="/resume.pdf"
+              <ResumePreviewLink
                 className="btn btn-outline text-sm px-4 py-2 w-fit"
-                download
                 onClick={() => setOpen(false)}
               >
                 Resume
-              </a>
+              </ResumePreviewLink>
               <div className="pt-2">
                 <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
               </div>
