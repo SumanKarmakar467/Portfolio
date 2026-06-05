@@ -77,6 +77,17 @@ function HeatmapGrid({ weeks, mode = 'submissions' }) {
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, placement: 'top' });
   const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+  const updateTooltipPosition = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const showBelow = rect.top < 64 && window.innerHeight - rect.bottom > 72;
+
+    setTooltipPos({
+      x: rect.left + rect.width / 2,
+      y: showBelow ? rect.bottom + 10 : rect.top - 10,
+      placement: showBelow ? 'bottom' : 'top',
+    });
+  };
+
   const monthMarkers = useMemo(() => {
     const markers = [];
     weeks.forEach((week, index) => {
@@ -112,17 +123,11 @@ function HeatmapGrid({ weeks, mode = 'submissions' }) {
                   key={day.date}
                   type="button"
                   className={`h-[10px] w-[10px] rounded-[2px] ${heatColor(day.count)} transition-transform duration-150 hover:scale-125 hover:ring-1 hover:ring-primary/80`}
-                  onMouseEnter={() => setHovered(day)}
-                  onMouseMove={(event) => {
-                    const rect = event.currentTarget.getBoundingClientRect();
-                    const parentRect = event.currentTarget.closest('.relative').getBoundingClientRect();
-                    const isNearTop = rect.top - parentRect.top < 36;
-                    setTooltipPos({
-                      x: rect.left - parentRect.left + rect.width / 2,
-                      y: isNearTop ? rect.top - parentRect.top + rect.height + 8 : rect.top - parentRect.top - 8,
-                      placement: isNearTop ? 'bottom' : 'top',
-                    });
+                  onMouseEnter={(event) => {
+                    setHovered(day);
+                    updateTooltipPosition(event);
                   }}
+                  onMouseMove={updateTooltipPosition}
                   onMouseLeave={() => setHovered(null)}
                   aria-label={`${day.count} submissions on ${day.date}`}
                 />
@@ -132,14 +137,17 @@ function HeatmapGrid({ weeks, mode = 'submissions' }) {
 
           {hovered && (
             <div
-              className={`pointer-events-none absolute z-20 -translate-x-1/2 rounded-lg border border-primary/40 bg-[#120a12]/95 px-3 py-1.5 text-xs text-text shadow-lg ${
+              className={`pointer-events-none fixed z-[999] w-max max-w-[210px] -translate-x-1/2 whitespace-nowrap rounded-lg border border-[#7ee787]/45 bg-[#120a12]/95 px-3 py-1.5 text-xs text-white shadow-lg ${
                 tooltipPos.placement === 'top' ? '-translate-y-full' : 'translate-y-0'
               }`}
-              style={{ left: tooltipPos.x, top: tooltipPos.y }}
+              style={{
+                left: `clamp(105px, ${tooltipPos.x}px, calc(100vw - 105px))`,
+                top: tooltipPos.y,
+              }}
             >
-              <span className="font-semibold text-primary">{hovered.count}</span>{' '}
-              <span className="text-text">{mode}</span>{' '}
-              <span className="text-muted">on {formatDateLabel(hovered.date)}</span>
+              <span className="font-semibold text-[#7ee787]">{hovered.count}</span>{' '}
+              <span>{mode}</span>{' '}
+              <span className="text-[#f6c9d4]">on {formatDateLabel(hovered.date)}</span>
             </div>
           )}
         </div>

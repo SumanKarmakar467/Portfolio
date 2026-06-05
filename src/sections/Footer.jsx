@@ -8,10 +8,7 @@ export default function Footer() {
       <div className="container">
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">SK</span>
-              </div>
+            <div className="flex items-center mb-4">
               <span className="font-space font-semibold text-lg">Suman Karmakar</span>
             </div>
             <p className="text-muted leading-relaxed">

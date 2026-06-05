@@ -30,13 +30,10 @@ export default function Navbar({ theme, toggleTheme }) {
         scrolled ? 'bg-surface/95 backdrop-blur-sm border-b border-border' : 'bg-transparent'
       }`}
     >
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between">
-          <a href="#hero" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">SK</span>
-            </div>
-            <span className="font-space font-semibold text-lg">Suman Karmakar</span>
+          <a href="#hero" className="flex min-w-0 items-center">
+            <span className="truncate font-space font-semibold text-base sm:text-lg">Suman Karmakar</span>
           </a>
 
           <nav className={`hidden md:flex items-center space-x-8 ${open ? 'flex' : ''}`}>
@@ -55,7 +52,12 @@ export default function Navbar({ theme, toggleTheme }) {
             <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
           </nav>
 
-          <button className="md:hidden p-2" onClick={() => setOpen(!open)} aria-label="Toggle menu">
+          <button
+            className="md:hidden rounded-xl border border-border bg-surface/80 p-2 shadow-sm"
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle menu"
+            aria-expanded={open}
+          >
             <div className="w-6 h-6 flex flex-col justify-center items-center">
               <span
                 className={`block w-5 h-0.5 bg-text transition-all duration-300 ${
@@ -77,25 +79,25 @@ export default function Navbar({ theme, toggleTheme }) {
         </div>
 
         {open && (
-          <div className="md:hidden mt-4 py-4 border-t border-border">
-            <nav className="flex flex-col space-y-4">
+          <div className="md:hidden mt-3 overflow-hidden rounded-2xl border border-border bg-surface/95 p-3 shadow-2xl backdrop-blur-xl">
+            <nav className="grid gap-2">
               {navItems.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
-                  className="text-muted hover:text-primary transition-colors duration-200"
+                  className="rounded-xl px-4 py-3 text-sm font-semibold text-muted transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}
                 </a>
               ))}
-              <ResumePreviewLink
-                className="btn btn-outline text-sm px-4 py-2 w-fit"
-                onClick={() => setOpen(false)}
-              >
-                Resume
-              </ResumePreviewLink>
-              <div className="pt-2">
+              <div className="mt-2 flex items-center justify-between gap-3 border-t border-border pt-3">
+                <ResumePreviewLink
+                  className="btn btn-outline flex-1 justify-center text-sm px-4 py-2"
+                  onClick={() => setOpen(false)}
+                >
+                  Resume
+                </ResumePreviewLink>
                 <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
               </div>
             </nav>

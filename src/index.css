@@ -33,6 +33,7 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
@@ -40,6 +41,9 @@
     background: var(--background);
     color: var(--text);
     line-height: 1.6;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -110,6 +114,61 @@
   .btn-outline:hover {
     background: var(--primary);
     color: white;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    scroll-padding-top: 82px;
+  }
+
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .container {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .section {
+    padding: 3.75rem 0;
+    contain-intrinsic-size: 560px;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 10vw, 2.45rem);
+    line-height: 1.08;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.98rem;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.78rem 1rem;
+  }
+
+  .card {
+    border-radius: 1rem;
+    padding: 1.1rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .container {
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
+  }
+
+  .section {
+    padding: 3.25rem 0;
   }
 }
 
