@@ -191,6 +191,26 @@
   }
 }
 
+.snake-bite {
+  animation: snakeBite 320ms ease-out;
+}
+
+@keyframes snakeBite {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  35% {
+    transform: scale(1.55);
+    filter: brightness(1.9);
+    box-shadow: 0 0 8px rgba(126, 231, 135, 0.8);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

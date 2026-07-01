@@ -1,0 +1,66 @@
+.game-snake-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.game-snake-seg,
+.game-snake-head {
+  position: absolute;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  transition: left 230ms ease, top 230ms ease;
+}
+
+.game-snake-seg-1 {
+  width: 9px;
+  height: 9px;
+  background: linear-gradient(135deg, #4cd964, #1f7a36);
+  opacity: 0.92;
+  transition-duration: 340ms;
+}
+
+.game-snake-seg-2 {
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #43c85b, #1c6b30);
+  opacity: 0.72;
+  transition-duration: 440ms;
+}
+
+.game-snake-seg-3 {
+  width: 6px;
+  height: 6px;
+  background: linear-gradient(135deg, #3ab552, #185f2a);
+  opacity: 0.5;
+  transition-duration: 540ms;
+}
+
+.game-snake-head {
+  width: 11px;
+  height: 11px;
+  background: linear-gradient(135deg, #c8fccb, #4cd964);
+  box-shadow: 0 0 7px rgba(76, 217, 100, 0.9), 0 0 14px rgba(76, 217, 100, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  z-index: 1;
+  transition-duration: 230ms;
+}
+
+.game-snake-eye {
+  width: 1.6px;
+  height: 1.6px;
+  border-radius: 999px;
+  background: #06210a;
+  transform: translate(var(--eye-x, 0), var(--eye-y, 0));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-snake-layer {
+    display: none;
+  }
+}

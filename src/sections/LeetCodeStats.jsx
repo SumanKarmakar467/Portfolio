@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import SnakeStreak from '../components/SnakeStreak';
-import HeatmapSnake from '../components/HeatmapSnake';
+import GameSnake from '../components/GameSnake';
 
 const LEETCODE_USERNAME = 'suman2k04';
 const LEETCODE_API_URLS = [
@@ -77,6 +76,7 @@ function heatColor(count) {
 function HeatmapGrid({ weeks, mode = 'submissions' }) {
   const [hovered, setHovered] = useState(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, placement: 'top' });
+  const [bitten, setBitten] = useState(null);
   const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   const updateTooltipPosition = (event) => {
@@ -117,15 +117,21 @@ function HeatmapGrid({ weeks, mode = 'submissions' }) {
       </div>
 
       <div className="relative overflow-hidden">
-        <HeatmapSnake />
+        <GameSnake
+          columns={weeks.length}
+          rows={7}
+          onVisit={(col, row) => setBitten(`${col}-${row}`)}
+        />
         <div className="relative inline-flex max-w-full gap-[2px]">
           {weeks.map((week, weekIndex) => (
             <div key={weekIndex} className="flex flex-col gap-[3px]">
-              {week.map((day) => (
+              {week.map((day, dayIndex) => (
                 <button
                   key={day.date}
                   type="button"
-                  className={`h-[10px] w-[10px] rounded-[2px] ${heatColor(day.count)} transition-transform duration-150 hover:scale-125 hover:ring-1 hover:ring-primary/80`}
+                  className={`h-[10px] w-[10px] rounded-[2px] ${heatColor(day.count)} transition-transform duration-150 hover:scale-125 hover:ring-1 hover:ring-primary/80 ${
+                    bitten === `${weekIndex}-${dayIndex}` ? 'snake-bite' : ''
+                  }`}
                   onMouseEnter={(event) => {
                     setHovered(day);
                     updateTooltipPosition(event);
@@ -301,7 +307,7 @@ export default function LeetCodeStats() {
                   </div>
                   <span>More</span>
                 </div>
-                <div className="mt-4 grid gap-3 text-center sm:grid-cols-3">
+                <div className="mt-4 grid gap-3 text-center sm:grid-cols-4">
                   <div className="rounded-xl border border-border/70 bg-background/35 px-3 py-2">
                     <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Submissions</p>
                     <p className="mt-1 text-lg font-semibold text-text">{graphStats.solved}</p>
@@ -314,9 +320,10 @@ export default function LeetCodeStats() {
                     <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Best Day</p>
                     <p className="mt-1 text-lg font-semibold text-text">{graphStats.bestDay}</p>
                   </div>
-                </div>
-                <div className="mt-4">
-                  <SnakeStreak streak={graphStats.maxStreak} label="Max Streak" />
+                  <div className="rounded-xl border border-border/70 bg-background/35 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Max Streak</p>
+                    <p className="mt-1 text-lg font-semibold text-text">{graphStats.maxStreak}</p>
+                  </div>
                 </div>
                 <p className="mt-3 text-right text-[11px] text-muted">
                   {lastUpdated ? `Auto-updated: ${lastUpdated.toLocaleTimeString()}` : ''}

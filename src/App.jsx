@@ -3,8 +3,7 @@ import Navbar from './components/Navbar';
 import ScrollProgress from './components/ScrollProgress';
 import BackToTop from './components/BackToTop';
 import CustomCursor from './components/CustomCursor';
-import GeoBackground from './components/GeoBackground';
-import SparkleBackground from './components/SparkleBackground';
+import AuroraBackground from './components/AuroraBackground';
 import VoiceAssistant from './components/VoiceAssistant';
 import useTheme from './hooks/useTheme';
 import useVisitNotifier from './hooks/useVisitNotifier';
@@ -49,8 +48,7 @@ export default function App() {
 
   return (
     <div className={`min-h-screen relative z-0 ${theme}`}>
-      {theme === 'dark' && <GeoBackground />}
-      {theme === 'light' && <SparkleBackground />}
+      <AuroraBackground theme={theme} />
       <ScrollProgress />
       <CustomCursor />
       <Navbar theme={theme} toggleTheme={toggleTheme} />
