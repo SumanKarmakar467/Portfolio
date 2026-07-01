@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ResumePreviewLink from './ResumePreviewLink';
 import ThemeToggle from './ThemeToggle';
+import './Navbar.css';
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -36,12 +37,12 @@ export default function Navbar({ theme, toggleTheme }) {
             <span className="truncate font-space font-semibold text-base sm:text-lg">Suman Karmakar</span>
           </a>
 
-          <nav className={`hidden md:flex items-center space-x-8 ${open ? 'flex' : ''}`}>
+          <nav className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                className="text-muted hover:text-primary transition-colors duration-200 font-medium"
+                className="nav-link text-muted hover:text-primary transition-colors duration-200 font-medium"
               >
                 {item.label}
               </a>
@@ -78,8 +79,8 @@ export default function Navbar({ theme, toggleTheme }) {
           </button>
         </div>
 
-        {open && (
-          <div className="md:hidden mt-3 overflow-hidden rounded-2xl border border-border bg-surface/95 p-3 shadow-2xl backdrop-blur-xl">
+        <div className={`md:hidden mobile-menu-collapse ${open ? 'is-open' : ''}`}>
+          <div className="mt-3 rounded-2xl border border-border bg-surface/95 p-3 shadow-2xl backdrop-blur-xl">
             <nav className="grid gap-2">
               {navItems.map((item) => (
                 <a
@@ -102,7 +103,7 @@ export default function Navbar({ theme, toggleTheme }) {
               </div>
             </nav>
           </div>
-        )}
+        </div>
       </div>
     </header>
   );

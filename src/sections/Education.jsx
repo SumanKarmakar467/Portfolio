@@ -1,9 +1,13 @@
 import React from 'react';
 import { education } from '../constants/education';
+import useIntersectionObserver from '../hooks/useIntersectionObserver';
+import './Education.css';
 
 export default function Education() {
+  const { ref, hasIntersected } = useIntersectionObserver();
+
   return (
-    <section id="education" className="section">
+    <section id="education" className="section" ref={ref}>
       <div className="container">
         <div className="text-center mb-16">
           <h2 className="section-title">Education</h2>
@@ -12,13 +16,21 @@ export default function Education() {
 
         <div className="max-w-4xl mx-auto">
           <div className="relative">
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary to-secondary" />
+            <div className="edu-timeline-rail" />
 
-            {education.map((edu) => (
+            {education.map((edu, index) => (
               <div key={edu.id} className="relative mb-12 last:mb-0">
-                <div className="absolute left-6 w-4 h-4 bg-primary rounded-full border-4 border-background z-10" />
+                <span className="edu-node">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 3 1 8l11 5 9-4.09V17h2V8Z" />
+                    <path d="M5 10.5V15c0 1.5 3 3.5 7 3.5s7-2 7-3.5v-4.5l-7 3.18Z" />
+                  </svg>
+                </span>
 
-                <div className="ml-20 card">
+                <div
+                  className={`ml-20 edu-card edu-item ${hasIntersected ? 'is-visible' : ''}`}
+                  style={{ transitionDelay: `${index * 110}ms` }}
+                >
                   <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
                     <div>
                       <h3 className="text-xl font-space font-semibold text-primary mb-1">{edu.degree}</h3>
@@ -39,7 +51,22 @@ export default function Education() {
                     </span>
                   </div>
 
-                  <p className="text-muted leading-relaxed">{edu.description}</p>
+                  <p className="text-muted leading-relaxed mb-4">{edu.description}</p>
+
+                  {edu.achievements?.length > 0 && (
+                    <div className="space-y-2 border-t border-border/70 pt-4">
+                      {edu.achievements.map((item) => (
+                        <div key={item} className="edu-achievement">
+                          <span className="edu-achievement-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20,6 9,17 4,12" />
+                            </svg>
+                          </span>
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

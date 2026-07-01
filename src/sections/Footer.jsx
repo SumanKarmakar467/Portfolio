@@ -1,14 +1,16 @@
 import React from 'react';
+import './Footer.css';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-surface border-t border-border py-12 mt-20">
+    <footer className="site-footer bg-surface border-t border-border py-12 mt-20">
       <div className="container">
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div>
-            <div className="flex items-center mb-4">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="footer-brand-mark">SK</span>
               <span className="font-space font-semibold text-lg">Suman Karmakar</span>
             </div>
             <p className="text-muted leading-relaxed">
@@ -18,7 +20,7 @@ export default function Footer() {
 
           <div>
             <h4 className="font-space font-semibold mb-4 text-primary">Quick Links</h4>
-            <nav className="space-y-2">
+            <nav className="space-y-2.5">
               {[
                 { label: 'About', href: '#about' },
                 { label: 'Projects', href: '#projects' },
@@ -32,7 +34,7 @@ export default function Footer() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="block text-muted hover:text-primary transition-colors text-sm"
+                  className="footer-link block text-muted hover:text-primary transition-colors text-sm"
                 >
                   {link.label}
                 </a>
@@ -42,12 +44,12 @@ export default function Footer() {
 
           <div>
             <h4 className="font-space font-semibold mb-4 text-primary">Connect</h4>
-            <div className="flex space-x-4">
+            <div className="flex space-x-3">
               <a
                 href="https://github.com/SumanKarmakar467"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-surface border border-border rounded-lg flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
+                className="footer-social-icon"
                 aria-label="GitHub"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -58,7 +60,7 @@ export default function Footer() {
                 href="https://www.linkedin.com/in/suman-karmakar-jerry/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-surface border border-border rounded-lg flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
+                className="footer-social-icon"
                 aria-label="LinkedIn"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -67,7 +69,7 @@ export default function Footer() {
               </a>
               <a
                 href="mailto:karmakarsuman12138@gmail.com"
-                className="w-10 h-10 bg-surface border border-border rounded-lg flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
+                className="footer-social-icon"
                 aria-label="Email"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

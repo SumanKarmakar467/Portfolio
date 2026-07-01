@@ -3,7 +3,7 @@ import React from 'react';
 export default function ThemeToggle({ theme, toggleTheme }) {
   return (
     <button
-      className="w-10 h-10 flex items-center justify-center text-red-500 hover:text-red-400 transition-colors duration-200"
+      className="w-10 h-10 flex items-center justify-center rounded-full text-muted transition-all duration-300 hover:text-primary hover:bg-primary/10 hover:rotate-12"
       onClick={toggleTheme}
       aria-label="Toggle theme"
     >

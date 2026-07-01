@@ -1,7 +1,35 @@
 import React, { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import useIntersectionObserver from '../hooks/useIntersectionObserver';
+import './Contact.css';
+
+const CONTACT_ICONS = {
+  email: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
+      <path d="m3.5 6 8.5 7 8.5-7" />
+    </svg>
+  ),
+  linkedin: (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
+    </svg>
+  ),
+  github: (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+    </svg>
+  ),
+  location: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21Z" />
+      <circle cx="12" cy="9.5" r="2.4" />
+    </svg>
+  ),
+};
 
 export default function Contact() {
+  const { ref, hasIntersected } = useIntersectionObserver();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -34,35 +62,38 @@ export default function Contact() {
 
   const contactInfo = [
     {
-      icon: 'EMAIL',
+      icon: 'email',
       label: 'Email',
       value: 'karmakarsuman12138@gmail.com',
       href: 'mailto:karmakarsuman12138@gmail.com',
     },
     {
-      icon: 'LINKEDIN',
+      icon: 'linkedin',
       label: 'LinkedIn',
       value: 'linkedin.com/in/suman-karmakar-jerry',
       href: 'https://www.linkedin.com/in/suman-karmakar-jerry/',
     },
     {
-      icon: 'GITHUB',
+      icon: 'github',
       label: 'GitHub',
       value: 'github.com/SumanKarmakar467',
       href: 'https://github.com/SumanKarmakar467/',
     },
     {
-      icon: 'LOC',
+      icon: 'location',
       label: 'Location',
       value: 'West Bengal, India',
       href: '#',
     },
   ];
 
+  const revealClass = () => `contact-reveal ${hasIntersected ? 'is-visible' : ''}`;
+  const revealStyle = (delay = 0) => ({ transitionDelay: `${delay}ms` });
+
   return (
-    <section id="contact" className="section">
+    <section id="contact" className="section" ref={ref}>
       <div className="container">
-        <div className="text-center mb-16">
+        <div className={`text-center mb-16 ${revealClass()}`} style={revealStyle(0)}>
           <h2 className="section-title">Let&apos;s Build Something</h2>
           <p className="section-subtitle">
             Have a project idea or collaboration proposal? Let&apos;s connect.
@@ -70,14 +101,14 @@ export default function Contact() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          <div className="card">
+          <div className={`contact-card p-6 sm:p-8 ${revealClass()}`} style={revealStyle(80)}>
             <h3 className="text-xl font-space font-semibold mb-6 text-primary">Send a Message</h3>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium mb-2">
-                    Name *
+                    Name <span className="text-primary">*</span>
                   </label>
                   <input
                     type="text"
@@ -86,13 +117,13 @@ export default function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    className="contact-input w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="Your name"
                   />
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium mb-2">
-                    Email *
+                    Email <span className="text-primary">*</span>
                   </label>
                   <input
                     type="email"
@@ -101,7 +132,7 @@ export default function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    className="contact-input w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -109,7 +140,7 @@ export default function Contact() {
 
               <div>
                 <label htmlFor="subject" className="block text-sm font-medium mb-2">
-                  Subject *
+                  Subject <span className="text-primary">*</span>
                 </label>
                 <input
                   type="text"
@@ -118,14 +149,14 @@ export default function Contact() {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                  className="contact-input w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   placeholder="What&apos;s this about?"
                 />
               </div>
 
               <div>
                 <label htmlFor="message" className="block text-sm font-medium mb-2">
-                  Message *
+                  Message <span className="text-primary">*</span>
                 </label>
                 <textarea
                   id="message"
@@ -134,7 +165,7 @@ export default function Contact() {
                   onChange={handleChange}
                   required
                   rows={6}
-                  className="w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors resize-none"
+                  className="contact-input w-full px-4 py-3 bg-surface border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                   placeholder="Tell me about your project or just say hello..."
                 />
               </div>
@@ -142,7 +173,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full btn disabled:opacity-50 disabled:cursor-not-allowed"
+                className="contact-submit-btn w-full btn disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center">
@@ -156,7 +187,7 @@ export default function Contact() {
             </form>
           </div>
 
-          <div className="space-y-8">
+          <div className={`space-y-8 ${revealClass()}`} style={revealStyle(160)}>
             <div>
               <h3 className="text-xl font-space font-semibold mb-6 text-primary">Let&apos;s Connect</h3>
               <p className="text-muted leading-relaxed mb-8">
@@ -166,18 +197,19 @@ export default function Contact() {
             </div>
 
             <div className="space-y-4">
-              {contactInfo.map((info) => (
+              {contactInfo.map((info, index) => (
                 <a
                   key={info.label}
                   href={info.href}
                   target={info.href.startsWith('http') ? '_blank' : undefined}
                   rel={info.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="flex items-center space-x-4 p-4 bg-surface border border-border rounded-lg hover:border-primary/50 transition-colors group"
+                  className={`contact-info-card group ${revealClass()}`}
+                  style={revealStyle(240 + index * 80)}
                 >
-                  <div className="text-xs font-semibold text-primary/80 w-14">{info.icon}</div>
-                  <div>
+                  <span className="contact-info-icon">{CONTACT_ICONS[info.icon]}</span>
+                  <div className="min-w-0">
                     <div className="font-medium group-hover:text-primary transition-colors">{info.label}</div>
-                    <div className="text-muted text-sm">{info.value}</div>
+                    <div className="text-muted text-sm truncate">{info.value}</div>
                   </div>
                 </a>
               ))}
