@@ -116,13 +116,13 @@ function HeatmapGrid({ weeks, mode = 'submissions' }) {
         ))}
       </div>
 
-      <div className="relative overflow-hidden">
-        <GameSnake
-          columns={weeks.length}
-          rows={7}
-          onVisit={(col, row) => setBitten(`${col}-${row}`)}
-        />
+      <div className="overflow-hidden">
         <div className="relative inline-flex max-w-full gap-[2px]">
+          <GameSnake
+            columns={weeks.length}
+            rows={7}
+            onVisit={(col, row) => setBitten(`${col}-${row}`)}
+          />
           {weeks.map((week, weekIndex) => (
             <div key={weekIndex} className="flex flex-col gap-[3px]">
               {week.map((day, dayIndex) => (
@@ -175,6 +175,37 @@ export default function LeetCodeStats() {
   useEffect(() => {
     let isMounted = true;
 
+    const CACHE_KEY = 'leetcodeStatsCache';
+    const CACHE_TTL_MS = 5 * 60 * 1000;
+
+    const readCache = () => {
+      try {
+        const raw = window.sessionStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed?.savedAt || Date.now() - parsed.savedAt > CACHE_TTL_MS) return null;
+        return parsed;
+      } catch {
+        return null;
+      }
+    };
+
+    const writeCache = (data) => {
+      try {
+        window.sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ...data, savedAt: Date.now() }));
+      } catch {
+        /* storage unavailable */
+      }
+    };
+
+    const cached = readCache();
+    if (cached) {
+      setStats(cached.stats);
+      setCalendar(cached.calendar);
+      setLastUpdated(new Date(cached.savedAt));
+      setLoading(false);
+    }
+
     const fetchStats = async () => {
       for (const url of LEETCODE_API_URLS) {
         try {
@@ -187,9 +218,12 @@ export default function LeetCodeStats() {
 
           if (easy !== null || medium !== null || hard !== null || total !== null) {
             if (!isMounted) return;
-            setStats({ easySolved: easy, mediumSolved: medium, hardSolved: hard, totalSolved: total });
-            if (data.submissionCalendar) setCalendar(data.submissionCalendar);
+            const nextStats = { easySolved: easy, mediumSolved: medium, hardSolved: hard, totalSolved: total };
+            const nextCalendar = data.submissionCalendar || calendar;
+            setStats(nextStats);
+            if (data.submissionCalendar) setCalendar(nextCalendar);
             setLastUpdated(new Date());
+            writeCache({ stats: nextStats, calendar: nextCalendar });
             return;
           }
         } catch (_) {}
@@ -199,7 +233,7 @@ export default function LeetCodeStats() {
     fetchStats().finally(() => {
       if (isMounted) setLoading(false);
     });
-    const intervalId = window.setInterval(fetchStats, 120000);
+    const intervalId = window.setInterval(fetchStats, 10 * 60 * 1000);
     return () => {
       isMounted = false;
       window.clearInterval(intervalId);

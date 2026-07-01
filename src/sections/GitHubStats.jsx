@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import GameSnake from '../components/GameSnake';
 
 const GITHUB_USERNAME = 'SumanKarmakar467';
@@ -119,13 +119,13 @@ function GitHubHeatmap({ weeks, mode = 'contributions' }) {
         ))}
       </div>
 
-      <div className="relative overflow-hidden">
-        <GameSnake
-          columns={weeks.length}
-          rows={7}
-          onVisit={(col, row) => setBitten(`${col}-${row}`)}
-        />
+      <div className="overflow-hidden">
         <div className="relative inline-flex max-w-full gap-[2px]">
+          <GameSnake
+            columns={weeks.length}
+            rows={7}
+            onVisit={(col, row) => setBitten(`${col}-${row}`)}
+          />
           {weeks.map((week, weekIdx) => (
             <div key={weekIdx} className="flex flex-col gap-[3px]">
               {week.map((day, dayIdx) =>
@@ -182,8 +182,42 @@ export default function GitHubStats() {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const previewLoadedRef = useRef({ repos: false, followers: false, following: false });
+
   useEffect(() => {
     let isMounted = true;
+
+    const CACHE_KEY = 'githubStatsCache';
+    const CACHE_TTL_MS = 5 * 60 * 1000;
+
+    const readCache = () => {
+      try {
+        const raw = window.sessionStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed?.savedAt || Date.now() - parsed.savedAt > CACHE_TTL_MS) return null;
+        return parsed;
+      } catch {
+        return null;
+      }
+    };
+
+    const writeCache = (data) => {
+      try {
+        window.sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ...data, savedAt: Date.now() }));
+      } catch {
+        /* storage unavailable */
+      }
+    };
+
+    const cached = readCache();
+    if (cached) {
+      setProfile(cached.profile);
+      setContributions(cached.contributions);
+      setTotalContributions(getRollingYearTotal(cached.contributions) || 0);
+      setLastUpdated(new Date(cached.savedAt));
+      setLoading(false);
+    }
 
     const fetchAll = () => {
       const options = { cache: 'no-store' };
@@ -191,42 +225,35 @@ export default function GitHubStats() {
       const contributionsRequest = fetch(`https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}`, options).then((res) =>
         res.json(),
       );
-      const followersRequest = fetch(`https://api.github.com/users/${GITHUB_USERNAME}/followers?per_page=12`, options).then((res) =>
-        res.json(),
-      );
-      const followingRequest = fetch(`https://api.github.com/users/${GITHUB_USERNAME}/following?per_page=12`, options).then((res) =>
-        res.json(),
-      );
-      const reposRequest = fetch(
-        `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=12`,
-        options,
-      ).then((res) => res.json());
 
-      Promise.allSettled([profileRequest, contributionsRequest, followersRequest, followingRequest, reposRequest])
-        .then(([profileResult, contributionsResult, followersResult, followingResult, reposResult]) => {
+      Promise.allSettled([profileRequest, contributionsRequest])
+        .then(([profileResult, contributionsResult]) => {
           if (!isMounted) return;
-          if (profileResult.status === 'fulfilled') {
-            setProfile({
+
+          let nextProfile = null;
+          let nextContributions = null;
+
+          if (profileResult.status === 'fulfilled' && !profileResult.value?.message) {
+            nextProfile = {
               publicRepos: profileResult.value?.public_repos ?? null,
               followers: profileResult.value?.followers ?? null,
               following: profileResult.value?.following ?? null,
-            });
+            };
+            setProfile(nextProfile);
           }
-        if (contributionsResult.status === 'fulfilled') {
-          const daily = contributionsResult.value?.contributions || [];
-          setContributions(daily);
-          setTotalContributions(getRollingYearTotal(daily) || 0);
-        }
-          if (followersResult.status === 'fulfilled' && Array.isArray(followersResult.value)) {
-            setFollowersList(followersResult.value);
+
+          if (contributionsResult.status === 'fulfilled') {
+            const daily = contributionsResult.value?.contributions || [];
+            nextContributions = daily;
+            setContributions(daily);
+            setTotalContributions(getRollingYearTotal(daily) || 0);
           }
-          if (followingResult.status === 'fulfilled' && Array.isArray(followingResult.value)) {
-            setFollowingList(followingResult.value);
-          }
-          if (reposResult.status === 'fulfilled' && Array.isArray(reposResult.value)) {
-            setReposList(reposResult.value);
-          }
+
           setLastUpdated(new Date());
+
+          if (nextProfile && nextContributions) {
+            writeCache({ profile: nextProfile, contributions: nextContributions });
+          }
         })
         .finally(() => {
           if (isMounted) setLoading(false);
@@ -234,13 +261,34 @@ export default function GitHubStats() {
     };
 
     fetchAll();
-    const intervalId = window.setInterval(fetchAll, 120000);
+    const intervalId = window.setInterval(fetchAll, 10 * 60 * 1000);
 
     return () => {
       isMounted = false;
       window.clearInterval(intervalId);
     };
   }, []);
+
+  const loadPreview = (key) => {
+    if (previewLoadedRef.current[key]) return;
+    previewLoadedRef.current[key] = true;
+
+    const endpoints = {
+      repos: `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=12`,
+      followers: `https://api.github.com/users/${GITHUB_USERNAME}/followers?per_page=12`,
+      following: `https://api.github.com/users/${GITHUB_USERNAME}/following?per_page=12`,
+    };
+    const setters = { repos: setReposList, followers: setFollowersList, following: setFollowingList };
+
+    fetch(endpoints[key], { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setters[key](data);
+      })
+      .catch(() => {
+        previewLoadedRef.current[key] = false;
+      });
+  };
 
   const monthOptions = useMemo(() => ['all', ...getLast12Months()], []);
 
@@ -308,6 +356,8 @@ export default function GitHubStats() {
                 href={item.href || `https://github.com/${GITHUB_USERNAME}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onMouseEnter={() => item.key && loadPreview(item.key)}
+                onFocus={() => item.key && loadPreview(item.key)}
                 className={`group relative rounded-2xl border border-border bg-gradient-to-br from-surface to-background/70 p-4 text-center shadow-sm transition hover:border-primary/60 hover:shadow-lg ${item.key ? 'cursor-pointer' : ''}`}
               >
                 <p className="text-xs uppercase tracking-[0.18em] text-muted">{item.label}</p>

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './GameSnake.css';
 
 const STEP_MS = 260;
+const BODY_LENGTH = 7;
 
 function buildPath(columns, rows) {
   if (columns <= 0 || rows <= 0) return [[0, 0]];
@@ -23,14 +24,14 @@ function buildPath(columns, rows) {
 
 export default function GameSnake({ columns, rows = 7, onVisit }) {
   const path = useMemo(() => buildPath(columns, rows), [columns, rows]);
-  const [stepIndex, setStepIndex] = useState(0);
+  const [history, setHistory] = useState(() => Array.from({ length: BODY_LENGTH }, () => path[0] || [0, 0]));
   const onVisitRef = useRef(onVisit);
   const layerRef = useRef(null);
   const isVisibleRef = useRef(true);
   onVisitRef.current = onVisit;
 
   useEffect(() => {
-    setStepIndex(0);
+    setHistory(Array.from({ length: BODY_LENGTH }, () => path[0] || [0, 0]));
   }, [path]);
 
   useEffect(() => {
@@ -49,46 +50,41 @@ export default function GameSnake({ columns, rows = 7, onVisit }) {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion || path.length <= 1) return undefined;
 
+    let stepIndex = 0;
     const intervalId = window.setInterval(() => {
       if (!isVisibleRef.current) return;
-      setStepIndex((prev) => (prev + 1) % path.length);
+      stepIndex = (stepIndex + 1) % path.length;
+      setHistory((prev) => [path[stepIndex], ...prev.slice(0, BODY_LENGTH - 1)]);
     }, STEP_MS);
 
     return () => window.clearInterval(intervalId);
   }, [path]);
 
-  const [col, row] = path[stepIndex] || [0, 0];
-  const [prevCol, prevRow] = path[(stepIndex - 1 + path.length) % path.length] || [col, row];
+  const [headCol, headRow] = history[0];
 
   useEffect(() => {
-    onVisitRef.current?.(col, row);
-  }, [col, row]);
+    onVisitRef.current?.(headCol, headRow);
+  }, [headCol, headRow]);
 
   const colDenom = Math.max(columns - 1, 1);
   const rowDenom = Math.max(rows - 1, 1);
-  const left = `${(col / colDenom) * 100}%`;
-  const top = `${(row / rowDenom) * 100}%`;
-
-  const facingRight = col >= prevCol;
-  const facingDown = row >= prevRow;
+  const toPercent = ([col, row]) => ({
+    left: `${(col / colDenom) * 100}%`,
+    top: `${(row / rowDenom) * 100}%`,
+  });
 
   return (
     <div className="game-snake-layer" aria-hidden="true" ref={layerRef}>
-      <span className="game-snake-seg game-snake-seg-3" style={{ left, top }} />
-      <span className="game-snake-seg game-snake-seg-2" style={{ left, top }} />
-      <span className="game-snake-seg game-snake-seg-1" style={{ left, top }} />
-      <span
-        className="game-snake-head"
-        style={{
-          left,
-          top,
-          '--eye-x': facingRight ? '1px' : '-1px',
-          '--eye-y': facingDown ? '1px' : '-1px',
-        }}
-      >
-        <span className="game-snake-eye" />
-        <span className="game-snake-eye" />
-      </span>
+      {history
+        .map((pos, index) => ({ pos, index }))
+        .reverse()
+        .map(({ pos, index }) => (
+          <span
+            key={index}
+            className={`game-snake-seg game-snake-seg-${index}`}
+            style={toPercent(pos)}
+          />
+        ))}
     </div>
   );
 }
