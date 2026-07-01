@@ -216,14 +216,15 @@
 }
 
 .tech-skill-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.58rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 0.6rem;
 }
 
 .tech-skill-chip {
-  border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border));
-  border-radius: 0.74rem;
+  --skill-color: var(--primary);
+  border: 1px solid color-mix(in srgb, var(--skill-color) 26%, var(--border));
+  border-radius: 0.85rem;
   background:
     linear-gradient(
       150deg,
@@ -232,61 +233,79 @@
     );
   color: inherit;
   text-align: left;
-  padding: 0.58rem 0.8rem;
+  padding: 0.55rem 0.7rem;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  gap: 0.6rem;
+  min-height: 52px;
+  width: 100%;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
 }
 
 .dark .tech-skill-chip {
   background: linear-gradient(150deg, rgba(20, 22, 42, 0.9), rgba(12, 15, 35, 0.94));
-  border-color: rgba(126, 133, 214, 0.22);
+  border-color: color-mix(in srgb, var(--skill-color) 30%, rgba(126, 133, 214, 0.22));
 }
 
 .tech-skill-chip:hover,
 .tech-skill-chip:focus-visible {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--primary) 56%, var(--border));
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--skill-color) 62%, var(--border));
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--skill-color) 14%, var(--surface)),
+    color-mix(in srgb, var(--skill-color) 6%, var(--surface))
+  );
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--primary) 40%, transparent),
-    0 12px 22px -16px color-mix(in srgb, var(--secondary) 66%, transparent);
+    0 0 0 1px color-mix(in srgb, var(--skill-color) 45%, transparent),
+    0 14px 24px -16px color-mix(in srgb, var(--skill-color) 55%, transparent);
 }
 
 .tech-skill-chip:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--primary) 82%, var(--secondary));
+  outline: 2px solid color-mix(in srgb, var(--skill-color) 82%, var(--secondary));
   outline-offset: 2px;
 }
 
-.tech-skill-main {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.tech-skill-icon-wrap {
-  width: 1rem;
-  height: 1rem;
+.tech-skill-icon-badge {
+  width: 2.15rem;
+  height: 2.15rem;
+  flex-shrink: 0;
   display: grid;
   place-items: center;
-  flex-shrink: 0;
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--skill-color) 16%, white 84%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--skill-color) 30%, transparent);
+  transition: transform 0.22s ease;
+}
+
+.tech-skill-chip:hover .tech-skill-icon-badge {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+.tech-skill-icon-badge svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  color: var(--skill-color);
 }
 
 .tech-skill-icon {
-  width: 100%;
-  height: 100%;
+  width: 1.15rem;
+  height: 1.15rem;
   object-fit: contain;
   pointer-events: none;
   user-select: none;
 }
 
 .tech-skill-name {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--text);
   line-height: 1.3;
+  overflow-wrap: break-word;
 }
 
 .tech-empty-state {
@@ -333,8 +352,13 @@
     padding: 0.72rem;
   }
 
+  .tech-skill-list {
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  }
+
   .tech-skill-chip {
-    padding: 0.5rem 0.7rem;
+    padding: 0.5rem 0.6rem;
+    min-height: 48px;
   }
 }
 

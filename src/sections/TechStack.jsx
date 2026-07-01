@@ -14,34 +14,93 @@ const CATEGORY_CONFIG = [
 
 const ICON_CONFIG = {
   HTML: { slug: 'html5', color: 'E34F26' },
-  CSS: { slug: 'css3', color: '1572B6' },
+  CSS: { slug: 'css', color: '663399' },
   JavaScript: { slug: 'javascript', color: 'F7DF1E' },
   React: { slug: 'react', color: '61DAFB' },
   'Tailwind CSS': { slug: 'tailwindcss', color: '06B6D4' },
-  'Responsive Design': { slug: 'css3', color: '1572B6' },
+  'Responsive Design': { custom: 'responsive', color: '38BDF8' },
   Java: { slug: 'openjdk', color: 'F89820' },
   'Spring Boot': { slug: 'springboot', color: '6DB33F' },
-  'Node.js': { slug: 'nodedotjs', color: '339933' },
-  Express: { slug: 'express', color: 'FFFFFF' },
+  'Node.js': { slug: 'nodedotjs', color: '5FA04E' },
+  Express: { slug: 'express', color: '9CA3AF' },
   'REST APIs': { slug: 'postman', color: 'FF6C37' },
   MongoDB: { slug: 'mongodb', color: '47A248' },
   MySQL: { slug: 'mysql', color: '4479A1' },
   PostgreSQL: { slug: 'postgresql', color: '4169E1' },
-  'AWS Basics': { slug: 'amazonwebservices', color: 'FF9900' },
-  ChatGPT: { slug: 'openai', color: '74AA9C' },
-  Blackbox: { slug: 'visualstudiocode', color: '007ACC' },
-  Gemini: { slug: 'googlegemini', color: '8E75FF' },
-  Codex: { slug: 'openai', color: '74AA9C' },
-  'GitHub Copilot': { slug: 'githubcopilot', color: 'FFFFFF' },
+  'AWS Basics': { custom: 'aws', color: 'FF9900' },
+  ChatGPT: { custom: 'openai', color: '10A37F' },
+  Blackbox: { custom: 'blackbox', color: 'FF3EA5' },
+  Gemini: { slug: 'googlegemini', color: '8E75B2' },
+  Codex: { custom: 'openai', color: '74AA9C' },
+  'GitHub Copilot': { slug: 'githubcopilot', color: '9CA3AF' },
   Git: { slug: 'git', color: 'F05032' },
-  GitHub: { slug: 'github', color: 'FFFFFF' },
+  GitHub: { slug: 'github', color: '9CA3AF' },
   Netlify: { slug: 'netlify', color: '00C7B7' },
-  Vercel: { slug: 'vercel', color: 'FFFFFF' },
+  Vercel: { custom: 'vercel', color: '9CA3AF' },
 };
+
+function getSkillIcon(name) {
+  return ICON_CONFIG[name] || null;
+}
 
 function getOfficialIconUrl(name) {
   const icon = ICON_CONFIG[name];
-  return icon ? `https://cdn.simpleicons.org/${icon.slug}/${icon.color}` : '';
+  if (!icon || icon.custom) return '';
+  return `https://cdn.simpleicons.org/${icon.slug}/${icon.color}`;
+}
+
+function CustomSkillIcon({ type }) {
+  if (type === 'aws') {
+    return (
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M17.5 18.5H7a4.5 4.5 0 0 1-.6-8.96 5.6 5.6 0 0 1 10.86-2.05A4.25 4.25 0 0 1 17.5 18.5Z" />
+        <path d="M6.2 21c3 1.1 8.6 1.35 11.6-.15" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" fill="none" />
+        <path d="M16.4 20.1 18 20.9l-.3-1.75" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      </svg>
+    );
+  }
+
+  if (type === 'openai') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M12 2.8 14 8.4l5.6 1.8-4.4 3.9.9 5.9L12 16.9l-4.1 3.1.9-5.9-4.4-3.9L10 8.4Z"
+          fill="currentColor"
+        />
+      </svg>
+    );
+  }
+
+  if (type === 'blackbox') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M12 3.2 20 7.6v8.8L12 20.8 4 16.4V7.6Z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+        <path d="M4 7.6 12 12l8-4.4" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="M12 12v8.8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (type === 'vercel') {
+    return (
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 3.5 21 20H3Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3.2" y="5" width="12.5" height="9.2" rx="1.4" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="14.5" y="9.8" width="6.3" height="9.2" rx="1.4" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M7 17h5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
 }
 
 function midiToFrequency(midi) {
@@ -209,9 +268,7 @@ export default function TechStack() {
   const skillsByCategory = useMemo(() => {
     return CATEGORY_CONFIG.reduce((accumulator, category) => {
       const groupedSkills = category.sources.flatMap((source) => techStack[source] || []);
-      accumulator[category.id] = groupedSkills.filter((item) =>
-        Boolean(getOfficialIconUrl(item.name)),
-      );
+      accumulator[category.id] = groupedSkills.filter((item) => Boolean(getSkillIcon(item.name)));
       return accumulator;
     }, {});
   }, []);
@@ -322,26 +379,30 @@ export default function TechStack() {
 
                   <div className="tech-skill-list">
                     {category.skills.map((skill) => {
+                      const icon = getSkillIcon(skill.name);
+                      if (!icon) return null;
                       const iconUrl = getOfficialIconUrl(skill.name);
-                      if (!iconUrl) return null;
 
                       return (
                         <button
                           key={`${category.id}-${skill.name}`}
                           type="button"
                           className="tech-skill-chip"
+                          style={{ '--skill-color': `#${icon.color}` }}
                           title={skill.name}
                           aria-label={skill.name}
                           onClick={() => handleTechClick(skill.name)}
                           onMouseEnter={() => handleSkillHover(skill.name)}
                           onFocus={() => handleSkillHover(skill.name)}
                         >
-                          <span className="tech-skill-main">
-                            <span className="tech-skill-icon-wrap">
+                          <span className="tech-skill-icon-badge">
+                            {icon.custom ? (
+                              <CustomSkillIcon type={icon.custom} />
+                            ) : (
                               <img src={iconUrl} alt="" className="tech-skill-icon" loading="lazy" />
-                            </span>
-                            <span className="tech-skill-name">{skill.name}</span>
+                            )}
                           </span>
+                          <span className="tech-skill-name">{skill.name}</span>
                         </button>
                       );
                     })}

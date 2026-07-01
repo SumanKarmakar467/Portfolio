@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import SnakeStreak from '../components/SnakeStreak';
+import HeatmapSnake from '../components/HeatmapSnake';
 
 const GITHUB_USERNAME = 'SumanKarmakar467';
 
@@ -118,7 +119,8 @@ function GitHubHeatmap({ weeks, mode = 'contributions' }) {
         ))}
       </div>
 
-      <div className="overflow-hidden">
+      <div className="relative overflow-hidden">
+        <HeatmapSnake />
         <div className="relative inline-flex max-w-full gap-[2px]">
           {weeks.map((week, weekIdx) => (
             <div key={weekIdx} className="flex flex-col gap-[3px]">
