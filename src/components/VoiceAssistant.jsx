@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { certifications } from '../constants/certifications';
 import { education } from '../constants/education';
 import { projects } from '../constants/projects';
@@ -44,13 +44,6 @@ ${JSON.stringify(education)}
 Certifications:
 ${JSON.stringify(certifications)}`;
 
-const MODES = [
-  { id: 'ttt', label: 'Text', title: 'Type and read' },
-  { id: 'stt', label: 'Mic', title: 'Speak and read' },
-  { id: 'sts', label: 'Voice', title: 'Speak and hear' },
-  { id: 'tts', label: 'Audio', title: 'Type and hear' },
-];
-
 const QUICK_PROMPTS = ['Who is Suman?', 'Skills', 'Projects', 'Education', 'GitHub', 'LeetCode'];
 
 function listNames(items, limit = items.length) {
@@ -60,8 +53,6 @@ function listNames(items, limit = items.length) {
 function getStatusLabel(status) {
   if (status === 'idle') return 'Ready';
   if (status === 'thinking') return 'Thinking...';
-  if (status === 'listening') return 'Listening...';
-  if (status === 'speaking') return 'Speaking...';
   return status;
 }
 
@@ -138,78 +129,12 @@ function getPortfolioAnswer(question) {
 }
 
 export default function VoiceAssistant() {
-  const [mode, setMode] = useState('ttt');
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [status, setStatus] = useState('idle');
-  const [error, setError] = useState('');
   const [open, setOpen] = useState(false);
 
-  const recognitionRef = useRef(null);
-  const isListeningRef = useRef(false);
-  const modeRef = useRef(mode);
-  const askClaudeRef = useRef(null);
   const messagesEndRef = useRef(null);
-  const supportsRecognition = useMemo(
-    () => typeof window !== 'undefined' && !!(window.SpeechRecognition || window.webkitSpeechRecognition),
-    [],
-  );
-
-  useEffect(() => {
-    modeRef.current = mode;
-  }, [mode]);
-
-  useEffect(() => {
-    if (!supportsRecognition) return;
-
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SR();
-    recognition.lang = 'en-US';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    recognition.onstart = () => {
-      isListeningRef.current = true;
-      setError('');
-      setStatus('listening');
-    };
-
-    recognition.onresult = async (event) => {
-      const transcript = event.results?.[0]?.[0]?.transcript?.trim() || '';
-      if (!transcript) return;
-      setInput(transcript);
-      await askClaudeRef.current?.(transcript, modeRef.current === 'sts');
-    };
-
-    recognition.onerror = (event) => {
-      const reason =
-        event.error === 'not-allowed'
-          ? 'Microphone permission is blocked. Allow microphone access and try again.'
-          : event.error === 'no-speech'
-            ? 'I did not hear anything. Try speaking again.'
-            : 'Voice capture failed. Please try again.';
-      setError(reason);
-      setStatus('idle');
-      isListeningRef.current = false;
-    };
-
-    recognition.onend = () => {
-      isListeningRef.current = false;
-      setStatus((prev) => (prev === 'listening' ? 'idle' : prev));
-    };
-
-    recognitionRef.current = recognition;
-
-    return () => recognition.stop();
-  }, [supportsRecognition]);
-
-  useEffect(() => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.getVoices();
-    }
-
-    return () => window.speechSynthesis.cancel();
-  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -227,54 +152,19 @@ export default function VoiceAssistant() {
     ]);
   }, [messages.length, open]);
 
-  const stopAllAudio = () => {
-    window.speechSynthesis.cancel();
-    recognitionRef.current?.stop();
-    isListeningRef.current = false;
-    setStatus('idle');
-  };
-
-  const speakText = (text) => {
-    if (!text || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.95;
-    utterance.pitch = 1.02;
-
-    const voices = window.speechSynthesis.getVoices();
-    const preferredVoice =
-      voices.find((voice) => voice.lang?.startsWith('en') && /natural|online|zira|aria|google/i.test(voice.name)) ||
-      voices.find((voice) => voice.lang?.startsWith('en'));
-
-    if (preferredVoice) utterance.voice = preferredVoice;
-
-    utterance.onstart = () => setStatus('speaking');
-    utterance.onend = () => setStatus('idle');
-    utterance.onerror = () => {
-      setError('Speech output failed. Your browser may have blocked audio.');
-      setStatus('idle');
-    };
-
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const askClaude = async (question, shouldSpeak = false) => {
+  const askClaude = async (question) => {
     if (!question.trim()) return;
 
     const userMessage = { role: 'user', content: question.trim() };
     const nextMessages = [...messages, userMessage];
     setMessages(nextMessages);
-    setError('');
     setStatus('thinking');
 
     const localAnswer = getPortfolioAnswer(question);
     if (localAnswer) {
       window.setTimeout(() => {
         setMessages((prev) => [...prev, { role: 'assistant', content: localAnswer }]);
-        if (shouldSpeak || modeRef.current === 'tts') speakText(localAnswer);
-        else setStatus('idle');
+        setStatus('idle');
       }, 180);
       return;
     }
@@ -294,58 +184,24 @@ export default function VoiceAssistant() {
       const data = await response.json();
       const answer = (data?.text || 'Sorry, I could not generate a response right now.').trim();
       setMessages((prev) => [...prev, { role: 'assistant', content: answer }]);
-
-      if (shouldSpeak || modeRef.current === 'tts') speakText(answer);
-      else setStatus('idle');
+      setStatus('idle');
     } catch {
       const fallbackAnswer =
         'I can answer from Suman portfolio data about his profile, projects, skills, education, GitHub, LeetCode, certifications, and contact details. For anything else, please contact Suman directly.';
       setMessages((prev) => [...prev, { role: 'assistant', content: fallbackAnswer }]);
-      setError('');
-      if (shouldSpeak || modeRef.current === 'tts') speakText(fallbackAnswer);
-      else setStatus('idle');
+      setStatus('idle');
     }
   };
-
-  askClaudeRef.current = askClaude;
 
   const handleSend = async (event) => {
     event.preventDefault();
     const question = input.trim();
     if (!question || status === 'thinking') return;
     setInput('');
-    await askClaude(question, mode === 'tts');
+    await askClaude(question);
   };
 
-  const startListening = () => {
-    if (!supportsRecognition) {
-      setError('Speech recognition is supported in Chrome and Edge only.');
-      return;
-    }
-    if (isListeningRef.current || status === 'thinking') return;
-
-    try {
-      window.speechSynthesis.cancel();
-      setError('');
-      recognitionRef.current?.start();
-    } catch {
-      setError('Microphone is already active. Stop it and try again.');
-      isListeningRef.current = false;
-      setStatus('idle');
-    }
-  };
-
-  const orbClass =
-    status === 'listening'
-      ? 'orb-listening'
-      : status === 'thinking'
-        ? 'orb-thinking'
-        : status === 'speaking'
-          ? 'orb-speaking'
-          : 'orb-idle';
-  const currentMode = MODES.find((item) => item.id === mode);
-  const canSpeak = mode === 'stt' || mode === 'sts';
-  const isBusy = status === 'thinking' || status === 'listening';
+  const orbClass = status === 'thinking' ? 'orb-thinking' : 'orb-idle';
 
   return (
     <>
@@ -356,6 +212,7 @@ export default function VoiceAssistant() {
         aria-label="Open AI Assistant"
       >
         <span className="voice-launcher-core">AI</span>
+        <span className="voice-launcher-ring" />
       </button>
 
       {open && (
@@ -376,26 +233,9 @@ export default function VoiceAssistant() {
               </button>
             </div>
 
-            <div className="voice-mode-grid">
-              {MODES.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => {
-                    stopAllAudio();
-                    setMode(item.id);
-                  }}
-                  className={`voice-mode ${mode === item.id ? 'is-active' : ''}`}
-                >
-                  <span>{item.label}</span>
-                  <small>{item.title}</small>
-                </button>
-              ))}
-            </div>
-
             <div className="voice-status-card">
               <div>
-                <span className="voice-status-label">{currentMode?.title}</span>
+                <span className="voice-status-label">Text Assistant</span>
                 <strong>{getStatusLabel(status)}</strong>
               </div>
               <span className={`voice-status-dot is-${status}`} />
@@ -406,7 +246,7 @@ export default function VoiceAssistant() {
                 <button
                   key={prompt}
                   type="button"
-                  onClick={() => askClaude(prompt, mode === 'sts' || mode === 'tts')}
+                  onClick={() => askClaude(prompt)}
                   className="voice-quick"
                 >
                   {prompt}
@@ -441,43 +281,17 @@ export default function VoiceAssistant() {
               <div ref={messagesEndRef} />
             </div>
 
-            {error && <p className="voice-error">{error}</p>}
-
             <form onSubmit={handleSend} className="voice-form">
-              {canSpeak && (
-                <button
-                  type="button"
-                  onClick={startListening}
-                  className={`voice-mic-action ${orbClass}`}
-                  disabled={isBusy}
-                  aria-label="Start voice input"
-                  title={mode === 'sts' ? 'Speak and hear reply' : 'Speak and read reply'}
-                >
-                  {status === 'listening' ? '...' : 'Mic'}
-                </button>
-              )}
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={canSpeak ? 'Type here or tap Mic...' : 'Ask here...'}
+                placeholder="Ask here..."
                 className="voice-input"
               />
               <button type="submit" className="voice-send" disabled={status === 'thinking' || !input.trim()}>
                 Send
               </button>
             </form>
-
-            {canSpeak && !supportsRecognition && (
-              <p className="voice-error">SpeechRecognition works in Chrome and Edge only. You can still type here.</p>
-            )}
-
-            <button
-              type="button"
-              onClick={stopAllAudio}
-              className="voice-stop"
-            >
-              Stop
-            </button>
           </div>
         </div>
       )}

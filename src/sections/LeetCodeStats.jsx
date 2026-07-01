@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import SnakeStreak from '../components/SnakeStreak';
 
 const LEETCODE_USERNAME = 'suman2k04';
 const LEETCODE_API_URLS = [
@@ -311,6 +312,9 @@ export default function LeetCodeStats() {
                     <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Best Day</p>
                     <p className="mt-1 text-lg font-semibold text-text">{graphStats.bestDay}</p>
                   </div>
+                </div>
+                <div className="mt-4">
+                  <SnakeStreak streak={graphStats.maxStreak} label="Max Streak" />
                 </div>
                 <p className="mt-3 text-right text-[11px] text-muted">
                   {lastUpdated ? `Auto-updated: ${lastUpdated.toLocaleTimeString()}` : ''}

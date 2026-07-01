@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import SnakeStreak from '../components/SnakeStreak';
 
 const GITHUB_USERNAME = 'SumanKarmakar467';
 
@@ -249,7 +250,17 @@ export default function GitHubStats() {
     const committed = cells.reduce((sum, day) => sum + day.count, 0);
     const activeDays = cells.filter((day) => day.count > 0).length;
     const bestDay = cells.reduce((max, day) => Math.max(max, day.count), 0);
-    return { committed, activeDays, bestDay };
+    let streak = 0;
+    let maxStreak = 0;
+    cells.forEach((day) => {
+      if (day.count > 0) {
+        streak += 1;
+        if (streak > maxStreak) maxStreak = streak;
+      } else {
+        streak = 0;
+      }
+    });
+    return { committed, activeDays, bestDay, maxStreak };
   }, [weeks]);
   const statItems = [
     { label: 'Last Year Contributions', value: totalContributions ?? '--' },
@@ -382,6 +393,9 @@ export default function GitHubStats() {
                 <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Best Day</p>
                 <p className="mt-1 text-lg font-semibold text-text">{graphStats.bestDay}</p>
               </div>
+            </div>
+            <div className="mt-4">
+              <SnakeStreak streak={graphStats.maxStreak} label="Max Streak" />
             </div>
             <p className="mt-3 text-right text-[11px] text-muted">
               {lastUpdated ? `Auto-updated: ${lastUpdated.toLocaleTimeString()}` : ''}
