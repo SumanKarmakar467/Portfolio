@@ -46,20 +46,20 @@ export default function AuroraBackground({ theme = 'dark' }) {
     let lastTime = 0;
     const mouse = { x: -9999, y: -9999, active: false };
 
-    const density = 15000;
-    const maxParticles = 110;
+    const density = 26000;
+    const maxParticles = 60;
 
     const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const count = Math.min(maxParticles, Math.max(38, Math.floor((width * height) / density)));
+      const count = Math.min(maxParticles, Math.max(28, Math.floor((width * height) / density)));
       particles = Array.from({ length: count }, () => createParticle(width, height));
     };
 
@@ -76,10 +76,17 @@ export default function AuroraBackground({ theme = 'dark' }) {
     const linkDistance = 130;
     const mouseRadius = 150;
 
+    const frameInterval = 1000 / 30;
+
     const draw = (timestamp) => {
+      frameId = window.requestAnimationFrame(draw);
+
       if (!lastTime) lastTime = timestamp;
-      const dt = Math.min(0.05, (timestamp - lastTime) / 1000);
-      lastTime = timestamp;
+      const elapsed = timestamp - lastTime;
+      if (elapsed < frameInterval) return;
+
+      const dt = Math.min(0.05, elapsed / 1000);
+      lastTime = timestamp - (elapsed % frameInterval);
 
       const palette = PALETTES[themeRef.current] || PALETTES.dark;
       ctx.clearRect(0, 0, width, height);
@@ -147,14 +154,23 @@ export default function AuroraBackground({ theme = 'dark' }) {
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fill();
       }
+    };
 
-      frameId = window.requestAnimationFrame(draw);
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        window.cancelAnimationFrame(frameId);
+        frameId = 0;
+      } else if (!frameId) {
+        lastTime = 0;
+        frameId = window.requestAnimationFrame(draw);
+      }
     };
 
     resize();
     window.addEventListener('resize', resize);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseleave', onMouseLeave);
+    document.addEventListener('visibilitychange', onVisibilityChange);
     frameId = window.requestAnimationFrame(draw);
 
     return () => {
@@ -162,6 +178,7 @@ export default function AuroraBackground({ theme = 'dark' }) {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseleave', onMouseLeave);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, []);
 

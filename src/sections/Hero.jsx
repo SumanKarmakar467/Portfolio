@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ResumePreviewLink from '../components/ResumePreviewLink';
 import './Hero.css';
 
@@ -12,38 +12,99 @@ const HERO_TICKER_ITEMS = [
   'Deployment with Netlify and Vercel',
 ];
 
-const HERO_TITLE_TEXT = 'Full Stack Web Developer';
+const HERO_ROLES = [
+  'Full Stack Web Developer',
+  'MERN Stack Developer',
+  'DSA & Problem Solver',
+  'UI-Focused Engineer',
+];
+
+function useTypewriter(words, { typingSpeed = 68, deletingSpeed = 34, pauseTime = 1500 } = {}) {
+  const [index, setIndex] = useState(0);
+  const [subIndex, setSubIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+  const [reduceMotion] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
+
+  useEffect(() => {
+    if (reduceMotion) return undefined;
+
+    if (!deleting && subIndex === words[index].length) {
+      const timeout = window.setTimeout(() => setDeleting(true), pauseTime);
+      return () => window.clearTimeout(timeout);
+    }
+
+    if (deleting && subIndex === 0) {
+      setDeleting(false);
+      setIndex((prev) => (prev + 1) % words.length);
+      return undefined;
+    }
+
+    const timeout = window.setTimeout(
+      () => setSubIndex((prev) => prev + (deleting ? -1 : 1)),
+      deleting ? deletingSpeed : typingSpeed,
+    );
+    return () => window.clearTimeout(timeout);
+  }, [subIndex, deleting, index, words, reduceMotion, typingSpeed, deletingSpeed, pauseTime]);
+
+  if (reduceMotion) return words[0];
+  return words[index].substring(0, subIndex);
+}
 
 export default function Hero() {
+  const roleText = useTypewriter(HERO_ROLES);
+
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />
-        <div
-          className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-float"
-          style={{ animationDelay: '2s' }}
-        />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-primary/5 to-secondary/5 rounded-full blur-3xl animate-pulse-slow" />
+        <div className="hero-spotlight" />
       </div>
 
       <div className="container text-center">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-6">
-            <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
-              SUMAN KARMAKAR
+          <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0ms' }}>
+            <span className="hero-status-badge">
+              <span className="hero-status-dot" />
+              Available for new opportunities
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-playfair font-bold mb-6 animate-fade-in-up leading-tight">
-            {HERO_TITLE_TEXT}
+          <p
+            className="hero-eyebrow animate-fade-in-up"
+            style={{ animationDelay: '90ms' }}
+          >
+            Hello, I&apos;m
+          </p>
+
+          <h1
+            className="hero-name text-4xl md:text-6xl font-playfair font-bold mb-3 animate-fade-in-up leading-tight"
+            style={{ animationDelay: '180ms' }}
+          >
+            Suman Karmakar
           </h1>
 
-          <p className="text-lg text-muted max-w-2xl mx-auto mb-8 leading-relaxed">
+          <p
+            className="hero-role-line animate-fade-in-up"
+            style={{ animationDelay: '280ms' }}
+          >
+            <span className="hero-role-text">{roleText}</span>
+            <span className="hero-role-cursor" aria-hidden="true" />
+          </p>
+
+          <p
+            className="text-lg text-muted max-w-2xl mx-auto mb-8 leading-relaxed animate-fade-in-up"
+            style={{ animationDelay: '380ms' }}
+          >
             I build responsive web applications with React, Node.js, and MongoDB,
             with focus on clear UI and practical backend architecture.
           </p>
 
-          <div className="hero-ticker mb-8" aria-label="Portfolio highlights">
+          <div
+            className="hero-ticker mb-8 animate-fade-in-up"
+            style={{ animationDelay: '460ms' }}
+            aria-label="Portfolio highlights"
+          >
             <div className="hero-ticker-track">
               {[...HERO_TICKER_ITEMS, ...HERO_TICKER_ITEMS].map((item, index) => (
                 <span className="hero-ticker-item" key={`${item}-${index}`}>
@@ -53,30 +114,39 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
+          <div
+            className="flex flex-wrap justify-center gap-3 mb-8 animate-fade-in-up"
+            style={{ animationDelay: '540ms' }}
+          >
             {['Spring Boot', 'React', 'Node.js', 'MongoDB', 'REST APIs'].map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1.5 text-sm rounded-full bg-surface border border-border text-muted"
+                className="px-3 py-1.5 text-sm rounded-full bg-surface border border-border text-muted hero-tech-pill"
               >
                 {tech}
               </span>
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a href="#projects" className="btn">
+          <div
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up"
+            style={{ animationDelay: '620ms' }}
+          >
+            <a href="#projects" className="btn hero-btn-primary">
               View My Work
             </a>
             <ResumePreviewLink previewPosition="top">Download Resume</ResumePreviewLink>
           </div>
 
-          <div className="flex justify-center space-x-6 mt-12">
+          <div
+            className="flex justify-center space-x-6 mt-12 animate-fade-in-up"
+            style={{ animationDelay: '700ms' }}
+          >
             <a
               href="https://github.com/SumanKarmakar467"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted hover:text-primary transition-colors duration-200"
+              className="hero-social-icon"
               aria-label="GitHub"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -87,7 +157,7 @@ export default function Hero() {
               href="https://www.linkedin.com/in/suman-karmakar-jerry/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted hover:text-primary transition-colors duration-200"
+              className="hero-social-icon"
               aria-label="LinkedIn"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -96,7 +166,7 @@ export default function Hero() {
             </a>
             <a
               href="mailto:karmakarsuman12138@gmail.com"
-              className="text-muted hover:text-primary transition-colors duration-200"
+              className="hero-social-icon"
               aria-label="Email"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

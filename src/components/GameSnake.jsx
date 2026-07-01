@@ -25,6 +25,8 @@ export default function GameSnake({ columns, rows = 7, onVisit }) {
   const path = useMemo(() => buildPath(columns, rows), [columns, rows]);
   const [stepIndex, setStepIndex] = useState(0);
   const onVisitRef = useRef(onVisit);
+  const layerRef = useRef(null);
+  const isVisibleRef = useRef(true);
   onVisitRef.current = onVisit;
 
   useEffect(() => {
@@ -32,10 +34,23 @@ export default function GameSnake({ columns, rows = 7, onVisit }) {
   }, [path]);
 
   useEffect(() => {
+    const element = layerRef.current;
+    if (!element || typeof IntersectionObserver === 'undefined') return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisibleRef.current = entry.isIntersecting;
+    });
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion || path.length <= 1) return undefined;
 
     const intervalId = window.setInterval(() => {
+      if (!isVisibleRef.current) return;
       setStepIndex((prev) => (prev + 1) % path.length);
     }, STEP_MS);
 
@@ -58,7 +73,7 @@ export default function GameSnake({ columns, rows = 7, onVisit }) {
   const facingDown = row >= prevRow;
 
   return (
-    <div className="game-snake-layer" aria-hidden="true">
+    <div className="game-snake-layer" aria-hidden="true" ref={layerRef}>
       <span className="game-snake-seg game-snake-seg-3" style={{ left, top }} />
       <span className="game-snake-seg game-snake-seg-2" style={{ left, top }} />
       <span className="game-snake-seg game-snake-seg-1" style={{ left, top }} />

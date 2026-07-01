@@ -1,8 +1,31 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { projects as projectData } from '../constants/projects';
+import './Projects.css';
 
 const CATEGORIES = ['All', 'Web', 'AI', 'Mobile', 'Realtime'];
+
+const CATEGORY_GLOW = {
+  Web: '#38bdf8',
+  AI: '#a78bfa',
+  Mobile: '#fbbf24',
+  Realtime: '#fb7185',
+};
+
+function handleTiltMove(event) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const card = event.currentTarget;
+  const rect = card.getBoundingClientRect();
+  const px = (event.clientX - rect.left) / rect.width;
+  const py = (event.clientY - rect.top) / rect.height;
+  const rotateY = (px - 0.5) * 9;
+  const rotateX = (py - 0.5) * -9;
+  card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+}
+
+function handleTiltLeave(event) {
+  event.currentTarget.style.transform = '';
+}
 const PROJECT_FALLBACK_IMAGE = 'https://picsum.photos/seed/portfolio-project-fallback/1200/675';
 const PROJECT_SEARCH_EVENT = 'portfolio-project-search';
 
@@ -152,7 +175,7 @@ const MobileProjectCard = ({ project, brokenImages, onImageError, onPreview, rec
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
       <div className="absolute left-3 top-3">
-        <span className="rounded-full border border-white/30 bg-black/45 px-3 py-1 text-[11px] uppercase tracking-[0.16em] text-white/90">
+        <span className="project-card-category-badge" style={{ color: CATEGORY_GLOW[project.category] || 'var(--primary)' }}>
           {project.category}
         </span>
       </div>
@@ -174,10 +197,7 @@ const MobileProjectCard = ({ project, brokenImages, onImageError, onPreview, rec
 
       <div className="flex flex-wrap gap-2">
         {project.tech.slice(0, 3).map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full border border-border bg-background px-2.5 py-1 text-[11px] font-medium text-muted"
-          >
+          <span key={tag} className="project-tech-chip">
             {tag}
           </span>
         ))}
@@ -608,7 +628,7 @@ export default function Projects() {
 
         <motion.div layout className="hidden grid-cols-1 gap-6 md:grid xl:grid-cols-3">
           <AnimatePresence>
-            {filteredProjects.map((project) => (
+            {filteredProjects.map((project, index) => (
               <motion.article
                 key={project.slug}
                 layout
@@ -620,89 +640,99 @@ export default function Projects() {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 12 }}
-                transition={{ duration: 0.24 }}
+                transition={{ duration: 0.24, delay: Math.min(index, 6) * 0.04 }}
                 className={`group ${draggingSlug === project.slug ? 'opacity-60' : ''}`}
               >
-                <div className="h-full overflow-hidden rounded-2xl border border-border bg-surface/70 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-                  <div className="relative h-52 overflow-hidden">
-                    <img
-                      src={brokenImages[project.slug] ? PROJECT_FALLBACK_IMAGE : project.bgImage}
-                      alt={project.title}
-                      loading="lazy"
-                      decoding="async"
-                      onError={() => handleImageError(project.slug)}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
-                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-                      <div className="flex flex-wrap items-center justify-center gap-2 rounded-full border border-white/30 bg-black/45 px-3 py-2 backdrop-blur-sm">
-                        {project.liveUrl ? (
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
-                          >
-                            Demo
-                          </a>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => setSelectedProject(project)}
-                            className="pointer-events-auto rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
-                          >
-                            Demo
-                          </button>
-                        )}
-                        {project.github && (
-                          <a
-                            href={project.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-white/45 px-4 py-2 text-sm font-semibold text-white"
-                          >
-                            Source
-                          </a>
-                        )}
+                <div
+                  className="project-card"
+                  style={{ '--card-glow': CATEGORY_GLOW[project.category] || 'var(--primary)' }}
+                  onMouseMove={handleTiltMove}
+                  onMouseLeave={handleTiltLeave}
+                >
+                  {project.featured && <span className="project-card-featured-ribbon">Featured</span>}
+                  <div className="project-card-inner">
+                    <div className="relative h-52 project-card-image-wrap">
+                      <img
+                        src={brokenImages[project.slug] ? PROJECT_FALLBACK_IMAGE : project.bgImage}
+                        alt={project.title}
+                        loading="lazy"
+                        decoding="async"
+                        onError={() => handleImageError(project.slug)}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="project-card-sheen" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+                      <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+                        <div className="flex flex-wrap items-center justify-center gap-2 rounded-full border border-white/30 bg-black/45 px-3 py-2 backdrop-blur-sm">
+                          {project.liveUrl ? (
+                            <a
+                              href={project.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
+                            >
+                              Demo
+                            </a>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedProject(project)}
+                              className="pointer-events-auto rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
+                            >
+                              Demo
+                            </button>
+                          )}
+                          {project.github && (
+                            <a
+                              href={project.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-white/45 px-4 py-2 text-sm font-semibold text-white"
+                            >
+                              Source
+                            </a>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="absolute left-4 right-4 top-4 flex items-center justify-between gap-3">
-                      <span className="rounded-full border border-white/30 bg-black/35 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
-                        {project.category}
-                      </span>
-                      <span className="rounded-full border border-white/30 bg-black/35 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
-                        Drag
-                      </span>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <h3 className="text-2xl font-bold text-white">{project.title}</h3>
-                      <p className="mt-1 text-sm text-white/80">{project.role}</p>
-                    </div>
-                  </div>
-
-                  <div className="p-4 sm:p-5">
-                    <p className="text-sm leading-relaxed text-muted">{project.description}</p>
-
-                    {recruiterMode && (
-                      <div className="mt-4 rounded-2xl border border-primary/20 bg-primary/10 px-4 py-3">
-                        <p className="text-xs uppercase tracking-[0.18em] text-primary">Recruiter Highlight</p>
-                        <p className="mt-2 text-sm text-text">{project.impact}</p>
-                      </div>
-                    )}
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {project.tech.slice(0, 4).map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-muted"
-                        >
-                          {tag}
+                      <div className="absolute left-4 right-4 top-4 flex items-center justify-between gap-3">
+                        <span className="project-card-category-badge" style={{ color: CATEGORY_GLOW[project.category] || 'var(--primary)' }}>
+                          {project.category}
                         </span>
-                      ))}
+                        <span className="project-drag-chip">
+                          <span className="project-drag-dots">
+                            <span /><span /><span /><span /><span /><span />
+                          </span>
+                          Drag
+                        </span>
+                      </div>
+                      <span className="project-card-index">{String(index + 1).padStart(2, '0')}</span>
+                      <div className="absolute bottom-0 left-0 right-0 p-4 pl-14">
+                        <h3 className="text-2xl font-bold text-white">{project.title}</h3>
+                        <p className="mt-1 text-sm text-white/80">{project.role}</p>
+                      </div>
                     </div>
 
-                    <div className="mt-5 border-t border-border/70 pt-3 text-xs text-muted">
-                      Hover on image to open demo and source quickly.
+                    <div className="p-4 sm:p-5">
+                      <p className="text-sm leading-relaxed text-muted">{project.description}</p>
+
+                      {recruiterMode && (
+                        <div className="mt-4 rounded-2xl border border-primary/20 bg-primary/10 px-4 py-3">
+                          <p className="text-xs uppercase tracking-[0.18em] text-primary">Recruiter Highlight</p>
+                          <p className="mt-2 text-sm text-text">{project.impact}</p>
+                        </div>
+                      )}
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {project.tech.slice(0, 4).map((tag) => (
+                          <span key={tag} className="project-tech-chip">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="mt-5 border-t border-border/70 pt-3 text-xs text-muted">
+                        Hover on image to open demo and source quickly.
+                      </div>
                     </div>
                   </div>
                 </div>
