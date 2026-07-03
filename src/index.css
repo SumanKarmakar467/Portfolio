@@ -238,6 +238,38 @@
   }
 }
 
+/*
+  Touch devices never fire :hover, so every hover-only glow/lift effect on
+  cards and chips would feel completely static on a phone. This gives touch
+  users the equivalent feedback on tap instead.
+*/
+@media (hover: none) and (pointer: coarse) {
+  .project-card:active,
+  .cert-card:active,
+  .edu-card:active,
+  .about-stat-card:active,
+  .contact-info-card:active,
+  .footer-social-icon:active,
+  .hero-social-icon:active {
+    transform: scale(0.97) translateY(-2px);
+    transition: transform 0.15s ease;
+  }
+
+  .tech-skill-chip:active,
+  .hero-tech-pill:active,
+  .project-tech-chip:active,
+  .cert-open-btn:active,
+  .voice-quick:active {
+    transform: scale(0.94);
+    transition: transform 0.12s ease;
+  }
+
+  .btn:active,
+  .contact-submit-btn:active {
+    transform: scale(0.97);
+  }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

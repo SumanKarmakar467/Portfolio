@@ -26,6 +26,23 @@ function handleTiltMove(event) {
 function handleTiltLeave(event) {
   event.currentTarget.style.transform = '';
 }
+
+function handleTiltTouchStart(event) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const touch = event.touches[0];
+  if (!touch) return;
+  const card = event.currentTarget;
+  const rect = card.getBoundingClientRect();
+  const px = (touch.clientX - rect.left) / rect.width;
+  const py = (touch.clientY - rect.top) / rect.height;
+  const rotateY = (px - 0.5) * 7;
+  const rotateX = (py - 0.5) * -7;
+  card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(0.98)`;
+}
+
+function handleTiltTouchEnd(event) {
+  event.currentTarget.style.transform = '';
+}
 const PROJECT_FALLBACK_IMAGE = 'https://picsum.photos/seed/portfolio-project-fallback/1200/675';
 const PROJECT_SEARCH_EVENT = 'portfolio-project-search';
 
@@ -163,7 +180,7 @@ const BulletCard = ({ title, items }) => (
 );
 
 const MobileProjectCard = ({ project, brokenImages, onImageError, onPreview, recruiterMode }) => (
-  <article className="w-[84vw] max-w-[360px] shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-surface/85 shadow-sm">
+  <article className="w-[84vw] max-w-[360px] shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-surface/85 shadow-sm transition-transform duration-150 active:scale-[0.98]">
     <div className="relative h-44 overflow-hidden">
       <img
         src={brokenImages[project.slug] ? PROJECT_FALLBACK_IMAGE : project.bgImage}
@@ -207,7 +224,7 @@ const MobileProjectCard = ({ project, brokenImages, onImageError, onPreview, rec
         <button
           type="button"
           onClick={onPreview}
-          className="flex-1 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
+          className="flex-1 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition-transform active:scale-95"
         >
           Preview
         </button>
@@ -216,7 +233,7 @@ const MobileProjectCard = ({ project, brokenImages, onImageError, onPreview, rec
             href={project.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 rounded-full border border-border px-4 py-2 text-center text-sm font-semibold text-muted"
+            className="flex-1 rounded-full border border-border px-4 py-2 text-center text-sm font-semibold text-muted transition-transform active:scale-95"
           >
             Live
           </a>
@@ -320,14 +337,14 @@ function ProjectModal({ project, onClose }) {
 
         {tab === 'overview' ? (
           <div className="mt-6 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="space-y-5">
+            <div className="min-w-0 space-y-5">
               <ContentCard title="Problem" content={project.problem} />
               <ContentCard title="Solution" content={project.solution} />
               <BulletCard title="Key Contributions" items={project.points} />
               <BulletCard title="What I Learned" items={project.learnings} />
             </div>
 
-            <div className="space-y-5">
+            <div className="min-w-0 space-y-5">
               <div className="rounded-2xl border border-border bg-surface/80 p-5">
                 <p className="text-sm font-semibold text-text">Tech Stack</p>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -427,10 +444,14 @@ export default function Projects() {
       setFeaturedOnly(false);
     };
 
-    const savedQuery = localStorage.getItem('projectSearchQuery');
-    if (savedQuery) {
-      applySearch(savedQuery);
-      localStorage.removeItem('projectSearchQuery');
+    try {
+      const savedQuery = localStorage.getItem('projectSearchQuery');
+      if (savedQuery) {
+        applySearch(savedQuery);
+        localStorage.removeItem('projectSearchQuery');
+      }
+    } catch {
+      // localStorage unavailable; skip restoring the saved search.
     }
 
     const handleProjectSearch = (event) => {
@@ -648,6 +669,9 @@ export default function Projects() {
                   style={{ '--card-glow': CATEGORY_GLOW[project.category] || 'var(--primary)' }}
                   onMouseMove={handleTiltMove}
                   onMouseLeave={handleTiltLeave}
+                  onTouchStart={handleTiltTouchStart}
+                  onTouchEnd={handleTiltTouchEnd}
+                  onTouchCancel={handleTiltTouchEnd}
                 >
                   {project.featured && <span className="project-card-featured-ribbon">Featured</span>}
                   <div className="project-card-inner">

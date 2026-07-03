@@ -292,7 +292,11 @@ export default function TechStack() {
       : CATEGORY_CONFIG.find((category) => category.id === activeFilter)?.label || 'Skills';
 
   const handleTechClick = (techName) => {
-    localStorage.setItem('projectSearchQuery', techName);
+    try {
+      localStorage.setItem('projectSearchQuery', techName);
+    } catch {
+      // localStorage unavailable; the click-to-search event below still fires.
+    }
     window.dispatchEvent(
       new CustomEvent(PROJECT_SEARCH_EVENT, {
         detail: { query: techName },

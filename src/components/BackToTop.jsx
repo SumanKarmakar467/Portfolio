@@ -4,16 +4,21 @@ export default function BackToTop() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
-        setVisible(true);
-      } else {
-        setVisible(false);
-      }
+    let ticking = false;
+
+    const checkVisibility = () => {
+      setVisible(window.pageYOffset > 300);
+      ticking = false;
     };
 
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(checkVisibility);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const scrollToTop = () => {
@@ -28,7 +33,7 @@ export default function BackToTop() {
       {visible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-40 w-12 h-12 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg transition-all duration-300 flex items-center justify-center group"
+          className="fixed bottom-8 left-8 md:left-auto md:right-8 z-40 w-12 h-12 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg transition-all duration-300 flex items-center justify-center group"
           aria-label="Back to top"
         >
           <svg

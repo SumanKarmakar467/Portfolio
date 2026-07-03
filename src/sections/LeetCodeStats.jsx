@@ -287,7 +287,7 @@ export default function LeetCodeStats() {
           <article className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-surface via-surface to-background/80 p-5 shadow-sm sm:p-7">
             <div className="pointer-events-none absolute -top-24 -right-24 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
             <div className="relative grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-              <div>
+              <div className="min-w-0">
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <h3 className="text-xl font-space font-semibold text-primary">DSA Snapshot</h3>
                   <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
@@ -306,7 +306,7 @@ export default function LeetCodeStats() {
                 </div>
               </div>
 
-              <div>
+              <div className="min-w-0">
                 <div className="mb-3 flex items-center justify-between">
                   <h4 className="text-sm font-semibold uppercase tracking-[0.16em] text-primary">Heatmap</h4>
                   <div className="flex items-center gap-2">
