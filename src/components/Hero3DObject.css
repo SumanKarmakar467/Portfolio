@@ -2,7 +2,13 @@
   display: none;
 }
 
-@media (min-width: 1024px) {
+/*
+  The hero text column is centered and ~896px wide. Below ~1536px viewport
+  width there isn't enough side margin to fit this without overlapping the
+  text, so it stays hidden until there's genuine room, then scales up to
+  full size only on very wide viewports.
+*/
+@media (min-width: 1536px) {
   .hero-3d-stage {
     display: block;
     position: absolute;
@@ -10,10 +16,17 @@
     right: 2%;
     width: 420px;
     height: 420px;
-    transform: translateY(-50%);
+    transform: translateY(-50%) scale(0.6);
+    transform-origin: right center;
     perspective: 1100px;
     pointer-events: none;
     z-index: 1;
+  }
+}
+
+@media (min-width: 1800px) {
+  .hero-3d-stage {
+    transform: translateY(-50%) scale(1);
   }
 }
 

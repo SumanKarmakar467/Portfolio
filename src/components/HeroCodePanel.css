@@ -2,16 +2,27 @@
   display: none;
 }
 
-@media (min-width: 1024px) {
+/*
+  Same constraint as Hero3DObject: the centered ~896px text column needs
+  genuine side margin before this can show without overlapping it.
+*/
+@media (min-width: 1536px) {
   .hero-code-stage {
     display: block;
     position: absolute;
     top: 50%;
     left: 2%;
     width: 340px;
-    transform: translateY(-50%);
+    transform: translateY(-50%) scale(0.6);
+    transform-origin: left center;
     pointer-events: none;
     z-index: 1;
+  }
+}
+
+@media (min-width: 1800px) {
+  .hero-code-stage {
+    transform: translateY(-50%) scale(1);
   }
 }
 
