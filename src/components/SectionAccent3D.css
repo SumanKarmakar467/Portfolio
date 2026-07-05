@@ -1,0 +1,80 @@
+.section-accent-3d {
+  display: inline-block;
+  perspective: 260px;
+  vertical-align: middle;
+}
+
+.section-accent-3d-sm {
+  width: 16px;
+  height: 16px;
+  --accent-depth: 8px;
+}
+
+.section-accent-3d-md {
+  width: 30px;
+  height: 30px;
+  --accent-depth: 15px;
+}
+
+.section-accent-3d-lg {
+  width: 40px;
+  height: 40px;
+  --accent-depth: 20px;
+}
+
+.section-accent-3d-cube {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: sectionAccentSpin 9s linear infinite;
+}
+
+.section-accent-3d-face {
+  position: absolute;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--primary) 60%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--primary) 35%, transparent),
+    color-mix(in srgb, var(--secondary) 22%, transparent)
+  );
+  box-shadow: inset 0 0 8px color-mix(in srgb, var(--primary) 25%, transparent);
+  transform: translateZ(var(--accent-depth));
+}
+
+.section-accent-3d-face-back {
+  transform: rotateY(180deg) translateZ(var(--accent-depth));
+}
+
+.section-accent-3d-face-right {
+  transform: rotateY(90deg) translateZ(var(--accent-depth));
+}
+
+.section-accent-3d-face-left {
+  transform: rotateY(-90deg) translateZ(var(--accent-depth));
+}
+
+.section-accent-3d-face-top {
+  transform: rotateX(90deg) translateZ(var(--accent-depth));
+}
+
+.section-accent-3d-face-bottom {
+  transform: rotateX(-90deg) translateZ(var(--accent-depth));
+}
+
+@keyframes sectionAccentSpin {
+  from {
+    transform: rotateX(-18deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(-18deg) rotateY(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-accent-3d-cube {
+    animation: none;
+    transform: rotateX(-18deg) rotateY(35deg);
+  }
+}

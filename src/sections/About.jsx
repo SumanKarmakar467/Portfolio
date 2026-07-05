@@ -1,6 +1,7 @@
 import React from 'react';
 import CountUp from 'react-countup';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
+import SectionAccent3D from '../components/SectionAccent3D';
 import './About.css';
 
 const STAT_ICONS = {
@@ -55,7 +56,10 @@ export default function About({ theme }) {
     <section id="about" className="section bg-surface" ref={ref}>
       <div className="container">
         <div className={`text-center mb-16 ${reveal()}`} style={revealStyle(0)}>
-          <h2 className="section-title">About Me</h2>
+          <div className="flex items-center justify-center gap-3">
+            <SectionAccent3D />
+            <h2 className="section-title">About Me</h2>
+          </div>
           <p className="section-subtitle">
             Passionate full stack developer focused on modern frontend and robust backend engineering
           </p>

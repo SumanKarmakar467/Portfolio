@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import GameSnake from '../components/GameSnake';
+import SectionAccent3D from '../components/SectionAccent3D';
 
 const LEETCODE_USERNAME = 'suman2k04';
 const LEETCODE_API_URLS = [
@@ -92,11 +93,13 @@ function HeatmapGrid({ weeks, mode = 'submissions' }) {
 
   const monthMarkers = useMemo(() => {
     const markers = [];
+    let lastMonth = null;
     weeks.forEach((week, index) => {
       const first = week[0];
       if (!first) return;
-      if (index === 0 || first.date.endsWith('-01')) {
+      if (first.month !== lastMonth) {
         markers.push({ index, month: monthLabels[first.month] });
+        lastMonth = first.month;
       }
     });
     return markers;
@@ -109,7 +112,7 @@ function HeatmapGrid({ weeks, mode = 'submissions' }) {
           <span
             key={`${marker.index}-${marker.month}`}
             className="absolute top-0 text-[10px] text-muted"
-            style={{ left: `${marker.index * 14}px` }}
+            style={{ left: `${marker.index * 12}px` }}
           >
             {marker.month}
           </span>
@@ -279,7 +282,10 @@ export default function LeetCodeStats() {
     <section id="leetcode" className="section">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="section-title">LeetCode Progress</h2>
+          <div className="flex items-center justify-center gap-3">
+            <SectionAccent3D />
+            <h2 className="section-title">LeetCode Progress</h2>
+          </div>
           <p className="section-subtitle">Live interactive heatmap with daily hover insights.</p>
         </div>
 

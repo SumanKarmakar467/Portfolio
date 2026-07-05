@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ResumePreviewLink from '../components/ResumePreviewLink';
+import Hero3DObject from '../components/Hero3DObject';
+import HeroCodePanel from '../components/HeroCodePanel';
 import './Hero.css';
 
 const HERO_TICKER_ITEMS = [
@@ -60,6 +62,9 @@ export default function Hero() {
       <div className="absolute inset-0 -z-10">
         <div className="hero-spotlight" />
       </div>
+
+      <Hero3DObject />
+      <HeroCodePanel />
 
       <div className="container text-center">
         <div className="max-w-4xl mx-auto">

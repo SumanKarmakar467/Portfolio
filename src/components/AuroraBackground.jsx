@@ -28,6 +28,7 @@ function createParticle(width, height) {
 
 export default function AuroraBackground({ theme = 'dark' }) {
   const canvasRef = useRef(null);
+  const parallaxRef = useRef(null);
   const themeRef = useRef(theme);
   themeRef.current = theme;
 
@@ -67,6 +68,12 @@ export default function AuroraBackground({ theme = 'dark' }) {
       mouse.x = event.clientX;
       mouse.y = event.clientY;
       mouse.active = true;
+
+      if (parallaxRef.current && !reduceMotion) {
+        const offsetX = ((event.clientX / window.innerWidth) - 0.5) * 34;
+        const offsetY = ((event.clientY / window.innerHeight) - 0.5) * 34;
+        parallaxRef.current.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
+      }
     };
 
     const onMouseLeave = () => {
@@ -184,10 +191,12 @@ export default function AuroraBackground({ theme = 'dark' }) {
 
   return (
     <div className="aurora-bg" aria-hidden="true">
-      <div className="aurora-blob aurora-blob-1" />
-      <div className="aurora-blob aurora-blob-2" />
-      <div className="aurora-blob aurora-blob-3" />
-      <div className="aurora-grid" />
+      <div className="aurora-parallax" ref={parallaxRef}>
+        <div className="aurora-blob aurora-blob-1" />
+        <div className="aurora-blob aurora-blob-2" />
+        <div className="aurora-blob aurora-blob-3" />
+        <div className="aurora-grid" />
+      </div>
       <canvas ref={canvasRef} className="aurora-canvas" />
       <div className="aurora-vignette" />
     </div>

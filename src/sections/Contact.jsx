@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
+import SectionAccent3D from '../components/SectionAccent3D';
 import './Contact.css';
 
 const CONTACT_ICONS = {
@@ -94,7 +95,10 @@ export default function Contact() {
     <section id="contact" className="section" ref={ref}>
       <div className="container">
         <div className={`text-center mb-16 ${revealClass()}`} style={revealStyle(0)}>
-          <h2 className="section-title">Let&apos;s Build Something</h2>
+          <div className="flex items-center justify-center gap-3">
+            <SectionAccent3D />
+            <h2 className="section-title">Let&apos;s Build Something</h2>
+          </div>
           <p className="section-subtitle">
             Have a project idea or collaboration proposal? Let&apos;s connect.
           </p>

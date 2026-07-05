@@ -1,6 +1,7 @@
 import React from 'react';
 import { certifications } from '../constants/certifications';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
+import SectionAccent3D from '../components/SectionAccent3D';
 import './Certifications.css';
 
 function CertCard({ certificate, className = '', style }) {
@@ -46,7 +47,10 @@ export default function Certifications() {
     <section id="certifications" className="section" ref={ref}>
       <div className="container">
         <div className="text-center mb-16">
-          <h2 className="section-title">Certifications</h2>
+          <div className="flex items-center justify-center gap-3">
+            <SectionAccent3D />
+            <h2 className="section-title">Certifications</h2>
+          </div>
           <p className="section-subtitle">
             Verified course completions and tech camp participation from your previous portfolio
           </p>

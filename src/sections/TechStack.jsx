@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { techStack } from '../constants/techStack';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
+import SectionAccent3D from '../components/SectionAccent3D';
 import './TechStack.css';
 
 const PROJECT_SEARCH_EVENT = 'portfolio-project-search';
@@ -316,7 +317,10 @@ export default function TechStack() {
       <div className="container" ref={ref}>
         <div className="tech-stack-shell">
           <div className="tech-intro">
-            <p className="tech-intro-kicker">Expertise</p>
+            <p className="tech-intro-kicker flex items-center gap-2">
+              <SectionAccent3D size="sm" />
+              Expertise
+            </p>
             <h2 className="section-title">Skills &amp; Technologies</h2>
             <p className="section-subtitle">
               The tools, languages, and frameworks I use to build full-stack web products.

@@ -1,6 +1,7 @@
 import React from 'react';
 import { education } from '../constants/education';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
+import SectionAccent3D from '../components/SectionAccent3D';
 import './Education.css';
 
 export default function Education() {
@@ -10,7 +11,10 @@ export default function Education() {
     <section id="education" className="section" ref={ref}>
       <div className="container">
         <div className="text-center mb-16">
-          <h2 className="section-title">Education</h2>
+          <div className="flex items-center justify-center gap-3">
+            <SectionAccent3D />
+            <h2 className="section-title">Education</h2>
+          </div>
           <p className="section-subtitle">My academic journey</p>
         </div>
 

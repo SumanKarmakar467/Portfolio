@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { projects as projectData } from '../constants/projects';
+import SectionAccent3D from '../components/SectionAccent3D';
 import './Projects.css';
 
 const CATEGORIES = ['All', 'Web', 'AI', 'Mobile', 'Realtime'];
@@ -518,7 +519,10 @@ export default function Projects() {
       <div className="container">
         <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
-            <p className="mb-3 text-xs uppercase tracking-[0.26em] text-primary">Projects System</p>
+            <p className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.26em] text-primary">
+              <SectionAccent3D size="sm" />
+              Projects System
+            </p>
             <h2 className="text-3xl font-bold text-text sm:text-4xl">
               Searchable, draggable, recruiter-aware project showcase
             </h2>

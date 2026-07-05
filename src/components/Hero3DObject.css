@@ -1,0 +1,196 @@
+.hero-3d-stage {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .hero-3d-stage {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 2%;
+    width: 420px;
+    height: 420px;
+    transform: translateY(-50%);
+    perspective: 1100px;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+.hero-3d-glow {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 45%, transparent), transparent 70%);
+  filter: blur(30px);
+  animation: hero3dGlowPulse 5s ease-in-out infinite;
+}
+
+@keyframes hero3dGlowPulse {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
+}
+
+.hero-3d-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.hero-3d-cube {
+  position: relative;
+  width: 128px;
+  height: 128px;
+  transform-style: preserve-3d;
+  animation: hero3dSpin 16s linear infinite;
+}
+
+@keyframes hero3dSpin {
+  from {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(360deg) rotateY(360deg);
+  }
+}
+
+.hero-3d-face {
+  position: absolute;
+  width: 128px;
+  height: 128px;
+  border: 1px solid color-mix(in srgb, var(--primary) 55%, rgba(255, 255, 255, 0.35));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--primary) 30%, transparent),
+    color-mix(in srgb, var(--secondary) 20%, transparent)
+  );
+  backdrop-filter: blur(3px);
+  box-shadow: inset 0 0 26px color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
+.hero-3d-face-front {
+  transform: translateZ(64px);
+}
+
+.hero-3d-face-back {
+  transform: rotateY(180deg) translateZ(64px);
+}
+
+.hero-3d-face-right {
+  transform: rotateY(90deg) translateZ(64px);
+}
+
+.hero-3d-face-left {
+  transform: rotateY(-90deg) translateZ(64px);
+}
+
+.hero-3d-face-top {
+  transform: rotateX(90deg) translateZ(64px);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--secondary) 35%, transparent),
+    color-mix(in srgb, var(--primary) 20%, transparent)
+  );
+}
+
+.hero-3d-face-bottom {
+  transform: rotateX(-90deg) translateZ(64px);
+}
+
+.hero-3d-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260px;
+  height: 260px;
+  margin: -130px 0 0 -130px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--secondary) 55%, transparent);
+  transform: rotateX(78deg);
+  animation: hero3dRingSpin 12s linear infinite;
+}
+
+@keyframes hero3dRingSpin {
+  from {
+    transform: rotateX(78deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(78deg) rotateZ(360deg);
+  }
+}
+
+.hero-3d-shard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 6px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 55%, transparent), transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.hero-3d-shard-1 {
+  width: 34px;
+  height: 34px;
+  animation: hero3dOrbit1 9s linear infinite;
+}
+
+.hero-3d-shard-2 {
+  width: 22px;
+  height: 22px;
+  opacity: 0.75;
+  animation: hero3dOrbit2 13s linear infinite reverse;
+}
+
+.hero-3d-shard-3 {
+  width: 16px;
+  height: 16px;
+  opacity: 0.55;
+  animation: hero3dOrbit3 7s linear infinite;
+}
+
+@keyframes hero3dOrbit1 {
+  from {
+    transform: rotateY(0deg) translateX(150px) translateZ(30px) rotate(0deg);
+  }
+  to {
+    transform: rotateY(360deg) translateX(150px) translateZ(30px) rotate(360deg);
+  }
+}
+
+@keyframes hero3dOrbit2 {
+  from {
+    transform: rotateY(0deg) translateX(190px) translateZ(-40px) rotate(0deg);
+  }
+  to {
+    transform: rotateY(360deg) translateX(190px) translateZ(-40px) rotate(-360deg);
+  }
+}
+
+@keyframes hero3dOrbit3 {
+  from {
+    transform: rotateX(20deg) rotateY(0deg) translateX(110px) translateZ(60px);
+  }
+  to {
+    transform: rotateX(20deg) rotateY(360deg) translateX(110px) translateZ(60px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-3d-cube,
+  .hero-3d-ring,
+  .hero-3d-shard,
+  .hero-3d-glow {
+    animation: none;
+  }
+}

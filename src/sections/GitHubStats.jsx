@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import GameSnake from '../components/GameSnake';
+import SectionAccent3D from '../components/SectionAccent3D';
 
 const GITHUB_USERNAME = 'SumanKarmakar467';
 
@@ -101,10 +102,14 @@ function GitHubHeatmap({ weeks, mode = 'contributions' }) {
 
   const monthMarkers = useMemo(() => {
     const markers = [];
+    let lastMonth = null;
     weeks.forEach((week, idx) => {
       const first = week.find((d) => !d.empty);
       if (!first) return;
-      if (idx === 0 || first.date.endsWith('-01')) markers.push({ idx, month: months[first.month] });
+      if (first.month !== lastMonth) {
+        markers.push({ idx, month: months[first.month] });
+        lastMonth = first.month;
+      }
     });
     return markers;
   }, [weeks]);
@@ -113,7 +118,7 @@ function GitHubHeatmap({ weeks, mode = 'contributions' }) {
     <div className="rounded-xl border border-border bg-background/35 p-3">
       <div className="relative mb-2 h-4">
         {monthMarkers.map((m) => (
-          <span key={`${m.idx}-${m.month}`} className="absolute top-0 text-[10px] text-muted" style={{ left: `${m.idx * 14}px` }}>
+          <span key={`${m.idx}-${m.month}`} className="absolute top-0 text-[10px] text-muted" style={{ left: `${m.idx * 12}px` }}>
             {m.month}
           </span>
         ))}
@@ -344,7 +349,10 @@ export default function GitHubStats() {
     <section id="github" className="section bg-surface">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="section-title">GitHub Contributions</h2>
+          <div className="flex items-center justify-center gap-3">
+            <SectionAccent3D />
+            <h2 className="section-title">GitHub Contributions</h2>
+          </div>
           <p className="section-subtitle">Interactive contribution heatmap with daily hover details.</p>
         </div>
 
