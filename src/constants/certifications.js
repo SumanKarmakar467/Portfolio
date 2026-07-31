@@ -4,7 +4,7 @@ export const certifications = [
     title: "MERN Stack Development",
     issuer: "Tutedude",
     image: "/certificates/Mern_Stack.png",
-    href: "/certificates/MERN_Stack.png",
+    href: "/certificates/Mern_Stack.png",
   },
   {
     id: 2,
