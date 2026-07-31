@@ -3,8 +3,8 @@ export const certifications = [
     id: 2,
     title: "MERN Stack Development",
     issuer: "Tutedude",
-    image: "/certificates/Mern_Stack.jpeg",
-    href: "/certificates/MERN_Stack.jpeg",
+    image: "/certificates/Mern_Stack.png",
+    href: "/certificates/MERN_Stack.png",
   },
   {
     id: 2,
