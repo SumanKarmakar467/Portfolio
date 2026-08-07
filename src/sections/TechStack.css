@@ -44,9 +44,9 @@
 }
 
 .tech-filter-btn {
-  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
+  border: none;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  background: var(--surface);
   color: var(--muted);
   padding: 0.42rem 0.88rem;
   font-size: 0.8rem;
@@ -55,12 +55,21 @@
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s var(--ease-smooth), color 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+  box-shadow:
+    var(--neu-dist-sm) var(--neu-dist-sm) var(--neu-blur-sm) var(--neu-dark),
+    calc(var(--neu-dist-sm) * -1) calc(var(--neu-dist-sm) * -1) var(--neu-blur-sm) var(--neu-light);
 }
 
 .tech-filter-btn:hover {
   color: var(--text);
   transform: translateY(-1px);
+}
+
+.tech-filter-btn:active {
+  box-shadow:
+    inset var(--neu-dist-sm) var(--neu-dist-sm) var(--neu-blur-sm) var(--neu-dark),
+    inset calc(var(--neu-dist-sm) * -1) calc(var(--neu-dist-sm) * -1) var(--neu-blur-sm) var(--neu-light);
 }
 
 .tech-filter-btn.is-active {
@@ -76,26 +85,16 @@
 }
 
 .tech-collection-surface {
-  border: 1px solid var(--border);
+  border: none;
   border-radius: 1.5rem;
   padding: 1.1rem;
   background:
-    radial-gradient(circle at 8% 6%, rgba(68, 161, 148, 0.22), transparent 34%),
-    radial-gradient(circle at 96% 92%, rgba(236, 143, 141, 0.18), transparent 36%),
-    linear-gradient(165deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.42));
+    radial-gradient(circle at 8% 6%, color-mix(in srgb, var(--primary) 10%, transparent), transparent 34%),
+    radial-gradient(circle at 96% 92%, color-mix(in srgb, var(--secondary) 10%, transparent), transparent 36%),
+    var(--surface);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.36),
-    0 20px 34px -28px rgba(83, 125, 150, 0.45);
-}
-
-.dark .tech-collection-surface {
-  background:
-    radial-gradient(circle at 8% 6%, rgba(78, 96, 255, 0.2), transparent 38%),
-    radial-gradient(circle at 92% 94%, rgba(120, 108, 255, 0.18), transparent 36%),
-    linear-gradient(165deg, rgba(9, 11, 26, 0.95), rgba(7, 10, 23, 0.98));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 24px 46px -30px rgba(39, 60, 176, 0.45);
+    var(--neu-dist) var(--neu-dist) var(--neu-blur) var(--neu-dark),
+    calc(var(--neu-dist) * -1) calc(var(--neu-dist) * -1) var(--neu-blur) var(--neu-light);
 }
 
 .tech-collection-head {
@@ -135,22 +134,14 @@
 }
 
 .tech-category-panel {
-  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  border: none;
   border-radius: 1.35rem;
   padding: 1rem;
-  background: linear-gradient(
-    150deg,
-    color-mix(in srgb, var(--surface) 94%, white 6%),
-    color-mix(in srgb, var(--surface) 82%, transparent)
-  );
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26);
+  background: var(--surface);
+  box-shadow:
+    var(--neu-dist-sm) var(--neu-dist-sm) var(--neu-blur-sm) var(--neu-dark),
+    calc(var(--neu-dist-sm) * -1) calc(var(--neu-dist-sm) * -1) var(--neu-blur-sm) var(--neu-light);
   transition: transform 0.3s ease, opacity 0.35s ease;
-}
-
-.dark .tech-category-panel {
-  border-color: rgba(125, 132, 212, 0.26);
-  background: linear-gradient(152deg, rgba(14, 17, 37, 0.85), rgba(11, 13, 30, 0.94));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .tech-collection-surface .tech-category-panel {
@@ -223,14 +214,9 @@
 
 .tech-skill-chip {
   --skill-color: var(--primary);
-  border: 1px solid color-mix(in srgb, var(--skill-color) 26%, var(--border));
+  border: none;
   border-radius: 0.85rem;
-  background:
-    linear-gradient(
-      150deg,
-      color-mix(in srgb, var(--surface) 90%, transparent),
-      color-mix(in srgb, var(--surface) 76%, transparent)
-    );
+  background: var(--surface);
   color: inherit;
   text-align: left;
   padding: 0.55rem 0.7rem;
@@ -240,24 +226,19 @@
   gap: 0.6rem;
   min-height: 52px;
   width: 100%;
-  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
-}
-
-.dark .tech-skill-chip {
-  background: linear-gradient(150deg, rgba(20, 22, 42, 0.9), rgba(12, 15, 35, 0.94));
-  border-color: color-mix(in srgb, var(--skill-color) 30%, rgba(126, 133, 214, 0.22));
+  transition: transform 0.35s var(--ease-smooth), box-shadow 0.35s var(--ease-smooth), background 0.35s var(--ease-smooth);
+  box-shadow:
+    var(--neu-dist-sm) var(--neu-dist-sm) var(--neu-blur-sm) var(--neu-dark),
+    calc(var(--neu-dist-sm) * -1) calc(var(--neu-dist-sm) * -1) var(--neu-blur-sm) var(--neu-light);
 }
 
 .tech-skill-chip:hover,
 .tech-skill-chip:focus-visible {
   transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--skill-color) 62%, var(--border));
-  background: linear-gradient(
-    150deg,
-    color-mix(in srgb, var(--skill-color) 14%, var(--surface)),
-    color-mix(in srgb, var(--skill-color) 6%, var(--surface))
-  );
+  background: color-mix(in srgb, var(--skill-color) 10%, var(--surface));
   box-shadow:
+    var(--neu-dist-sm) var(--neu-dist-sm) var(--neu-blur-sm) var(--neu-dark),
+    calc(var(--neu-dist-sm) * -1) calc(var(--neu-dist-sm) * -1) var(--neu-blur-sm) var(--neu-light),
     0 0 0 1px color-mix(in srgb, var(--skill-color) 45%, transparent),
     0 14px 24px -16px color-mix(in srgb, var(--skill-color) 55%, transparent);
 }
@@ -276,7 +257,7 @@
   border-radius: 0.65rem;
   background: color-mix(in srgb, var(--skill-color) 16%, white 84%);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--skill-color) 30%, transparent);
-  transition: transform 0.22s ease;
+  transition: transform 0.35s var(--ease-smooth);
 }
 
 .tech-skill-chip:hover .tech-skill-icon-badge {
