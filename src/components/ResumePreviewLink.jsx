@@ -9,7 +9,7 @@ export default function ResumePreviewLink({
 }) {
   return (
     <span className={`resume-preview-link resume-preview-link--${previewPosition}`}>
-      <a href="/resume.pdf" className={className} download onClick={onClick}>
+      <a href="/resume.pdf" className={className} download="Suman_Karmakar_Resume.pdf" onClick={onClick}>
         {children}
       </a>
       <span className="resume-preview" aria-hidden="true">
