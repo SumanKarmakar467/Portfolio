@@ -11,9 +11,10 @@ export default function Education() {
     <section id="education" className="section" ref={ref}>
       <div className="container">
         <div className="text-center mb-16">
+          <p className="kicker-label justify-center mb-3">(04) &mdash; Trajectory</p>
           <div className="flex items-center justify-center gap-3">
             <SectionAccent3D />
-            <h2 className="section-title">Education</h2>
+            <h2 className="section-title">Where I&apos;ve Been.</h2>
           </div>
           <p className="section-subtitle">My academic journey</p>
         </div>
