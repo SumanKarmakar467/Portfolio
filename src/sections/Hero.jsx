@@ -1,141 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ResumePreviewLink from '../components/ResumePreviewLink';
-import Hero3DObject from '../components/Hero3DObject';
 import HeroCodePanel from '../components/HeroCodePanel';
+import HeroFloatingStack from '../components/HeroFloatingStack';
 import './Hero.css';
 
-const HERO_TICKER_ITEMS = [
-  'MERN Stack Web Applications',
-  'Spring Boot API Development',
-  'DSA and Problem Solving with Java',
-  'Responsive React + Tailwind Interfaces',
-  'MongoDB, MySQL, and PostgreSQL',
-  'AI-assisted Coding with ChatGPT, Gemini, and Codex',
-  'Deployment with Netlify and Vercel',
-];
-
-const HERO_ROLES = [
-  'Full Stack Web Developer',
-  'MERN Stack Developer',
-  'DSA & Problem Solver',
-  'UI-Focused Engineer',
-];
-
-function useTypewriter(words, { typingSpeed = 68, deletingSpeed = 34, pauseTime = 1500 } = {}) {
-  const [index, setIndex] = useState(0);
-  const [subIndex, setSubIndex] = useState(0);
-  const [deleting, setDeleting] = useState(false);
-  const [reduceMotion] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  );
-
-  useEffect(() => {
-    if (reduceMotion) return undefined;
-
-    if (!deleting && subIndex === words[index].length) {
-      const timeout = window.setTimeout(() => setDeleting(true), pauseTime);
-      return () => window.clearTimeout(timeout);
-    }
-
-    if (deleting && subIndex === 0) {
-      setDeleting(false);
-      setIndex((prev) => (prev + 1) % words.length);
-      return undefined;
-    }
-
-    const timeout = window.setTimeout(
-      () => setSubIndex((prev) => prev + (deleting ? -1 : 1)),
-      deleting ? deletingSpeed : typingSpeed,
-    );
-    return () => window.clearTimeout(timeout);
-  }, [subIndex, deleting, index, words, reduceMotion, typingSpeed, deletingSpeed, pauseTime]);
-
-  if (reduceMotion) return words[0];
-  return words[index].substring(0, subIndex);
-}
-
 export default function Hero() {
-  const roleText = useTypewriter(HERO_ROLES);
-
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden isolate">
       <div className="absolute inset-0 -z-10">
         <div className="hero-spotlight" />
       </div>
 
-      <Hero3DObject />
+      <HeroFloatingStack />
       <HeroCodePanel />
 
-      <div className="container text-center">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0ms' }}>
-            <span className="hero-status-badge">
-              <span className="hero-status-dot" />
-              Available for new opportunities
-            </span>
-          </div>
-
-          <p
-            className="hero-eyebrow animate-fade-in-up"
-            style={{ animationDelay: '90ms' }}
-          >
-            Hello, I&apos;m
+      <div className="container text-center md:text-left">
+        <div className="max-w-3xl mx-auto md:mx-0">
+          <p className="kicker-label hero-location-kicker mb-6 animate-fade-in-up justify-center md:justify-start" style={{ animationDelay: '0ms' }}>
+            <span aria-hidden="true">&mdash;</span> Full Stack Web Developer <span aria-hidden="true">&mdash;</span> West Bengal, India
           </p>
 
           <h1
-            className="hero-name text-4xl md:text-6xl font-playfair font-bold mb-3 animate-fade-in-up leading-tight"
-            style={{ animationDelay: '180ms' }}
+            className="hero-headline editorial-heading animate-fade-in-up"
+            style={{ animationDelay: '120ms' }}
           >
-            Suman Karmakar
+            I build robust <span className="text-primary">full&#8209;stack</span> web applications.
           </h1>
 
           <p
-            className="hero-role-line animate-fade-in-up"
-            style={{ animationDelay: '280ms' }}
-          >
-            <span className="hero-role-text">{roleText}</span>
-            <span className="hero-role-cursor" aria-hidden="true" />
-          </p>
-
-          <p
-            className="text-lg text-muted max-w-2xl mx-auto mb-8 leading-relaxed animate-fade-in-up"
-            style={{ animationDelay: '380ms' }}
+            className="text-lg text-muted max-w-xl mx-auto md:mx-0 mt-6 mb-8 leading-relaxed animate-fade-in-up"
+            style={{ animationDelay: '260ms' }}
           >
             I build responsive web applications with React, Node.js, and MongoDB,
             with focus on clear UI and practical backend architecture.
           </p>
 
           <div
-            className="hero-ticker mb-8 animate-fade-in-up"
-            style={{ animationDelay: '460ms' }}
-            aria-label="Portfolio highlights"
-          >
-            <div className="hero-ticker-track">
-              {[...HERO_TICKER_ITEMS, ...HERO_TICKER_ITEMS].map((item, index) => (
-                <span className="hero-ticker-item" key={`${item}-${index}`}>
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div
-            className="flex flex-wrap justify-center gap-3 mb-8 animate-fade-in-up"
-            style={{ animationDelay: '540ms' }}
-          >
-            {['Spring Boot', 'React', 'Node.js', 'MongoDB', 'REST APIs'].map((tech) => (
-              <span
-                key={tech}
-                className="px-3 py-1.5 text-sm rounded-full bg-surface border border-border text-muted hero-tech-pill"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-
-          <div
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up"
-            style={{ animationDelay: '620ms' }}
+            className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start items-center animate-fade-in-up"
+            style={{ animationDelay: '380ms' }}
           >
             <a href="#projects" className="btn hero-btn-primary">
               View My Work
@@ -144,8 +46,8 @@ export default function Hero() {
           </div>
 
           <div
-            className="flex justify-center space-x-6 mt-12 animate-fade-in-up"
-            style={{ animationDelay: '700ms' }}
+            className="flex justify-center md:justify-start space-x-6 mt-10 animate-fade-in-up"
+            style={{ animationDelay: '480ms' }}
           >
             <a
               href="https://github.com/SumanKarmakar467"
@@ -188,6 +90,13 @@ export default function Hero() {
           <polyline points="6,9 12,15 18,9" />
         </svg>
       </div>
+
+      <a href="#projects" className="hero-corner-cta neu-raised-sm" aria-label="View selected work">
+        View Selected Work
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M7 17 17 7M9 7h8v8" />
+        </svg>
+      </a>
     </section>
   );
 }
