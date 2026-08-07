@@ -5,6 +5,7 @@ import './Navbar.css';
 
 const navItems = [
   { label: 'About', href: '#about' },
+  { label: 'Experience', href: '#experience' },
   { label: 'Projects', href: '#projects' },
   { label: 'Skills', href: '#techstack' },
   { label: 'GitHub', href: '#github' },
@@ -28,7 +29,7 @@ export default function Navbr({ theme, toggleTheme }) {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-surface/95 backdrop-blur-sm border-b border-border' : 'bg-transparent'
+        scrolled ? 'navbar-scrolled' : 'bg-transparent'
       }`}
     >
       <div className="container mx-auto px-4 py-3 sm:py-4">
@@ -54,7 +55,7 @@ export default function Navbr({ theme, toggleTheme }) {
           </nav>
 
           <button
-            className="md:hidden rounded-xl border border-border bg-surface/80 p-2 shadow-sm"
+            className="navbar-toggle-btn md:hidden rounded-xl p-2"
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
             aria-expanded={open}
@@ -80,7 +81,7 @@ export default function Navbr({ theme, toggleTheme }) {
         </div>
 
         <div className={`md:hidden mobile-menu-collapse ${open ? 'is-open' : ''}`}>
-          <div className="mt-3 rounded-2xl border border-border bg-surface/95 p-3 shadow-2xl backdrop-blur-xl">
+          <div className="navbar-mobile-panel mt-3 rounded-2xl p-3">
             <nav className="grid gap-2">
               {navItems.map((item) => (
                 <a

@@ -3,7 +3,8 @@ import React from 'react';
 export default function ThemeToggle({ theme, toggleTheme }) {
   return (
     <button
-      className="w-10 h-10 flex items-center justify-center rounded-full text-muted transition-all duration-300 hover:text-primary hover:bg-primary/10 hover:rotate-12"
+      className="neu-raised-sm w-10 h-10 flex items-center justify-center rounded-full text-muted transition-all duration-300 hover:text-primary hover:rotate-12 active:scale-90"
+      style={{ background: 'var(--surface)' }}
       onClick={toggleTheme}
       aria-label="Toggle theme"
     >

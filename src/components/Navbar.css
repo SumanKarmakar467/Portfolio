@@ -1,3 +1,32 @@
+.navbar-scrolled {
+  background: var(--surface);
+  box-shadow:
+    0 var(--neu-dist-sm) var(--neu-blur-sm) var(--neu-dark),
+    0 calc(var(--neu-dist-sm) * -1) var(--neu-blur-sm) var(--neu-light);
+}
+
+.navbar-toggle-btn {
+  background: var(--surface);
+  box-shadow:
+    var(--neu-dist-sm) var(--neu-dist-sm) var(--neu-blur-sm) var(--neu-dark),
+    calc(var(--neu-dist-sm) * -1) calc(var(--neu-dist-sm) * -1) var(--neu-blur-sm) var(--neu-light);
+  transition: box-shadow 0.35s var(--ease-smooth), transform 0.35s var(--ease-smooth);
+}
+
+.navbar-toggle-btn:active {
+  transform: scale(0.96);
+  box-shadow:
+    inset var(--neu-dist-sm) var(--neu-dist-sm) var(--neu-blur-sm) var(--neu-dark),
+    inset calc(var(--neu-dist-sm) * -1) calc(var(--neu-dist-sm) * -1) var(--neu-blur-sm) var(--neu-light);
+}
+
+.navbar-mobile-panel {
+  background: var(--surface);
+  box-shadow:
+    var(--neu-dist) var(--neu-dist) var(--neu-blur) var(--neu-dark),
+    calc(var(--neu-dist) * -1) calc(var(--neu-dist) * -1) var(--neu-blur) var(--neu-light);
+}
+
 .nav-link {
   position: relative;
 }
