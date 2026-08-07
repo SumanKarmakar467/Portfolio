@@ -2,6 +2,7 @@ import React from 'react';
 import CountUp from 'react-countup';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
 import SectionAccent3D from '../components/SectionAccent3D';
+import profileImage from '../assets/7.jpeg';
 import './About.css';
 
 const STAT_ICONS = {
@@ -31,9 +32,8 @@ const STAT_ICONS = {
   ),
 };
 
-export default function About({ theme }) {
+export default function About() {
   const { ref, hasIntersected } = useIntersectionObserver();
-  const profileImage = theme === 'dark' ? '/profile/dark-theme.jpg' : '/profile/light-theme.jpg';
 
   const stats = [
     { label: 'Projects Built', value: 15, suffix: '+', icon: 'rocket' },
@@ -47,6 +47,21 @@ export default function About({ theme }) {
     { label: 'Team Collaboration', tone: 'secondary' },
     { label: 'Clean Code', tone: 'primary' },
     { label: 'Continuous Learning', tone: 'secondary' },
+  ];
+
+  const principles = [
+    {
+      title: 'Full-Stack Engineering',
+      text: 'Hands-on experience across the Java ecosystem, React for dynamic frontends, and Node.js plus MongoDB for scalable backends. I move comfortably across the whole stack.',
+    },
+    {
+      title: 'Clean Code, Real Outcomes',
+      text: 'I enjoy turning complex ideas into practical, production-style solutions built on clean architecture rather than shortcuts that break later.',
+    },
+    {
+      title: 'Always Learning',
+      text: 'My goal is to keep learning new technologies and apply best practices, so every project ships with stronger UX and more maintainable code than the last.',
+    },
   ];
 
   const reveal = () => `about-reveal ${hasIntersected ? 'is-visible' : ''}`;
@@ -72,7 +87,7 @@ export default function About({ theme }) {
                 <div className="about-photo-inner">
                   <img
                     src={profileImage}
-                    alt={theme === 'dark' ? 'Suman portrait for dark theme' : 'Suman portrait for light theme'}
+                    alt="Suman Karmakar"
                     loading="lazy"
                     decoding="async"
                   />
@@ -86,23 +101,27 @@ export default function About({ theme }) {
             </div>
           </div>
 
-          <div className={`space-y-6 ${reveal()}`} style={revealStyle(160)}>
-            <div>
-              <h3 className="text-2xl font-space font-semibold mb-4 text-primary">
-                Passionate MERN Stack Developer
-              </h3>
-              <p className="text-muted leading-relaxed mb-4">
-                I specialize in creating modern, responsive, and user-friendly web applications. With
-                hands-on experience in Java ecosystem, React for dynamic frontends, and Node.js plus
-                MongoDB for scalable backends, I enjoy turning complex ideas into practical solutions.
-              </p>
-              <p className="text-muted leading-relaxed">
-                My goal is to keep learning new technologies and apply best practices to build
-                high-quality software with clean architecture and strong user experience.
-              </p>
+          <div className={`${reveal()}`} style={revealStyle(160)}>
+            <p className="kicker-label mb-3">(01) &mdash; Manifesto</p>
+            <h3 className="about-manifesto-heading editorial-heading mb-8">
+              How I Approach <span className="text-primary">Building.</span>
+            </h3>
+
+            <div className="about-manifesto-list">
+              {principles.map((item, index) => (
+                <div key={item.title} className="about-manifesto-item">
+                  <span className="editorial-index about-manifesto-num">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <div className="min-w-0">
+                    <h4 className="about-manifesto-item-title">{item.title}</h4>
+                    <p className="text-muted leading-relaxed">{item.text}</p>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 mt-8">
               {strengths.map((item) => (
                 <span key={item.label} className="about-strength-chip">
                   <span
