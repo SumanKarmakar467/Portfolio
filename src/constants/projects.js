@@ -4,7 +4,7 @@ export const projects = [
     title: 'GymForge',
     description:
       'Fitness web application with onboarding, dashboard, workout tracking, profile management, and Firestore-backed user state.',
-    image: '/projects/gymforge.svg',
+    image: '/projects/gymforge-shot.jpg',
     technologies: ['Next.js', 'TypeScript', 'Firebase'],
     github: 'https://github.com/SumanKarmakar467/GYM-Ready.git',
     live: '/gymforge.html',
@@ -15,7 +15,7 @@ export const projects = [
     title: 'Resume Checker',
     description:
       'ATS resume analysis platform with scoring, keyword gap checks, AI rewrite suggestions, and downloadable report support.',
-    image: '/projects/resume-checker.svg',
+    image: '/projects/resume-checker-shot.jpg',
     technologies: ['React', 'Spring Boot', 'MongoDB'],
     github: 'https://github.com/SumanKarmakar467/Resume_Checker.git',
     live: 'https://resume-checker-alpha-two.vercel.app',
@@ -26,7 +26,7 @@ export const projects = [
     title: 'Leet_Code_Matrics',
     description:
       'Dashboard that fetches and displays LeetCode profile statistics with responsive UI and progress visualization.',
-    image: '/projects/leetCodeMetrics-opt.jpg',
+    image: '/projects/leetCodeMetrics-hd.jpg',
     technologies: ['JavaScript', 'API', 'Dashboard'],
     github: 'https://github.com/SumanKarmakar467/Leet_Code-Metrics',
     live: 'https://leet-code-metrics-kd4b.vercel.app',
@@ -37,7 +37,7 @@ export const projects = [
     title: 'MyFoodProject',
     description:
       'Food-themed responsive web project showcasing dishes, categories, and engaging UI sections using modern frontend practices.',
-    image: '/projects/myFoodProject-opt.jpg',
+    image: '/projects/myFoodProject-hd.jpg',
     technologies: ['HTML', 'CSS', 'JavaScript'],
     github: 'https://github.com/SumanKarmakar467/MyFoodProject',
     live: 'https://sumankarmakar-food-project.vercel.app/',
@@ -48,7 +48,7 @@ export const projects = [
     title: 'BellaVista_Restaurant',
     description:
       'Restaurant website with menu highlights, signature dishes, and contact sections in a responsive layout.',
-    image: '/projects/bellaVista-opt.jpg',
+    image: '/projects/bellaVista-hd.jpg',
     technologies: ['HTML', 'CSS', 'JavaScript'],
     github: 'https://github.com/SumanKarmakar467/BellaVista_Restaurant.git',
     live: 'https://suman-bella-vista.vercel.app/',

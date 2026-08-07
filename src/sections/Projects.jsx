@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { projects as projectData } from '../constants/projects';
 import SectionAccent3D from '../components/SectionAccent3D';
@@ -180,70 +181,6 @@ const BulletCard = ({ title, items }) => (
   </div>
 );
 
-const MobileProjectCard = ({ project, brokenImages, onImageError, onPreview, recruiterMode }) => (
-  <article className="w-[84vw] max-w-[360px] shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-surface/85 shadow-sm transition-transform duration-150 active:scale-[0.98]">
-    <div className="relative h-44 overflow-hidden">
-      <img
-        src={brokenImages[project.slug] ? PROJECT_FALLBACK_IMAGE : project.bgImage}
-        alt={project.title}
-        loading="lazy"
-        decoding="async"
-        onError={() => onImageError(project.slug)}
-        className="h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
-      <div className="absolute left-3 top-3">
-        <span className="project-card-category-badge" style={{ color: CATEGORY_GLOW[project.category] || 'var(--primary)' }}>
-          {project.category}
-        </span>
-      </div>
-      <div className="absolute bottom-0 left-0 right-0 p-3.5">
-        <h3 className="text-xl font-bold text-white">{project.title}</h3>
-        <p className="mt-1 text-xs text-white/85">{project.role}</p>
-      </div>
-    </div>
-
-    <div className="space-y-3 p-4">
-      <p className="text-sm leading-relaxed text-muted">{project.description}</p>
-
-      {recruiterMode && (
-        <div className="rounded-xl border border-primary/20 bg-primary/10 px-3 py-2.5">
-          <p className="text-[11px] uppercase tracking-[0.16em] text-primary">Recruiter Highlight</p>
-          <p className="mt-1.5 text-sm text-text">{project.impact}</p>
-        </div>
-      )}
-
-      <div className="flex flex-wrap gap-2">
-        {project.tech.slice(0, 3).map((tag) => (
-          <span key={tag} className="project-tech-chip">
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      <div className="flex gap-2 pt-1">
-        <button
-          type="button"
-          onClick={onPreview}
-          className="flex-1 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition-transform active:scale-95"
-        >
-          Preview
-        </button>
-        {project.liveUrl && (
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 rounded-full border border-border px-4 py-2 text-center text-sm font-semibold text-muted transition-transform active:scale-95"
-          >
-            Live
-          </a>
-        )}
-      </div>
-    </div>
-  </article>
-);
-
 function ProjectModal({ project, onClose }) {
   const [tab, setTab] = useState('overview');
   const [iframeLoaded, setIframeLoaded] = useState(false);
@@ -288,10 +225,12 @@ function ProjectModal({ project, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-full border border-border px-2.5 py-1 text-sm font-medium text-muted hover:border-primary hover:text-primary"
+          className="modal-close-btn"
           aria-label="Close project preview"
         >
-          Close
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M6 6 18 18M18 6 6 18" />
+          </svg>
         </button>
 
         <div className="overflow-hidden rounded-2xl border border-border">
@@ -299,7 +238,7 @@ function ProjectModal({ project, onClose }) {
             src={imageError ? PROJECT_FALLBACK_IMAGE : project.bgImage}
             alt={project.title}
             onError={() => setImageError(true)}
-            className="h-60 w-full object-cover sm:h-72"
+            className="h-60 w-full object-cover object-top sm:h-72"
           />
         </div>
 
@@ -519,12 +458,12 @@ export default function Projects() {
       <div className="container">
         <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
-            <p className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.26em] text-primary">
+            <p className="kicker-label mb-3">
               <SectionAccent3D size="sm" />
-              Projects System
+              (03) &mdash; Selected Work
             </p>
-            <h2 className="text-3xl font-bold text-text sm:text-4xl">
-              Searchable, draggable, recruiter-aware project showcase
+            <h2 className="editorial-heading text-3xl text-text sm:text-4xl">
+              Things I&apos;ve <span className="text-primary">Shipped.</span>
             </h2>
           </div>
           <p className="max-w-xl text-sm leading-relaxed text-muted sm:text-base">
@@ -634,24 +573,7 @@ export default function Projects() {
           </div>
         )}
 
-        <div className="md:hidden">
-          <div className="-mx-4 px-4">
-            <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {filteredProjects.map((project) => (
-                <MobileProjectCard
-                  key={project.slug}
-                  project={project}
-                  brokenImages={brokenImages}
-                  onImageError={handleImageError}
-                  recruiterMode={recruiterMode}
-                  onPreview={() => setSelectedProject(project)}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <motion.div layout className="hidden grid-cols-1 gap-6 md:grid xl:grid-cols-3">
+        <motion.div layout className="work-list">
           <AnimatePresence>
             {filteredProjects.map((project, index) => (
               <motion.article
@@ -666,10 +588,12 @@ export default function Projects() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 12 }}
                 transition={{ duration: 0.24, delay: Math.min(index, 6) * 0.04 }}
-                className={`group ${draggingSlug === project.slug ? 'opacity-60' : ''}`}
+                className={`work-row group ${index % 2 === 1 ? 'work-row--reverse' : ''} ${
+                  draggingSlug === project.slug ? 'opacity-60' : ''
+                }`}
               >
                 <div
-                  className="project-card"
+                  className="work-row-media"
                   style={{ '--card-glow': CATEGORY_GLOW[project.category] || 'var(--primary)' }}
                   onMouseMove={handleTiltMove}
                   onMouseLeave={handleTiltLeave}
@@ -677,91 +601,72 @@ export default function Projects() {
                   onTouchEnd={handleTiltTouchEnd}
                   onTouchCancel={handleTiltTouchEnd}
                 >
-                  {project.featured && <span className="project-card-featured-ribbon">Featured</span>}
-                  <div className="project-card-inner">
-                    <div className="relative h-52 project-card-image-wrap">
-                      <img
-                        src={brokenImages[project.slug] ? PROJECT_FALLBACK_IMAGE : project.bgImage}
-                        alt={project.title}
-                        loading="lazy"
-                        decoding="async"
-                        onError={() => handleImageError(project.slug)}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="project-card-sheen" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
-                      <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-                        <div className="flex flex-wrap items-center justify-center gap-2 rounded-full border border-white/30 bg-black/45 px-3 py-2 backdrop-blur-sm">
-                          {project.liveUrl ? (
-                            <a
-                              href={project.liveUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
-                            >
-                              Demo
-                            </a>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => setSelectedProject(project)}
-                              className="pointer-events-auto rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
-                            >
-                              Demo
-                            </button>
-                          )}
-                          {project.github && (
-                            <a
-                              href={project.github}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-white/45 px-4 py-2 text-sm font-semibold text-white"
-                            >
-                              Source
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                      <div className="absolute left-4 right-4 top-4 flex items-center justify-between gap-3">
-                        <span className="project-card-category-badge" style={{ color: CATEGORY_GLOW[project.category] || 'var(--primary)' }}>
-                          {project.category}
-                        </span>
-                        <span className="project-drag-chip">
-                          <span className="project-drag-dots">
-                            <span /><span /><span /><span /><span /><span />
-                          </span>
-                          Drag
-                        </span>
-                      </div>
-                      <span className="project-card-index">{String(index + 1).padStart(2, '0')}</span>
-                      <div className="absolute bottom-0 left-0 right-0 p-4 pl-14">
-                        <h3 className="text-2xl font-bold text-white">{project.title}</h3>
-                        <p className="mt-1 text-sm text-white/80">{project.role}</p>
-                      </div>
+                  <img
+                    src={brokenImages[project.slug] ? PROJECT_FALLBACK_IMAGE : project.bgImage}
+                    alt={project.title}
+                    loading="lazy"
+                    decoding="async"
+                    onError={() => handleImageError(project.slug)}
+                    className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="project-card-sheen" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                  {project.featured && <span className="work-row-featured">Featured</span>}
+                  <span className="project-drag-chip work-row-drag">
+                    <span className="project-drag-dots">
+                      <span /><span /><span /><span /><span /><span />
+                    </span>
+                    Drag
+                  </span>
+                </div>
+
+                <div className="work-row-content">
+                  <span className="editorial-index work-row-num">{String(index + 1).padStart(2, '0')}</span>
+                  <p className="kicker-label" style={{ color: CATEGORY_GLOW[project.category] || 'var(--primary)' }}>
+                    {project.category} &mdash; {project.role}
+                  </p>
+                  <h3 className="editorial-heading work-row-title">{project.title}</h3>
+                  <p className="text-muted leading-relaxed work-row-desc">{project.description}</p>
+
+                  {recruiterMode && (
+                    <div className="my-4 rounded-2xl border border-primary/20 bg-primary/10 px-4 py-3">
+                      <p className="text-xs uppercase tracking-[0.18em] text-primary">Recruiter Highlight</p>
+                      <p className="mt-2 text-sm text-text">{project.impact}</p>
                     </div>
+                  )}
 
-                    <div className="p-4 sm:p-5">
-                      <p className="text-sm leading-relaxed text-muted">{project.description}</p>
+                  <div className="work-row-tech">
+                    {project.tech.slice(0, 4).map((tag) => (
+                      <span key={tag} className="project-tech-chip">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
 
-                      {recruiterMode && (
-                        <div className="mt-4 rounded-2xl border border-primary/20 bg-primary/10 px-4 py-3">
-                          <p className="text-xs uppercase tracking-[0.18em] text-primary">Recruiter Highlight</p>
-                          <p className="mt-2 text-sm text-text">{project.impact}</p>
-                        </div>
-                      )}
-
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {project.tech.slice(0, 4).map((tag) => (
-                          <span key={tag} className="project-tech-chip">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="mt-5 border-t border-border/70 pt-3 text-xs text-muted">
-                        Hover on image to open demo and source quickly.
-                      </div>
-                    </div>
+                  <div className="work-row-actions">
+                    <button type="button" onClick={() => setSelectedProject(project)} className="work-action-btn work-action-btn--primary">
+                      View Case Study
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M7 17 17 7M9 7h8v8" />
+                      </svg>
+                    </button>
+                    {project.liveUrl && (
+                      <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="work-action-btn work-action-btn--ghost">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" />
+                          <path d="M14 4h6v6M20 4 10 14" />
+                        </svg>
+                        Live Demo
+                      </a>
+                    )}
+                    {project.github && (
+                      <a href={project.github} target="_blank" rel="noopener noreferrer" className="work-action-btn work-action-btn--ghost">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                        Source
+                      </a>
+                    )}
                   </div>
                 </div>
               </motion.article>
@@ -779,9 +684,6 @@ export default function Projects() {
         )}
 
         <div className="mt-12 text-center">
-          <p className="mb-3 text-sm font-medium text-muted md:hidden">
-            See projects -&gt; swipe horizontally to view more
-          </p>
           <a
             href="https://github.com/SumanKarmakar467/"
             target="_blank"
@@ -793,9 +695,12 @@ export default function Projects() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {selectedProject && <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />}
-      </AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
+          {selectedProject && <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />}
+        </AnimatePresence>,
+        document.body,
+      )}
     </section>
   );
 }
