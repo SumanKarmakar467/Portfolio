@@ -12,6 +12,8 @@ export default function useSmoothScroll() {
       touchMultiplier: 1.4,
     });
 
+    window.lenis = lenis;
+
     let rafId;
     const raf = (time) => {
       lenis.raf(time);
@@ -39,6 +41,9 @@ export default function useSmoothScroll() {
       document.removeEventListener('click', handleAnchorClick);
       cancelAnimationFrame(rafId);
       lenis.destroy();
+      if (window.lenis === lenis) {
+        delete window.lenis;
+      }
     };
   }, []);
 }

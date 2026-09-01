@@ -80,11 +80,18 @@
   }
 
   /* Smooth, buttery theme switch: every element eases its colors instead of
-     snapping instantly when toggling light/dark. Transform/box-shadow are
-     deliberately excluded so hover-lift animations keep their own timing. */
-  *,
-  *::before,
-  *::after {
+     snapping instantly when toggling light/dark. Scoped to a short-lived
+     `.theme-transition` window (see useTheme) instead of being permanently
+     live on every element — an always-on wildcard transition forces the
+     browser to re-evaluate transitionable properties on every element during
+     scroll (content-visibility toggling sections in/out of view), which is
+     the single biggest source of scroll jank on this page. Transform/
+     box-shadow are deliberately excluded so hover-lift animations keep their
+     own timing. */
+  .theme-transition,
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
     transition: background-color 0.4s var(--ease-smooth), border-color 0.4s var(--ease-smooth),
       color 0.3s var(--ease-smooth), fill 0.3s var(--ease-smooth), stroke 0.3s var(--ease-smooth);
   }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 function readStoredTheme() {
   try {
@@ -13,6 +13,8 @@ function readStoredTheme() {
 export default function useTheme() {
   const [theme, setTheme] = useState(readStoredTheme);
 
+  const isFirstRun = useRef(true);
+
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove('light', 'dark');
@@ -23,6 +25,18 @@ export default function useTheme() {
     } catch {
       // Ignore write failures; theme still applies for this session.
     }
+
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return undefined;
+    }
+
+    root.classList.add('theme-transition');
+    const timeoutId = window.setTimeout(() => {
+      root.classList.remove('theme-transition');
+    }, 450);
+
+    return () => window.clearTimeout(timeoutId);
   }, [theme]);
 
   const toggleTheme = () => {
