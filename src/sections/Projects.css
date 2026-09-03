@@ -58,13 +58,17 @@
 
 .work-row-media {
   position: relative;
-  aspect-ratio: 16 / 11;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
   border-radius: 1.25rem;
   cursor: grab;
   box-shadow:
     var(--neu-dist) var(--neu-dist) var(--neu-blur) var(--neu-dark),
     calc(var(--neu-dist) * -1) calc(var(--neu-dist) * -1) var(--neu-blur) var(--neu-light);
+}
+
+.work-row-media img {
+  object-position: top center;
 }
 
 .work-row-media:active {
