@@ -3,11 +3,11 @@ export const projects = [
     id: 1,
     title: 'GymForge',
     description:
-      'Fitness web application with onboarding, dashboard, workout tracking, profile management, and Firestore-backed user state.',
+      'AI-powered fitness platform that generates personalized workout plans via Claude, then tracks daily exercises, streaks, and weekly progress through an onboarding wizard, plan viewer, and admin dashboard.',
     image: '/projects/gymforge-shot.jpg',
-    technologies: ['Next.js', 'TypeScript', 'Firebase'],
-    github: 'https://github.com/SumanKarmakar467/GYM-Ready.git',
-    live: '/gymforge.html',
+    technologies: ['React', 'Node.js', 'MongoDB', 'Claude AI'],
+    github: 'https://github.com/SumanKarmakar467/GYM',
+    live: 'https://gym-tan-theta.vercel.app/',
     featured: true,
   },
   {
