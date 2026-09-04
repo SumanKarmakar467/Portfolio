@@ -166,7 +166,7 @@ This project is open source and available under the [MIT License](LICENSE).
 **Suman Karmakar**
 - Website: [suman-karmakar.dev](https://suman-karmakar.dev)
 - LinkedIn: [linkedin.com/in/suman-karmakar](https://linkedin.com/in/suman-karmakar)
-- GitHub: [github.com/suman-karmaar](https://github.com/suman-karmakar)
+- GitHub: [github.com/suman-karmakar](https://github.com/suman-karmakar)
 - Email: suman.karmakar@example.com
 
 ---
